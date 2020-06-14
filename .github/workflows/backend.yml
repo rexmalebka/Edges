@@ -14,4 +14,4 @@ jobs:
                           run: |
                                   echo $(pwd)
                                   echo $(ls) 
-                                  echo ${git log}
+                                  echo $(git log)
