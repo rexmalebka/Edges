@@ -1,0 +1,17 @@
+name: backend 
+
+on:
+        push:
+                branches: [master]
+
+jobs:
+        check:
+                runs-on: ubuntu-latest
+                steps:
+                        - name: checkout to repo
+                          uses: actions/checkout@v2
+                        - name: list differences
+                          run: |
+                                  echo $(pwd)
+                                  echo $(ls) 
+                                  echo ${git log}
