@@ -8,7 +8,7 @@ jobs:
         check:
                 runs-on: ubuntu-latest
                 steps:
-                        - name: checkout to repo
+                        - name: check differences
                           uses: actions/checkout@v2
                         - name: list differences
                           run: |
@@ -16,5 +16,7 @@ jobs:
                                   echo $(ls) 
                                   export COMMIT_ID=$(git log --format="%H" -n 1)
                                   export MODIFIED=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
-                                  echo $MODIFIED
+                                  echo $MODIFIED                                 
+                                  export res=$([[ $hola =~ ^.*backend.* ]] && echo 'yes' || echo 'no')
+                                  echo $(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
 
