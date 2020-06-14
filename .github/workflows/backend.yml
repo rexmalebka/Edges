@@ -14,4 +14,7 @@ jobs:
                           run: |
                                   echo $(pwd)
                                   echo $(ls) 
-                                  echo $(git log)
+                                  export COMMIT_ID=$(git log --format="%H" -n 1)
+                                  export MODIFIED=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
+                                  echo $MODIFIED
+
