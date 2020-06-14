@@ -18,9 +18,9 @@ jobs:
                                   export MODIFIED=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
                                   echo $MODIFIED                                 
                                   export res=$([[ $hola =~ ^.*backend.* ]] && echo 'yes' || echo 'no')
-                                  #echo $(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+                                  # echo $(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+                                  echo "::set-env res=res::yellow"
+
                         - name: send files via ssh
                           run: |
-                                  echo $res
-
-
+                                  echo $re
