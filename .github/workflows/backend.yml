@@ -23,15 +23,16 @@ jobs:
                 steps:
                         - name: Create config file for ssh copy
                           run: |
+                                  echo $pwd
                                   echo $ls 
-                                  echo ${{  secrets.NGINX_CONFIG}} >> edges.conf
+                                  echo ${{ secrets.NGINX_CONFIG}} >> edges.conf
                                   cat edges.conf
 
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
                           with:
                                   command: |
-                                          systemctl restart nginx
+                                          sudo systemctl restart nginx
                                   host: ${{ secrets.HOST }}
                                   username: ${{ secrets.USERNAME }}
                                   password: ${{ secrets.PASSWORD }}
