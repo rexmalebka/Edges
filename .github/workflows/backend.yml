@@ -24,10 +24,13 @@ jobs:
                         - name: Create config file for ssh copy
                           run: |
                                   echo $(pwd)
-                                  echo $ls 
-                                  echo ${{ secrets.NGINX_CONFIG}} >> edges.conf
+                                  echo $(ls)
+                                  echo ${{ secrets.NGINX_CONFIG}} >> edges.conf                               
                                   cat edges.conf
 
+                        - name: check if file exists
+                          run: |
+                                  echo ${ls}
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
                           with:
