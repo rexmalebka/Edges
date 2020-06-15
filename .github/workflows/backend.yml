@@ -5,22 +5,34 @@ on:
                 branches: [master]
 
 jobs:
-        check:
+        build:
                 runs-on: ubuntu-latest
                 steps:
-                        - name: check differences
+                        - name: Checkout
                           uses: actions/checkout@v2
-                        - name: list differences
+                        - name: Send backend via ssh
+                          uses: garygrossgarten/github-action-scp@release
+                          with:
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
+                                  local: "/home/runner/work/Edges/Edges/backend"
+                                  remote: "/home/${{ secrets.USERNAME}}/backend"
+        deploy:
+                runs-on: ubuntu-latest
+                steps:
+                        - name: Create config file for ssh copy
                           run: |
-                                  echo $(pwd)
-                                  echo $(ls) 
-                                  export COMMIT_ID=$(git log --format="%H" -n 1)
-                                  export MODIFIED=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
-                                  echo $MODIFIED                                 
-                                  export res=$([[ $hola =~ ^.*backend.* ]] && echo 'yes' || echo 'no')
-                                  # echo $(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-                                  echo "::set-env res=res::yellow"
+                                  echo $ls 
+                                  echo ${{  secrets.NGINX_CONFIG}} >> edges.conf
+                                  cat edges.conf
 
-                        - name: send files via ssh
-                          run: |
-                                  echo $re
+                        - name: restart nginx 
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          systemctl restart nginx
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
+                                  
