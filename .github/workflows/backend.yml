@@ -30,7 +30,7 @@ jobs:
 
                         - name: check if file exists
                           run: |
-                                  echo ${ls}
+                                  echo $(ls)
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
                           with:
