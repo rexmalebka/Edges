@@ -23,7 +23,7 @@ jobs:
                 steps:
                         - name: Create config file for ssh copy
                           run: |
-                                  echo $pwd
+                                  echo $(pwd)
                                   echo $ls 
                                   echo ${{ secrets.NGINX_CONFIG}} >> edges.conf
                                   cat edges.conf
