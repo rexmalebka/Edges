@@ -76,9 +76,19 @@ jobs:
         test:
                 runs-on: ubuntu-latest
                 steps:
-                        - name: test wsockets
-                          run: |
-                                  sudo apt-get update -y
-                                  sudo apt-get upgrate -y
-                                  sudo apt-get install node-ws -y
-                                  wscat -c ws://${{ secrets.HOST }}:8020/socket.io/\?transport=websocket
+                        - name: check nginx status
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          sudo systemctl status nginx
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
+                        - name: check edges status
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          sudo systemctl status edges
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
