@@ -33,7 +33,7 @@ jobs:
                                   username: ${{ secrets.USERNAME }}
                                   password: ${{ secrets.PASSWORD }}
                                   local: "/home/runner/work/Edges/Edges/edges.conf"
-                                  remote: "/home/${{ secrets.USERNAME}}"
+                                  remote: "/tmp/"
 
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
