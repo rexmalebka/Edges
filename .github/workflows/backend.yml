@@ -40,6 +40,7 @@ jobs:
                           with:
                                   command: |
                                           sudo cp /tmp/edges.conf /etc/nginx/sites-available/
+                                          sudo rm  /etc/nginx/sites-enabled/edges
                                           sudo ln -s /etc/nginx/sites-available/edges.conf /etc/nginx/sites-enabled/edges
                                           rm /tmp/edges.conf
                                   host: ${{ secrets.HOST }}
