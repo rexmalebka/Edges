@@ -23,9 +23,7 @@ jobs:
                 steps:
                         - name: Create config file for ssh copy
                           run: |
-                                  echo $(pwd)
-                                  echo $(ls)
-                                  echo ${{ secrets.NGINX_CONFIG}} >> edges.conf                               
+                                  echo "${{ secrets.NGINX_CONFIG}}" > edges.conf                               
                         - name: send configuration file
                           uses: garygrossgarten/github-action-scp@release
                           with:
