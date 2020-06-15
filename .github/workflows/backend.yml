@@ -18,14 +18,19 @@ jobs:
                                   password: ${{ secrets.PASSWORD }}
                                   local: "/home/runner/work/Edges/Edges/backend"
                                   remote: "/home/${{ secrets.USERNAME}}/backend"
-        deploy:
-                runs-on: ubuntu-latest
-                steps:
-                        - name: Checkout
-                          uses: actions/checkout@v2
+                        - name: install node dependencies
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          cd "/home/${{ secrets.USERNAME }}/backend"
+                                          npm install
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
                         - name: Create config file for ssh copy
                           run: |
                                   echo "${{ secrets.NGINX_CONFIG}}" > edges.conf                               
+
                         - name: send configuration file
                           uses: garygrossgarten/github-action-scp@release
                           with:
@@ -39,13 +44,25 @@ jobs:
                           uses: garygrossgarten/github-action-ssh@release
                           with:
                                   command: |
-                                          sudo cp /tmp/edges.conf /etc/nginx/sites-available/
+                                          sudo mv /tmp/edges.conf /etc/nginx/sites-available/
                                           sudo rm  /etc/nginx/sites-enabled/edges
                                           sudo ln -s /etc/nginx/sites-available/edges.conf /etc/nginx/sites-enabled/edges
-                                          rm /tmp/edges.conf
                                   host: ${{ secrets.HOST }}
                                   username: ${{ secrets.USERNAME }}
                                   password: ${{ secrets.PASSWORD }}
+
+        deploy:
+                runs-on: ubuntu-latest
+                steps:
+                        - name: restart app
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          sudo systemctl restart edges
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
+                                  
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
                           with:
@@ -54,4 +71,14 @@ jobs:
                                   host: ${{ secrets.HOST }}
                                   username: ${{ secrets.USERNAME }}
                                   password: ${{ secrets.PASSWORD }}
-                                  
+
+
+        test:
+                runs-on: ubuntu-latest
+                steps:
+                        - name: test wsockets
+                          run: |
+                                  sudo apt-get update -y
+                                  sudo apt-get upgrate -y
+                                  sudo apt-get install node-ws -y
+                                  wscat -c ws://${{ secrets.HOST }}:8020/socket.io/\?transport=websocket
