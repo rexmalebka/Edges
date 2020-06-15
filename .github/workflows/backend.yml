@@ -35,6 +35,16 @@ jobs:
                                   local: "/home/runner/work/Edges/Edges/edges.conf"
                                   remote: "/tmp/edges.conf"
 
+                        - name: move config file
+                          uses: garygrossgarten/github-action-ssh@release
+                          with:
+                                  command: |
+                                          sudo cp /tmp/edges.conf /etc/nginx/sites-available/
+                                          sudo ln -s /etc/nginx/sites-available/edges.conf /etc/nginx/sites-enabled/edges
+                                          rm /tmp/edges.conf
+                                  host: ${{ secrets.HOST }}
+                                  username: ${{ secrets.USERNAME }}
+                                  password: ${{ secrets.PASSWORD }}
                         - name: restart nginx 
                           uses: garygrossgarten/github-action-ssh@release
                           with:
