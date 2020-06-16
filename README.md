@@ -5,7 +5,7 @@
 EDGES es una plataforma de experimentación y difusión de proyectos audiovisuales en vivo. Desde 2016 se han presentado proyectos individuales y propuestas curatoriales que son una muestra representativa tanto de la escena audiovisual en tiempo real como de su constante transformación. Este año iniciamos el ciclo con Distopía, un proyecto multimedia donde los paisajes oníricos digitales de ZGAMU se mezclan en una narración distópica a través de la descomposición visual de Lvstvcrv.
 
 El espacio surge de la colaboración entre el Laboratorio de Imágenes en Movimiento del 
-[Centro Multimedia](http://cmm.cenart.gob.mx/index.html ) (CENART) y el Laboratorio de Estudios de Software [PiranhaLab] (https://piranhalab.github.io/). 
+[Centro Multimedia](http://cmm.cenart.gob.mx/index.html ) (CENART) y el Laboratorio de Estudios de Software [PiranhaLab](https://piranhalab.github.io/). 
 
 15 de julio, 2020. 
 Transmisión en vivo desde la Sala Blas Galindo (CENART) a las plataformas de [Canal 23] (https://interfaz.cenart.gob.mx/envivo/) y replicada en el sitio de PiranhaLab. 
