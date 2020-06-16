@@ -26,9 +26,9 @@ Una de nuestras armas secretas ha sido infiltrarnos a sus centros urbanos hasta 
 
 Zgamu +  Lvstvcrv
 
-##Curaduría  
+## Curaduría  
 
-###PiranhaLab 
+### PiranhaLab 
 
 Marianne Teixido,
 Dorian Sotomayor,
