@@ -26,10 +26,11 @@ Una de nuestras armas secretas ha sido infiltrarnos a sus centros urbanos hasta 
 
 Zgamu +  Lvstvcrv
 
-## Curaduría  
+## Curaduría y programación
 
-### PiranhaLab 
+PiranhaLab: 
 
-Marianne Teixido,
-Dorian Sotomayor,
-Emilio Ocelotl. 
+[Marianne Teixido, Dorian Sotomayor, Emilio Ocelotl].scramble
+
+
+
