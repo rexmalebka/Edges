@@ -8,7 +8,7 @@ El espacio surge de la colaboración entre el Laboratorio de Imágenes en Movimi
 [Centro Multimedia](http://cmm.cenart.gob.mx/index.html ) (CENART) y el Laboratorio de Estudios de Software [PiranhaLab](https://piranhalab.github.io/). 
 
 15 de julio, 2020. 
-Transmisión en vivo desde la Sala Blas Galindo (CENART) a las plataformas de [Canal 23] (https://interfaz.cenart.gob.mx/envivo/) y replicada en el sitio de PiranhaLab. 
+Transmisión en vivo desde la Sala Blas Galindo (CENART) a las plataformas de [Canal 23](https://interfaz.cenart.gob.mx/envivo/) y replicada en el sitio de PiranhaLab. 
 
 ### Nota curatorial
 
