@@ -1,63 +1,63 @@
-const io = require('socket.io')(3000);
-const {User, Users} = require('./Users.js')
+const express = require('express')
+const app = express()
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+// const io = require('socket.io')(3000);
+const { Users, chat } = require('./Users.js')
+
+app.use('/', express.static('static'))
 
 io.on('connection', (conn) => {
-	conn.on("join", function(data){
-		const uuid = data[0];
-		const nickname = data[1];
-		const position = {
-			x: data[2],
-			y: data[3],
-			z: data[4]
-		}
-		const rotation = {
-			x: data[5],
-			y: data[6],
-			z: data[7]
-		}
-		
-		Users[uuid] = new User(uuid, conn, nickname, position, rotation);
+  if (!conn.handshake.query.user) return
 
-		conn.on('disconnect', function(asdf){
-			delete Users[uuid];
-			conn.broadcast.emit("leave", uuid)
-		});
+  let query = ''
+  try {
+    query = JSON.parse(conn.handshake.query.user)
+  } catch (e) {
+    return
+  }
 
-		conn.on('move', function(data){
-			const position = {
-				x: data[0],
-				y: data[1],
-				z: data[2]
-			}
-			Users[uuid].position = position;
-			conn.broadcast.emit("move", [uuid, position.x, position.y, position.z])
-		});
-		conn.on('rotate', function(data){
-			const rotation = {
-				x: data[0],
-				y: data[1],
-				z: data[2]
-			}
-			Users[uuid].rotation = rotation;
-			conn.broadcast.emit("rotate",[uuid, rotation.x, rotation.y, rotation.z])
-		});
-		
-		conn.on('rename', function(nickname){
-			Users[uuid].nickname = nickname;
-			conn.broadcast.emit("rename", [uuid, nickname])
-		});
+  const uuid = query[0]
+  const nickname = query[1]
+  const position = {
+    x: query[2],
+    y: query[3],
+    z: query[4]
+  }
+  const rotation = {
+    x: query[5],
+    y: query[6],
+    z: query[7]
+  }
 
-		Object.keys(Users).forEach(function(_uuid){
-			if(_uuid == uuid) return;
-			const user = Users[_uuid];
-			const nickname = user.nickname;
-			const position = user.position;
-			const rotation = user.position;
-			conn.emit("add", [_uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z])
-		});
+  Users[uuid] = [uuid, nickname, position, rotation, conn]
 
-		conn.broadcast.emit("add", [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z])
-	});
-});
+  console.log(`user "${nickname}" (${uuid}) ${uuid} join`)
 
-//server.listen(3000);
+  conn.on('disconnect', function (asdf) {
+    console.log(`user "${nickname}" (${uuid}) left`)
+    delete Users[uuid]
+  })
+
+  conn.on('rename', function (name) {
+    console.log(`\trenaming user ${uuid} from ${nickname} to ${name}`)
+    Users[uuid].nickname = name
+  })
+
+  conn.on('chat', function (msg) {
+	  chat(uuid, msg)
+  })
+
+  conn.on('move', function (position) {
+    const pos = {
+      x: position[0],
+      y: position[1],
+      z: position[2]
+    }
+    Users[uuid].position = pos
+  })
+})
+
+const port = process.env.PORT | 3000
+console.log(`starting server on port ${port}`)
+server.listen(port)
