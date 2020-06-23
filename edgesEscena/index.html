@@ -89,7 +89,7 @@
 			function init() {
 
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera.position.y = -200;
+				camera.position.y = -400;
 
 				scene = new THREE.Scene();
 			    //scene.background = new THREE.Color( 0xffffff );
@@ -105,9 +105,9 @@
 
 			    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 			    
-			    //var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
-			    //light.position.set( 0.5, 1, 0.75 );
-			    //scene.add( light );
+			    var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.25 );
+			    light.position.set( 0.5, 1, 0.75 );
+			    scene.add( light );
 			    
 			    controls = new THREE.PointerLockControls( camera, document.body );
 			    
@@ -202,7 +202,6 @@
 
 				raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
-
 			    // lights
 			    
 			    light1 = new THREE.PointLight( 0x50b732, 6, 150 );
@@ -214,7 +213,6 @@
 			    light4 = new THREE.PointLight( 0x7930a7, 6, 150 );
 			    scene.add( this.light4 );
 
-
 			    //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
 			    var sphereMaterial = new THREE.MeshBasicMaterial( {
@@ -223,9 +221,7 @@
 				refractionRatio: 0.75
 			    } );
 
-			    
-			    var sphereGeometry = new THREE.BoxGeometry(20, 20, 20);
-				
+			    var sphereGeometry = new THREE.BoxGeometry(20, 20, 20);				
 
 			    var cube = []
 			    // Objs
@@ -249,10 +245,8 @@
 				
 			    }
 
-			    
 			    //var geometry = new THREE.BoxGeometry();
-			    var geometryCli = new THREE.CylinderBufferGeometry(100, 100, 2, 64);
-
+			    var geometryCli = new THREE.CylinderBufferGeometry(100, 100, 10, 64);
 
 			    geometryCli.computeVertexNormals(); 
 
@@ -261,32 +255,47 @@
 				envMap: scene.background,
 				refractionRatio: 0.75
 			    } );
-
 			    
 			    cil1 = new THREE.Mesh( geometryCli, cilMaterial );
 			    scene.add( cil1 );
 
-			    
 			    // floor
 			    
 			    var floorGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 100, 100 );
 			    floorGeometry.rotateX( - Math.PI / 2 );
 
+			    //var texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
+
+			    //texture.wrapS = THREE.RepeatWrapping;
+			    //texture.wrapT = THREE.RepeatWrapping;
+
+			    var loader = new THREE.TextureLoader();
+			    
+			    var texture = loader.load( 'img/texture.jpg', function ( texture ) {
+				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+				texture.offset.set( 0, 0 );
+				texture.repeat.set( 15, 15 );
+
+			    });
+			    
+				// your code
+
 			    
 			    var floorMaterial = new THREE.MeshStandardMaterial( {
 				color: 0xffffff,
 				metalness: 0.4,
-				roughness: 0.8,
+				roughness: 0.7,
+				map: texture, 
 				//transparent: true,
 				//opacity: 0.75,	  
 			    } );
-			    
-			    
+			   
+
+			    // var floorMaterial = new THREE.MeshBasicMaterial( { map: texture } );
+			    			    
 			    var floor = new THREE.Mesh( floorGeometry, floorMaterial );
 			    scene.add( floor );
 			    
-		
-
 				//
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -314,7 +323,6 @@
 			    requestAnimationFrame( animate );
 
 			    var time = Date.now() * 0.0005;
-
 
 			    light1.position.x = Math.sin( time * 0.7 ) * 60;
 			    light1.position.y = 50 +Math.cos( time * 0.5 ) * 80;
