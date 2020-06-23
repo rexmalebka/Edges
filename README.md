@@ -4,7 +4,11 @@
 
 EDGES es una plataforma de experimentación y difusión de proyectos audiovisuales en vivo. Desde 2016 se han presentado proyectos individuales y propuestas curatoriales que son una muestra representativa tanto de la escena audiovisual en tiempo real como de su constante transformación. Este año iniciamos el ciclo con Distopía, un proyecto multimedia donde los paisajes oníricos digitales de ZGAMU se mezclan en una narración distópica a través de la descomposición visual de Lvstvcrv.
 
-El espacio surge de la colaboración entre el Laboratorio de Imágenes en Movimiento del Centro Multimedia (CENART) y el Laboratorio de Estudios de Software PiranhaLab. 
+El espacio surge de la colaboración entre el Laboratorio de Imágenes en Movimiento del 
+[Centro Multimedia](http://cmm.cenart.gob.mx/index.html ) (CENART) y el Laboratorio de Estudios de Software [PiranhaLab](https://piranhalab.github.io/). 
+
+15 de julio, 2020. 
+Transmisión en vivo desde la Sala Blas Galindo (CENART) a las plataformas de [Canal 23](https://interfaz.cenart.gob.mx/envivo/) y replicada en el sitio de PiranhaLab. 
 
 ### Nota curatorial
 
@@ -14,9 +18,8 @@ La tecnopolítica implícita en las interfaces y plataformas nos ha hecho explor
 
 Aprovechando la potencialidad de los espacios virtuales de encuentro, haciendo accesible, en términos de RAM y ancho de banda, estos actos teniendo en cuenta la disparidad de condiciones de acceso a la tecnología. Es por todo lo anterior que, para este primer concierto, el cual se llevará a cabo el próximo 15 de julio en la sala Blas Galindo, se ha contactado a la productora musical Sofia Tapia (Zgamu) y a la artista digital Martha Maya (Lvstvcrv) a colaborar con el proyecto. En este mes de trabajo con ellas, se ha definido el tema del concierto, que llevará por nombre Distopía.
 
-Distopía, parte de las reflexiones anteriores y las lleva a la expresión sensibles desde las estéticas glitch y cyborg, que plantean la exploración de escenarios 3D, virtuales, con holo transmisores oníricos que serán el medio para transmitir su arte, crítico, pop, y al mismo tiempo, visceral.
+Distopía, parte de las reflexiones anteriores y las lleva a la expresión sensibles desde las estéticas glitch y cyborg, que plantean la exploración de escenarios 3D, virtuales.
 
-Por otro lado, debido a la naturaleza del evento, el cual será grabado y transmitido en tiempo real, de manera paralela desde el laboratorio, se está construyendo un espacio de encuentro virtual usando herramientas de código libre y open source para la construcción de la página que, durante el evento, replicará la señal dentro de esta virtualidad con arquitectura onírica. Esta podrá ser explorada desde la navegación en primera persona permitiendo la co-presencia e interacción.
 
 ### Distopía
 
@@ -26,10 +29,10 @@ Una de nuestras armas secretas ha sido infiltrarnos a sus centros urbanos hasta 
 
 Zgamu +  Lvstvcrv
 
-## Curaduría  
+## Curaduría y programación
 
-### PiranhaLab 
+PiranhaLab: 
 
-Marianne Teixido,
-Dorian Sotomayor,
-Emilio Ocelotl. 
+[Marianne Teixido, Dorian Sotomayor, Emilio Ocelotl].scramble
+
+
