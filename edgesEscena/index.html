@@ -47,11 +47,16 @@
 		<div id="blocker">
 
 			<div id="instructions">
-				<span style="font-size:36px">EDGES - Click para iniciar/pausar</span>
-				<br /><br />
+			  <span style="font-size:36px">EDGES | Distopía</span>
+			  <br/><br/>
+			  <span style="font-size:36px">ZGAMU - LVSTVCVR</span>
+			  <br/>
+		
+				<br /> CLICK para entrar <br />
 				Movimiento: WASD<br/>
 				Salto: SPACE<br/>
-				Mirada: MOUSE
+				Mirada: MOUSE<br/>
+				<br/> PiranhaLab <br/>
 			</div>
 
 		</div>
@@ -64,8 +69,9 @@
 
 		  var camera, scene, renderer, controls;
 		  var light1, light2, light3, light4; 
+		  var clight1, clight2, clight3, clight4; 
 
-		  var cil1; 
+		  var cil1, cil2, cli3; 
 		  
 		  var objects = [];
 
@@ -94,14 +100,16 @@
 				scene = new THREE.Scene();
 			    //scene.background = new THREE.Color( 0xffffff );
 
+			   
 			    this.scene.background = new THREE.CubeTextureLoader().setPath( '/img/' ).load( [
-				'px2.png',
-				'nx2.png',
-				'py2.png',
-				'ny2.png',
-				'pz2.png',
-				'nz2.png'
+				'px.jpg',
+				'nx.jpg',
+				'py.jpg',
+				'ny.jpg',
+				'pz.jpg',
+				'nz.jpg'
 			    ]);
+
 
 			    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 			    
@@ -204,14 +212,45 @@
 
 			    // lights
 			    
-			    light1 = new THREE.PointLight( 0x50b732, 6, 150 );
+			    light1 = new THREE.PointLight( 0x50b732, 6, 250 );
 			    scene.add( this.light1 );
-			    light2 = new THREE.PointLight( 0x3b5fd1, 6, 150 );
+			    light2 = new THREE.PointLight( 0x3b5fd1, 6, 250 );
 			    scene.add( this.light2 );
-			    light3 = new THREE.PointLight( 0xde3fe1, 6, 150 );
+			    light3 = new THREE.PointLight( 0xde3fe1, 6, 250 );
 			    scene.add( this.light3 );
-			    light4 = new THREE.PointLight( 0x7930a7, 6, 150 );
+			    light4 = new THREE.PointLight( 0x7930a7, 6, 250 );
 			    scene.add( this.light4 );
+
+			    // lights
+			    
+			    clight1 = new THREE.PointLight( 0x50b732, 2, 300 );
+			    scene.add( clight1 );
+			    clight2 = new THREE.PointLight( 0x3b5fd1, 2, 300 );
+			    scene.add( clight2 );
+			    clight3 = new THREE.PointLight( 0xde3fe1, 2, 300 );
+			    scene.add( clight3 );
+			    clight4 = new THREE.PointLight( 0xde3fe1, 2, 300 );
+			    scene.add( clight4 );
+
+
+			    clight1.castShadow = true;			    
+			    clight1.shadow.mapSize.width = 2048;
+			    clight1.shadow.mapSize.height = 2048;
+
+			    
+			    clight2.castShadow = true;			    
+			    clight2.shadow.mapSize.width = 2048;
+			    clight2.shadow.mapSize.height = 2048;
+
+			    
+			    clight3.castShadow = true;			    
+			    clight3.shadow.mapSize.width = 2048;
+			    clight3.shadow.mapSize.height = 2048;
+
+			    
+			    clight4.castShadow = true;			    
+			    clight4.shadow.mapSize.width = 2048;
+			    clight4.shadow.mapSize.height = 2048;
 
 			    //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
@@ -221,44 +260,107 @@
 				refractionRatio: 0.75
 			    } );
 
-			    var sphereGeometry = new THREE.BoxGeometry(20, 20, 20);				
+			    var sphereGeometry = new THREE.BoxGeometry(20, 20, 20);
 
 			    var cube = []
-			    // Objs
+
+			    // Pilares 
 			    
 			    for(var i = 0; i < 100 ; i ++){   	       	
 				
 				cube[i] = new THREE.Mesh( sphereGeometry, sphereMaterial );
 				
-				cube[i].position.x = Math.random() * 400 -200;
+				cube[i].position.x = Math.random() * 800 -400;
 				//cube[i].position.y = Math.random() * 400 -200;
-				cube[i].position.z = Math.random() * 400 -200;
+				cube[i].position.z = Math.random() * 800 -900;
 
 				var tam = Math.random() * 100; 
 
-				cube[i].scale.x = 0.1;
+				cube[i].scale.x = 0.2;
 				cube[i].scale.y = tam;
 
-				cube[i].scale.z = 0.1;
+				cube[i].scale.z = 0.2;
 				
 				scene.add(cube[i]); 
 				
 			    }
 
-			    //var geometry = new THREE.BoxGeometry();
-			    var geometryCli = new THREE.CylinderBufferGeometry(100, 100, 10, 64);
+			    
+			    var loaderCity = new THREE.TextureLoader();
+			    
+			    var cityGeometry = new THREE.BoxGeometry(20, 20, 20);
 
-			    geometryCli.computeVertexNormals(); 
+			    var textureCity = loaderCity.load( 'img/city3.jpg', function ( textureCity ) {
+				textureCity.wrapS = textureCity.wrapT = THREE.RepeatWrapping;
+				textureCity.offset.set( 0.5, 0 );
+				textureCity.repeat.set( 2, 8 );
 
+			    });
+
+			   
+			    var cityMaterial = new THREE.MeshStandardMaterial( {
+				color: 0xffffff,
+
+				metalness: 0.6,
+				roughness: 0.89,
+				envmap: scene.background
+				// map: textureCity,
+				//wireframe: true,
+				//wireframeLinewidth: 2
+				//transparent: true,
+				//opacity: 0.75,	  
+			    } );
+			    
+
+			   /*
+			    var cityMaterial = new THREE.MeshBasicMaterial( {
+				color: 0xffffff,
+				envMap: scene.background,
+				refractionRatio: 0.85,
+				wireframe: true,
+				wireframeLinewidth: 8
+			    } );
+			   */
+
+			    for(var i = 0; i < 12; i++){
+				for(var j = 0; j < 6; j++){
+				    var city = new THREE.Mesh( cityGeometry, cityMaterial);
+				    //city.wireframe = true;
+				    //city.wireframeLinewidth = 2; 
+				    var tam = Math.random() * 10; 
+				    
+				    city.position.x = i * 100-500; 
+				    city.position.z = j*100+400;
+				    city.position.y = tam  + 80 ; 
+				    city.scale.x = 3;
+				    city.scale.y = tam;
+				    city.scale.z = 3; 
+				
+				    scene.add( city);
+				}
+			    }
+
+			    
 			    var cilMaterial = new THREE.MeshBasicMaterial( {
 				color: 0xffffff,
 				envMap: scene.background,
-				refractionRatio: 0.75
+				refractionRatio: 0.95
 			    } );
-			    
-			    cil1 = new THREE.Mesh( geometryCli, cilMaterial );
-			    scene.add( cil1 );
 
+
+			    //Huachimontones 
+			    
+			    for(var i = 1; i < 33; i++){
+				
+				var geometryCli = new THREE.CylinderBufferGeometry(100-(i*3), 100-(i*3), 4, 128);
+				geometryCli.computeVertexNormals();  
+				cil1 = new THREE.Mesh( geometryCli, cilMaterial );
+				cil1.position.y = i*0.25; 
+				cil1.position.z = -500;
+				scene.add( cil1 );
+			    
+			    }
+			    
 			    // floor
 			    
 			    var floorGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 100, 100 );
@@ -271,10 +373,10 @@
 
 			    var loader = new THREE.TextureLoader();
 			    
-			    var texture = loader.load( 'img/texture.jpg', function ( texture ) {
+			    var texture = loader.load( 'img/city4.jpg', function ( texture ) {
 				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-				texture.offset.set( 0, 0 );
-				texture.repeat.set( 15, 15 );
+				texture.offset.set( 10, 10 );
+				texture.repeat.set( 160, 160 );
 
 			    });
 			    
@@ -283,8 +385,8 @@
 			    
 			    var floorMaterial = new THREE.MeshStandardMaterial( {
 				color: 0xffffff,
-				metalness: 0.4,
-				roughness: 0.7,
+				metalness: 0.5,
+				roughness: 0.99,
 				map: texture, 
 				//transparent: true,
 				//opacity: 0.75,	  
@@ -324,21 +426,42 @@
 
 			    var time = Date.now() * 0.0005;
 
-			    light1.position.x = Math.sin( time * 0.7 ) * 60;
-			    light1.position.y = 50 +Math.cos( time * 0.5 ) * 80;
-			    light1.position.z = Math.cos( time * 0.3 ) * 60;
+			    light1.position.x = Math.sin( time * 0.7 ) * 260;
+			    light1.position.y = 150 +Math.cos( time * 0.5 ) * 80+10;
+			    light1.position.z = Math.cos( time * 0.3 ) * 60 -500;
 			    
-			    light2.position.x = Math.cos( time * 0.3 ) * 60;
-			    light2.position.y = 50+Math.sin( time * 0.5 ) * 80;
-			    light2.position.z = Math.sin( time * 0.7 ) * 60;
+			    light2.position.x = Math.cos( time * 0.3 ) * 260;
+			    light2.position.y = 150+Math.sin( time * 0.5 ) * 80 + 10;
+			    light2.position.z = Math.sin( time * 0.7 ) * 60 -500;
 			    
-			    light3.position.x = Math.sin( time * 0.7 ) * 30;
-			    light3.position.y = 50+Math.cos( time * 0.3 ) * 40;
-			    light3.position.z = Math.sin( time * 0.5 ) * 30;
+			    light3.position.x = Math.sin( time * 0.7 ) * 230;
+			    light3.position.y = 150+Math.cos( time * 0.3 ) * 40 + 10;
+			    light3.position.z = Math.sin( time * 0.5 ) * 30 -500;
 			    
-			    light4.position.x = Math.sin( time * 0.3 ) * 30;
-			    light4.position.y = 50+Math.cos( time * 0.7 ) * 40;
-			    light4.position.z = Math.sin( time * 0.5 ) * 30;
+			    light4.position.x = Math.sin( time * 0.3 ) * 230;
+			    light4.position.y = 150+Math.cos( time * 0.7 ) * 40 + 10;
+			    light4.position.z = Math.sin( time * 0.5 ) * 30 -500;
+
+			    // City lights
+
+			    
+			    clight1.position.x = Math.sin( time * 0.7 ) * 260;
+			    clight1.position.y = 100 +Math.cos( time * 0.5 ) * 80+10;
+			    clight1.position.z = Math.cos( time * 0.3 ) * 260 +800;
+			    
+			    clight2.position.x = Math.cos( time * 0.3 ) * 260;
+			    clight2.position.y = 100+Math.sin( time * 0.5 ) * 80 + 10;
+			    clight2.position.z = Math.sin( time * 0.7 ) * 260 +800;
+			    
+			    clight3.position.x = Math.sin( time * 0.7 ) * 230;
+			    clight3.position.y = 100+Math.cos( time * 0.3 ) * 40 + 10;
+			    clight3.position.z = Math.sin( time * 0.5 ) * 230 +800;
+			    
+			    clight4.position.x = Math.sin( time * 0.3 ) * 230;
+			    clight4.position.y = 100+Math.cos( time * 0.7 ) * 40 + 10;
+			    clight4.position.z = Math.sin( time * 0.5 ) * 230 +800;
+
+			    
 
 				if ( controls.isLocked === true ) {
 
