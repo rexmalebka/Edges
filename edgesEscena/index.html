@@ -64,10 +64,9 @@
 		</div>
 
 
-		<video id="video" loop crossOrigin="anonymous" playsinline style="display:none">
-		  <source src="videos/edgesC.mov" type='' muted='muted'>
-		   
-		</video>
+		<script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+		<video id="videoElement" muted style='display: none;'></video>
+
 		
 		<script src="https://threejs.org/build/three.min.js"></script>
 		<script src="https://threejs.org/examples/js/controls/PointerLockControls.js"></script>
@@ -83,6 +82,9 @@
 		  var cil1, cil2, cli3; 
 
 		  var floorGeometry, audioSphere, analyser, sphere, audioSphereOrg;
+		  
+		  var listener, audio, file, loader; 
+
 		  var data = []; 
 		  var objects = [];
 
@@ -126,7 +128,7 @@
 
 			    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 			    
-			    var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.25 );
+			    var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.55 );
 			    light.position.set( 0.5, 1, 0.15 );
 			    scene.add( light );
 			    
@@ -140,8 +142,29 @@
 				controls.lock();
 				
 			    }, false );
-			    
+		      
 			    controls.addEventListener( 'lock', function () {
+
+				
+				loader = new THREE.AudioLoader();
+				loader.load( file, function ( buffer ) {
+				    
+				    audio.setBuffer( buffer );
+				    audio.play();
+				    
+				} );
+
+				   
+				if (flvjs.isSupported()) {
+				    var videoElement = document.getElementById('videoElement');
+				    var flvPlayer = flvjs.createPlayer({
+					type: 'flv',
+					url: 'http://198.211.102.153/live?port=1935&app=myapp&stream=hola'
+				    });
+				    flvPlayer.attachMediaElement(videoElement);
+				    flvPlayer.load();
+				    flvPlayer.play();
+				}
 				
 				instructions.style.display = 'none';
 				blocker.style.display = 'none';
@@ -242,27 +265,19 @@
 		      scene.add( clight2 );
 		      clight3 = new THREE.PointLight( 0xde3fe1, 2, 300 );
 		      scene.add( clight3 );
-		      clight4 = new THREE.PointLight( 0xde3fe1, 2, 300 );
+		      clight4 = new THREE.PointLight( 0x7930a7, 2, 300 );
 		      scene.add( clight4 );
 		      
 
 		      // Audio
 
+		      listener = new THREE.AudioListener();
 		      
-		      var listener = new THREE.AudioListener();
+		      audio = new THREE.Audio( listener );
 		      
-		      var audio = new THREE.Audio( listener );
+		      file = './sounds/rggtrn.mp3';
 
-		      var file = './sounds/rggtrn.mp3';
-
-		      var loader = new THREE.AudioLoader();
-		      loader.load( file, function ( buffer ) {
-			  
-			  audio.setBuffer( buffer );
-			  audio.play();
-			  
-		      } );
-
+		      
 		      analyser = new THREE.AudioAnalyser( audio, fftSize );
 
 		      clight1.castShadow = true;			    
@@ -359,15 +374,9 @@
 
 		      var geometryZordon = new THREE.CylinderGeometry(100,100,270, 32, 1, true, 0, Math.PI );
 
-
 		     //var textureZordon = new THREE.TextureLoader().load( 'img/cyber.png' );
-
-		      video = document.getElementById( 'video' );
-		      video.play();
-		      video.muted = true;
-		      video.addEventListener('play', function() {
-			  this.currentTime = 3;
-		      }, false);
+ 
+		     video = document.getElementById( 'videoElement' );
 		      
 		      textureZordon = new THREE.VideoTexture( video );
 		      
@@ -497,7 +506,7 @@
 		      
 
 		      for (var i = 0; i < floorGeometry.vertices.length; i++) {
-			  floorGeometry.vertices[i].y += (Math.random()*10)-5;
+			  floorGeometry.vertices[i].y += (Math.random()*16)-8;
 		      }
 		      
 
@@ -508,10 +517,10 @@
 
 			    var loader = new THREE.TextureLoader();
 			    
-			    var texture = loader.load( 'img/city4.jpg', function ( texture ) {
+			    var texture = loader.load( 'img/city6.jpg', function ( texture ) {
 				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 				texture.offset.set( 10, 10 );
-				texture.repeat.set( 200, 200 );
+				texture.repeat.set( 12, 12 );
 
 			    });
 			    
