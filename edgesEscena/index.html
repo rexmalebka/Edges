@@ -52,7 +52,12 @@
 			  <span style="font-size:36px">ZGAMU - LVSTVCVR</span>
 			  <br/>
 
-			  <br/>Luego de la crisis sanitaria el mundo no ha sido el mismo.<br/> Para sobrevivir nosotras nos organizamos para crear redes con transmisores cuánticos, indescifrables para el enemigo.<br/> Transmitimos información más allá de las fronteras cerradas y de los ejércitos marchantes.<br/> Creamos un frente común, con información libre y redes autogestivas con las cuales hemos sobrevivido a los abusos, crisis económicas y falta de una política global. <br/>
+			  <br/>Luego de la crisis sanitaria el mundo no ha sido el mismo.
+			  <br/> Para sobrevivir nosotras nos organizamos para crear redes con transmisores cuánticos,
+			  <br/>indescifrables para el enemigo.
+			  <br/> Transmitimos información más allá de las fronteras cerradas y de los ejércitos marchantes.
+			  <br/> Creamos un frente común, con información libre y redes autogestivas con las cuales hemos sobrevivido a los abusos,
+			  <br/>crisis económicas y falta de una política global. <br/>
 		
 				<br /> CLICK para entrar <br />
 				Movimiento: WASD<br/>
@@ -67,6 +72,11 @@
 		<script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
 		<video id="videoElement" muted style='display: none;'></video>
 
+
+		<audio autoplay>
+		  <source src="http://127.0.0.1:8001/distopia.ogg" type="audio/ogg">
+		      Your browser does not support the audio element.
+		</audio>
 		
 		<script src="https://threejs.org/build/three.min.js"></script>
 		<script src="https://threejs.org/examples/js/controls/PointerLockControls.js"></script>
@@ -89,6 +99,9 @@
 		  var objects = [];
 
 		  var raycaster;
+
+		  var skybox; 
+		  var rainCount = 30000, rain, rainGeo, cloudParticles = [];
 		  
 		  var moveForward = false;
 		  var moveBackward = false;
@@ -101,7 +114,10 @@
 		  var direction = new THREE.Vector3();
 		  var vertex = new THREE.Vector3();
 		  var color = new THREE.Color();
-		  
+
+
+		  var stream = "http://127.0.0.1:8001/distopia.ogg";
+
 		  init();
 		  animate();
 
@@ -114,9 +130,11 @@
 		      
 		      scene = new THREE.Scene();
 			    //scene.background = new THREE.Color( 0xffffff );
+
+		      //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 		      
 		      
-		      this.scene.background = new THREE.CubeTextureLoader().setPath( '/img/' ).load( [
+		      scene.background = new THREE.CubeTextureLoader().setPath( '/img/' ).load( [
 			  'px.jpg',
 			  'nx.jpg',
 			  'py.jpg',
@@ -125,147 +143,160 @@
 			  'nz.jpg'
 		      ]);
 		      
-
-			    //scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
-			    
-			    var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.55 );
-			    light.position.set( 0.5, 1, 0.15 );
-			    scene.add( light );
-			    
-			    controls = new THREE.PointerLockControls( camera, document.body );
-			    
-			    var blocker = document.getElementById( 'blocker' );
-			    var instructions = document.getElementById( 'instructions' );
-			    
-			    instructions.addEventListener( 'click', function () {
+		      
+		      
+		      var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.55 );
+		      light.position.set( 0.5, 1, 0.15 );
+		      scene.add( light );
+		      
+		      controls = new THREE.PointerLockControls( camera, document.body );
+		      
+		      var blocker = document.getElementById( 'blocker' );
+		      var instructions = document.getElementById( 'instructions' );
+		      
+		      instructions.addEventListener( 'click', function () {
+			  
+			  controls.lock();
 				
-				controls.lock();
-				
-			    }, false );
+		      }, false );
 		      
 			    controls.addEventListener( 'lock', function () {
 
-				
+
+				/*
 				loader = new THREE.AudioLoader();
-				loader.load( file, function ( buffer ) {
+				loader.load( 'audio, function ( buffer ) {
 				    
-				    audio.setBuffer( buffer );
+				    //audio.setBuffer( buffer );
+				    //audio.play();
+
+				    audio.setBuffer(buffer);
+				    audio.setLoop(true);
 				    audio.play();
 				    
 				} );
+				*/
 
+				let flvPlayer; 
 				   
 				if (flvjs.isSupported()) {
 				    var videoElement = document.getElementById('videoElement');
-				    var flvPlayer = flvjs.createPlayer({
+				    flvPlayer = flvjs.createPlayer({
 					type: 'flv',
+					isLive: true,
 					url: 'http://198.211.102.153/live?port=1935&app=myapp&stream=hola'
 				    });
 				    flvPlayer.attachMediaElement(videoElement);
 				    flvPlayer.load();
 				    flvPlayer.play();
+				    flvPlayer.on('error',function(err){
+					if(err==="NetworkError"){
+					    flvPlayer.unload()
+					    flvPlayer.load()
+					    flvPlayer.play();
+					}
+				    });
 				}
 				
 				instructions.style.display = 'none';
 				blocker.style.display = 'none';
 				
 			    } );
-			    
+		      
 			    controls.addEventListener( 'unlock', function () {
 				
 				blocker.style.display = 'block';
 				instructions.style.display = '';
-				
 			    } );
-			    
-			    scene.add( controls.getObject() );
-			    
-			    var onKeyDown = function ( event ) {
+		      
+		      scene.add( controls.getObject() );
+		      
+		      var onKeyDown = function ( event ) {
 				
-					switch ( event.keyCode ) {
+				switch ( event.keyCode ) {
 					    
-						case 38: // up
-						case 87: // w
-							moveForward = true;
-							break;
-
-						case 37: // left
-						case 65: // a
-							moveLeft = true;
-							break;
-
-						case 40: // down
-						case 83: // s
-							moveBackward = true;
-							break;
-
-						case 39: // right
-						case 68: // d
-							moveRight = true;
-							break;
-
-						case 32: // space
-							if ( canJump === true ) velocity.y += 350;
-							canJump = false;
-							break;
-
+					case 38: // up
+					case 87: // w
+					    moveForward = true;
+					    break;
+					    
+					case 37: // left
+					case 65: // a
+					    moveLeft = true;
+					    break;
+					    
+					case 40: // down
+					case 83: // s
+					    moveBackward = true;
+					    break;
+					    
+					case 39: // right
+					case 68: // d
+					    moveRight = true;
+					    break;
+					    
+					case 32: // space
+					    if ( canJump === true ) velocity.y += 350;
+					    canJump = false;
+					    break;
+					    
 					}
+				
+			    };
 
+		      var onKeyUp = function ( event ) {
+				    
+				    switch ( event.keyCode ) {
+					    
+					case 38: // up
+					case 87: // w
+					    moveForward = false;
+					    break;
+
+					case 37: // left
+					case 65: // a
+					    moveLeft = false;
+					    break;
+					    
+					case 40: // down
+						case 83: // s
+					    moveBackward = false;
+					    break;
+					    
+					case 39: // right
+						case 68: // d
+					    moveRight = false;
+					    break;
+					    
+					}
+				    
 				};
 
-				var onKeyUp = function ( event ) {
-
-					switch ( event.keyCode ) {
-
-						case 38: // up
-						case 87: // w
-							moveForward = false;
-							break;
-
-						case 37: // left
-						case 65: // a
-							moveLeft = false;
-							break;
-
-						case 40: // down
-						case 83: // s
-							moveBackward = false;
-							break;
-
-						case 39: // right
-						case 68: // d
-							moveRight = false;
-							break;
-
-					}
-
-				};
-
-				document.addEventListener( 'keydown', onKeyDown, false );
-				document.addEventListener( 'keyup', onKeyUp, false );
-
-				raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
+		      document.addEventListener( 'keydown', onKeyDown, false );
+		      document.addEventListener( 'keyup', onKeyUp, false );
+		      
+		      raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
 		      // lights
 		      
-		      light1 = new THREE.PointLight( 0x50b732, 6, 250 );
+		      light1 = new THREE.PointLight( 0xa58ea8, 6, 250 );
 		      scene.add( this.light1 );
-		      light2 = new THREE.PointLight( 0x3b5fd1, 6, 250 );
+		      light2 = new THREE.PointLight( 0x7d2f74, 6, 250 );
 		      scene.add( this.light2 );
-		      light3 = new THREE.PointLight( 0xde3fe1, 6, 250 );
+		      light3 = new THREE.PointLight( 0x2a315b, 6, 250 );
 		      scene.add( this.light3 );
-		      light4 = new THREE.PointLight( 0x7930a7, 6, 250 );
+		      light4 = new THREE.PointLight( 0x4484b0, 6, 250 );
 		      scene.add( this.light4 );
 		      
 		      // lights
 		      
-		      clight1 = new THREE.PointLight( 0x50b732, 2, 300 );
+		      clight1 = new THREE.PointLight( 0xa58ea8, 2, 300 );
 		      scene.add( clight1 );
-		      clight2 = new THREE.PointLight( 0x3b5fd1, 2, 300 );
+		      clight2 = new THREE.PointLight( 0x7d2f74, 2, 300 );
 		      scene.add( clight2 );
-		      clight3 = new THREE.PointLight( 0xde3fe1, 2, 300 );
+		      clight3 = new THREE.PointLight( 0x2a315b, 2, 300 );
 		      scene.add( clight3 );
-		      clight4 = new THREE.PointLight( 0x7930a7, 2, 300 );
+		      clight4 = new THREE.PointLight( 0x4484b0, 2, 300 );
 		      scene.add( clight4 );
 		      
 
@@ -276,8 +307,7 @@
 		      audio = new THREE.Audio( listener );
 		      
 		      file = './sounds/rggtrn.mp3';
-
-		      
+      
 		      analyser = new THREE.AudioAnalyser( audio, fftSize );
 
 		      clight1.castShadow = true;			    
@@ -311,7 +341,8 @@
 		      var sphereGeometry = new THREE.BoxGeometry(20, 20, 20);
 		      
 		      var cube = []
-		      
+
+		     
 		      // Pilares 
 		      
 		      for(var i = 0; i < 100 ; i ++){   	       	
@@ -323,7 +354,7 @@
 			  cube[i].position.z = Math.random() * 800 -900;
 			  
 			  var tam = Math.random() * 100; 
-			  
+	
 			  cube[i].scale.x = 0.2;
 			  cube[i].scale.y = tam;
 			  
@@ -339,10 +370,10 @@
 		      
 		      var cityGeometry = new THREE.BoxGeometry(20, 20, 20);
 		      
-		      var textureCity = loaderCity.load( 'img/city3.jpg', function ( textureCity ) {
+		      var textureCity = loaderCity.load( 'img/after.jpg', function ( textureCity ) {
 			  textureCity.wrapS = textureCity.wrapT = THREE.RepeatWrapping;
-			  textureCity.offset.set( 0.5, 0 );
-			  textureCity.repeat.set( 2, 8 );
+			  textureCity.offset.set( 0, 0 );
+			  textureCity.repeat.set( 0.5, 0.5 );
 			  
 		      });
 		      
@@ -350,11 +381,11 @@
 		      var cityMaterial = new THREE.MeshStandardMaterial( {
 			  color: 0xffffff,
 			  
-			  metalness: 0.6,
+			  metalness: 0.1,
 			  roughness: 0.89,
 			  //envmap: scene.background, 
-			  side: THREE.DoubleSide
-			  // map: textureCity,
+			  //side: THREE.DoubleSide,
+			  map: textureCity,
 			  //wireframe: true,
 			  //wireframeLinewidth: 2
 			  //transparent: true,
@@ -372,7 +403,7 @@
 		       } );
 		      */
 
-		      var geometryZordon = new THREE.CylinderGeometry(100,100,270, 32, 1, true, 0, Math.PI );
+		      var geometryZordon = new THREE.CylinderGeometry(150,150,270, 32, 1, true, 0, Math.PI );
 
 		     //var textureZordon = new THREE.TextureLoader().load( 'img/cyber.png' );
  
@@ -388,15 +419,15 @@
 			  side: THREE.DoubleSide
 		      });
 		      
-		      
+		      /*
 		      var cityMaterial = new THREE.MeshStandardMaterial({
 			  color: 0xffffff,
 			  metalness: 0.8,
-			  roughness: 0.1,
+			  roughness: 0.8,
 			  envMap: scene.background,
 		
 		      });
-		      
+		      */
 
 		      var zordonMesh = new THREE.Mesh(geometryZordon, materialZordon); 
 
@@ -410,12 +441,12 @@
 		      
 		      for(var i = 0; i < 4; i++){
 			  for(var j = 0; j < 6; j++){
-			      var city = new THREE.Mesh( cityGeometry, cityMaterial);
+			      var city = new THREE.Mesh( cityGeometry, cityMaterial );
 			      //city.wireframe = true;
 			      //city.wireframeLinewidth = 2; 
 			      var tam = Math.random() * 10; 
 			      
-			      city.position.x = i * 100-450; 
+			      city.position.x = i * 100-500; 
 			      city.position.z = j*100+400;
 			      city.position.y = tam  + 80 ; 
 			      city.scale.x = 3;
@@ -436,7 +467,7 @@
 			      //city.wireframeLinewidth = 2; 
 			      var tam = Math.random() * 10; 
 			      
-			      city.position.x = i * 100+150; 
+			      city.position.x = i * 100+200; 
 			      city.position.z = j*100+400;
 			      city.position.y = tam  + 80 ; 
 			      city.scale.x = 3;
@@ -460,9 +491,9 @@
 		      
 		      //Huachimontones 
 		      
-		      audioSphere =  new THREE.SphereGeometry(40, 32, 32);
+		      audioSphere =  new THREE.SphereGeometry(80, 32, 32);
 
-		      audioSphereOrg =  new THREE.SphereGeometry(40, 32, 32);
+		      audioSphereOrg =  new THREE.SphereGeometry(80, 32, 32);
 		      
 		      var audioMaterial = new THREE.MeshStandardMaterial({
 			  color: 0xffffff,
@@ -480,16 +511,16 @@
 
 		      
 		      sphere.position.z = -500;
-		      sphere.position.y = 60; 
+		      sphere.position.y = 150; 
 		      
 		      scene.add(sphere);
 			    
-		      for(var i = 1; i < 33; i++){
+		      for(var i = 1; i < 14; i++){
 				
-			  var geometryCli = new THREE.CylinderBufferGeometry(100-(i*3), 100-(i*3), 4, 128);
+			  var geometryCli = new THREE.CylinderBufferGeometry(200-(i*3), 200-(i*3), 4, 128);
 			  geometryCli.computeVertexNormals();  
 			  cil1 = new THREE.Mesh( geometryCli, cilMaterial );
-			  cil1.position.y = i*0.25; 
+			  cil1.position.y = i*1.5-6; 
 			  cil1.position.z = -500;
 			  scene.add( cil1 );
 			  
@@ -497,30 +528,34 @@
 
 		      // floor
 			    
-		      floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-			    
+		      floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 400, 400 );
+
+		      wetfloorGeometry = new THREE.PlaneGeometry( 2000, 2000, 200, 200 );
+
 		      floorGeometry.rotateX( - Math.PI / 2 );
+			    
+		      wetfloorGeometry.rotateX( - Math.PI / 2 );
 
 		      floorGeometry.computeVertexNormals();
 		      floorGeometry.computeFaceNormals();
 		      
 
 		      for (var i = 0; i < floorGeometry.vertices.length; i++) {
-			  floorGeometry.vertices[i].y += (Math.random()*16)-8;
+			  floorGeometry.vertices[i].y += (Math.random()*6)-3;
 		      }
 		      
 
-			    //var texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
-
-			    //texture.wrapS = THREE.RepeatWrapping;
-			    //texture.wrapT = THREE.RepeatWrapping;
+		      //var texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
+		      
+		      //texture.wrapS = THREE.RepeatWrapping;
+		      //texture.wrapT = THREE.RepeatWrapping;
 
 			    var loader = new THREE.TextureLoader();
 			    
 			    var texture = loader.load( 'img/city6.jpg', function ( texture ) {
 				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-				texture.offset.set( 10, 10 );
-				texture.repeat.set( 12, 12 );
+				texture.offset.set( 0, 0 );
+				texture.repeat.set( 10, 10 );
 
 			    });
 			    
@@ -535,44 +570,104 @@
 				//transparent: true,
 				//opacity: 0.75,	  
 			    } );
-			   
-
-			    // var floorMaterial = new THREE.MeshBasicMaterial( { map: texture } );
+		      
+		      
+		      // var floorMaterial = new THREE.MeshBasicMaterial( { map: texture } );
 			    			    
-			    var floor = new THREE.Mesh( floorGeometry, floorMaterial )
+		      var floor = new THREE.Mesh( floorGeometry, floorMaterial );
 
+		      var wetfloor = new THREE.Mesh( wetfloorGeometry, sphereMaterial); 
 
+		      wetfloor.position.y = -4;	  
+		      floor.position.y = -4;
+		      scene.add( floor );
+		      scene.add (wetfloor);
 
-			    ;
-			    floor.position.y = -5;
-			    scene.add( floor );
-			    
-				//
+		      /*
+		     
+		      // Rain
+		     
+		       
+		       rainGeo = new THREE.Geometry();
+		       for(let i=0;i<rainCount;i++) {
+		       rainDrop = new THREE.Vector3(
+		       Math.random() * 2000 -1000,
+		       Math.random() * 2000 - 1000,
+		       Math.random() * 1400 - 700
+		       );
+		       
+		       rainDrop.velocity = {};
+		       rainDrop.velocity = 0;
+		       
+		       rainGeo.vertices.push(rainDrop);
+		       }
+		       
+		       rainMaterial = new THREE.PointsMaterial({
+		       color: 0xaaaaaa,
+		       size: 0.25,
+		       transparent: true
+		       });
+		       
+		      rain = new THREE.Points(rainGeo,rainMaterial);
+		      scene.add(rain);
+		      
+		      
+		      let loaderSmoke = new THREE.TextureLoader();
+		      loaderSmoke.load("/img/smoke.png", function(textureSmoke){
+		      
+			  cloudGeo = new THREE.PlaneBufferGeometry(2000,2000);
+			  cloudMaterial = new THREE.MeshLambertMaterial({
+			      map: textureSmoke,
+			      transparent: true
+			  });
+		      
+			  for(let p=0; p<25; p++) {
+			      let cloud = new THREE.Mesh(cloudGeo,cloudMaterial);
+			      cloud.position.set(
+				  Math.random()*800 -400,
+				  600,
+				  Math.random()*500 - 450
+			      );
+			      cloud.rotation.x = 1.16;
+			      cloud.rotation.y = -0.12;
+			      cloud.rotation.z = Math.random()*360;
+			      cloud.material.opacity = 0.6;
+			      cloudParticles.push(cloud);
+			      scene.add(cloud);
+			  }
 
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+			 
 
-				//
+			  animate();
 
-				window.addEventListener( 'resize', onWindowResize, false );
+		      }); 
+	
+*/
+		      renderer = new THREE.WebGLRenderer( { antialias: true } );
+		      renderer.setPixelRatio( window.devicePixelRatio );
+		      renderer.setSize( window.innerWidth, window.innerHeight );
+		      document.body.appendChild( renderer.domElement );
+		      
+		      //
+		      
+		      window.addEventListener( 'resize', onWindowResize, false );
+		      
+		  }
 
-			}
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
+		  function onWindowResize() {
+		      
+		      camera.aspect = window.innerWidth / window.innerHeight;
+		      camera.updateProjectionMatrix();
+		      
+		      renderer.setSize( window.innerWidth, window.innerHeight );
+		      
+		  }
 
 		  function animate() {
 
 		      requestAnimationFrame( animate );
 
+		      // this.scene.background.rotation.x += 0.1; 
 
 		      sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
 
@@ -590,104 +685,120 @@
 		      	  //audioSphere.vertices[i].z = data[i%128] *0.5;
 		            
 		      }
+
+		      /*
+		      cloudParticles.forEach(p => {
+			  p.rotation.z -=0.002;
+		      });
+		     
+		      rainGeo.vertices.forEach(p => {
+			  p.velocity -= 0.1 + Math.random() * 0.2;
+			  p.y += p.velocity;
+			  if (p.y < -800) {
+			      p.y = 800;
+			      p.velocity = 0;
+			  }
+		      });
+		     
+
+		      rainGeo.verticesNeedUpdate = true;
+
+		      */
 		      
+		      //skybox.rotation.x += 54;
+		      
+		      var time = Date.now() * 0.0005;
+		      
+		      light1.position.x = Math.sin( time * 0.7 ) * 260;
+		      light1.position.y = 150 +Math.cos( time * 0.5 ) * 80+10;
+		      light1.position.z = Math.cos( time * 0.3 ) * 60 -500;
+		      
+		      light2.position.x = Math.cos( time * 0.3 ) * 260;
+		      light2.position.y = 150+Math.sin( time * 0.5 ) * 80 + 10;
+		      light2.position.z = Math.sin( time * 0.7 ) * 60 -500;
+		      
+		      light3.position.x = Math.sin( time * 0.7 ) * 230;
+		      light3.position.y = 150+Math.cos( time * 0.3 ) * 40 + 10;
+		      light3.position.z = Math.sin( time * 0.5 ) * 30 -500;
+		      
+		      light4.position.x = Math.sin( time * 0.3 ) * 230;
+		      light4.position.y = 150+Math.cos( time * 0.7 ) * 40 + 10;
+		      light4.position.z = Math.sin( time * 0.5 ) * 30 -500;
+		      	    
+		      // City lights
+	    
+		      clight1.position.x = Math.sin( time * 0.7 ) * 260;
+		      clight1.position.y = 100 +Math.cos( time * 0.5 ) * 80+10;
+		      clight1.position.z = Math.cos( time * 0.3 ) * 260 +800;
+		      
+		      clight2.position.x = Math.cos( time * 0.3 ) * 260;
+		      clight2.position.y = 100+Math.sin( time * 0.5 ) * 80 + 10;
+		      clight2.position.z = Math.sin( time * 0.7 ) * 260 +800;
+		      
+		      clight3.position.x = Math.sin( time * 0.7 ) * 230;
+		      clight3.position.y = 100+Math.cos( time * 0.3 ) * 40 + 10;
+		      clight3.position.z = Math.sin( time * 0.5 ) * 230 +800;
+		      
+		      clight4.position.x = Math.sin( time * 0.3 ) * 230;
+		      clight4.position.y = 100+Math.cos( time * 0.7 ) * 40 + 10;
+		      clight4.position.z = Math.sin( time * 0.5 ) * 230 +800;
 
-			    
-			    var time = Date.now() * 0.0005;
+		      //skybox.rotation.x += 0.01;
 
-			    light1.position.x = Math.sin( time * 0.7 ) * 260;
-			    light1.position.y = 150 +Math.cos( time * 0.5 ) * 80+10;
-			    light1.position.z = Math.cos( time * 0.3 ) * 60 -500;
-			    
-			    light2.position.x = Math.cos( time * 0.3 ) * 260;
-			    light2.position.y = 150+Math.sin( time * 0.5 ) * 80 + 10;
-			    light2.position.z = Math.sin( time * 0.7 ) * 60 -500;
-			    
-			    light3.position.x = Math.sin( time * 0.7 ) * 230;
-			    light3.position.y = 150+Math.cos( time * 0.3 ) * 40 + 10;
-			    light3.position.z = Math.sin( time * 0.5 ) * 30 -500;
-			    
-			    light4.position.x = Math.sin( time * 0.3 ) * 230;
-			    light4.position.y = 150+Math.cos( time * 0.7 ) * 40 + 10;
-			    light4.position.z = Math.sin( time * 0.5 ) * 30 -500;
+		      scene.background.rotation.y += 0.2;
 
+		      if ( controls.isLocked === true ) {
+			  
+			  raycaster.ray.origin.copy( controls.getObject().position );
+			  raycaster.ray.origin.y -= 10;
+			  
+			  var intersections = raycaster.intersectObjects( objects );
+			  
+			  var onObject = intersections.length > 0;
+			  
+			  var time = performance.now();
+			  var delta = ( time - prevTime ) / 1000;
+			  
+			  velocity.x -= velocity.x * 10.0 * delta;
+			  velocity.z -= velocity.z * 10.0 * delta;
+			  velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
-
-			    
-			    // City lights
-
-			    
-			    clight1.position.x = Math.sin( time * 0.7 ) * 260;
-			    clight1.position.y = 100 +Math.cos( time * 0.5 ) * 80+10;
-			    clight1.position.z = Math.cos( time * 0.3 ) * 260 +800;
-			    
-			    clight2.position.x = Math.cos( time * 0.3 ) * 260;
-			    clight2.position.y = 100+Math.sin( time * 0.5 ) * 80 + 10;
-			    clight2.position.z = Math.sin( time * 0.7 ) * 260 +800;
-			    
-			    clight3.position.x = Math.sin( time * 0.7 ) * 230;
-			    clight3.position.y = 100+Math.cos( time * 0.3 ) * 40 + 10;
-			    clight3.position.z = Math.sin( time * 0.5 ) * 230 +800;
-			    
-			    clight4.position.x = Math.sin( time * 0.3 ) * 230;
-			    clight4.position.y = 100+Math.cos( time * 0.7 ) * 40 + 10;
-			    clight4.position.z = Math.sin( time * 0.5 ) * 230 +800;
-
-			    
-
-				if ( controls.isLocked === true ) {
-
-					raycaster.ray.origin.copy( controls.getObject().position );
-					raycaster.ray.origin.y -= 10;
-
-					var intersections = raycaster.intersectObjects( objects );
-
-					var onObject = intersections.length > 0;
-
-					var time = performance.now();
-					var delta = ( time - prevTime ) / 1000;
-
-					velocity.x -= velocity.x * 10.0 * delta;
-					velocity.z -= velocity.z * 10.0 * delta;
-
-					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-
-					direction.z = Number( moveForward ) - Number( moveBackward );
-					direction.x = Number( moveRight ) - Number( moveLeft );
-					direction.normalize(); // this ensures consistent movements in all directions
-
-					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
-					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
-
-					if ( onObject === true ) {
-
-						velocity.y = Math.max( 0, velocity.y );
-						canJump = true;
-
-					}
-
-					controls.moveRight( - velocity.x * delta );
-					controls.moveForward( - velocity.z * delta );
-
-					controls.getObject().position.y += ( velocity.y * delta ); // new behavior
-
-					if ( controls.getObject().position.y < 10 ) {
-
-						velocity.y = 0;
-						controls.getObject().position.y = 10;
-
-						canJump = true;
-
-					}
-
-					prevTime = time;
-
-				}
-
-				renderer.render( scene, camera );
-
-			}
-
+			  direction.z = Number( moveForward ) - Number( moveBackward );
+			  direction.x = Number( moveRight ) - Number( moveLeft );
+			  direction.normalize(); // this ensures consistent movements in all directions
+			  
+			  if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
+			  if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+			  
+			  if ( onObject === true ) {
+			      
+			      velocity.y = Math.max( 0, velocity.y );
+			      canJump = true;
+			      
+			  }
+			  
+			  controls.moveRight( - velocity.x * delta );
+			  controls.moveForward( - velocity.z * delta );
+			  
+			  controls.getObject().position.y += ( velocity.y * delta ); // new behavior
+			  
+			  if ( controls.getObject().position.y < 10 ) {
+			      
+			      velocity.y = 0;
+			      controls.getObject().position.y = 10;
+			      
+			      canJump = true;
+			      
+			  }
+			  
+			  prevTime = time;
+			  
+		      }
+		      
+		      renderer.render( scene, camera );
+		      
+		  }
+		  
 		</script>
 	</body>
 </html>
