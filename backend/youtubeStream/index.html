@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+
+	<script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+<video id="videoElement" muted></video>
+<script>
+	let flvPlayer;
+    if (flvjs.isSupported()) {
+        var videoElement = document.getElementById('videoElement');
+        flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+		isLive: true, 
+           url: 'http://198.211.102.153/live?port=1935&app=myapp&stream=hola'
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+	flvPlayer.on('error',function(err){
+		if(err==="NetworkError"){
+			flvPlayer.unload()
+			flvPlayer.load()
+			flvPlayer.play();
+		}
+	});
+    }
+</script> 
+
+</body>
+</html>

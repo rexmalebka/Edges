@@ -19,7 +19,7 @@ export const Server = {
 		const position = Users.me.position;
 		const rotation = Users.me.rotation;
 		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
-		this.socket = io("http://localhost:3000", {query:`user=${JSON.stringify(query)}`});
+		this.socket = io("http://localhost:8020", {query:`user=${JSON.stringify(query)}`});
 		const server = this.socket;
 
 		server.on("connect", function(){

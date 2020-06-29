@@ -1,0 +1,23 @@
+config:
+        target: "ws://127.0.0.1:8020"
+        socketio:
+                transports: ["websocket"]
+                query: 'user=["testing","oyasumimir_OWO",0,0,0,0,0,0]'
+        phases:
+                - duration: 1 # Run scenario for 10 seconds
+                  arrivalCount: 150 # Create 20 virtual users per scenario
+scenarios:
+        - engine: "socketio"
+          flow:
+                  - loop:
+                         - emit:
+                                 channel: "rename"
+                                 data: "{{ $randomString() }}"
+                         - emit:
+                                 channel: "move"
+                                 data: '[{{$randomNumber(0,1000)}}, {{$randomNumber(0,100)}},{{$randomNumber(0,1000)}}]'
+                         - emit:
+                                 channel: "chat"
+                                 data: "$randomString()}}"
+                    count: 100
+                  - think: 1 # do nothing for 5 seconds, then disconnect
