@@ -1,5 +1,21 @@
 localStorage.removeItem('uuid')
-let raycaster
+
+let camera, scene, renderer, controls;
+let light1, light2, light3, light4; 
+let clight1, clight2, clight3, clight4;
+let video, textureVideo, materialVideo;
+
+let cil1, cil2, cli3; 
+let floorGeometry, audioSphere, analyser, sphere, audioSphereOrg;
+var listener, audio, file, loader;
+
+var data = [];
+var objects = [];
+
+var raycaster;
+
+var skybox;
+var rainCount = 30000, rain, rainGeo, cloudParticles = [];
 
 let moveForward = false
 let moveBackward = false
@@ -9,6 +25,7 @@ let canJump = false
 
 let moving = false;
 let stoping = false
+let initMedia = false;
 
 let prevTime = performance.now()
 let velocity = new THREE.Vector3()
@@ -31,11 +48,12 @@ animate()
 Server.init();
 
 function init () {
+	let fftSize = 1024;
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
   camera.position.y = -400
 
   scene = new THREE.Scene()
-  this.scene.background = new THREE.CubeTextureLoader().setPath('/img/').load([
+  scene.background = new THREE.CubeTextureLoader().setPath('/oyasumimir/img/').load([
     'px2.png',
     'nx2.png',
     'py2.png',
@@ -44,7 +62,6 @@ function init () {
     'nz2.png'
   ])
 
- scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
   let light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.25)
   light.position.set(0.5, 1, 0.75)
@@ -133,96 +150,262 @@ if(usuarix.value.length>0){
 
   raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10)
 
-			    // lights
+// luces huachimontones
 
-			    light1 = new THREE.PointLight(0x50b732, 6, 150)
-			    scene.add(this.light1)
-			    light2 = new THREE.PointLight(0x3b5fd1, 6, 150)
-			    scene.add(this.light2)
-			    light3 = new THREE.PointLight(0xde3fe1, 6, 150)
-			    scene.add(this.light3)
-			    light4 = new THREE.PointLight(0x7930a7, 6, 150)
-			    scene.add(this.light4)
+light1 = new THREE.PointLight( 0xa58ea8, 6, 250 );
+scene.add( light1 );
+light2 = new THREE.PointLight( 0x7d2f74, 6, 250 );
+scene.add( light2 );
+light3 = new THREE.PointLight( 0x2a315b, 6, 250 );
+scene.add( light3 );
+light4 = new THREE.PointLight( 0x4484b0, 6, 250 );
+scene.add( light4 );
 
-			    // let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+// luces ciudad
 
-			    let sphereMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    envMap: scene.background,
-    refractionRatio: 0.75
-			    })
+clight1 = new THREE.PointLight( 0xa58ea8, 2, 300 );
+scene.add( clight1 );
+clight2 = new THREE.PointLight( 0x7d2f74, 2, 300 );
+scene.add( clight2 );
+clight3 = new THREE.PointLight( 0x2a315b, 2, 300 );
+scene.add( clight3 );
+clight4 = new THREE.PointLight( 0x4484b0, 2, 300 );
+scene.add( clight4 );
 
-			    let sphereGeometry = new THREE.BoxGeometry(20, 20, 20)
+var listener = new THREE.AudioListener();
+//camera.add( listener ); // Si es positionalAudio 
 
-			    let cube = []
-			    // Objs
+audioElement = document.getElementById( 'music' );
+audio = new THREE.Audio( listener );
 
-			    for (let i = 0; i < 100; i++) {
-    cube[i] = new THREE.Mesh(sphereGeometry, sphereMaterial)
+audio.setMediaElementSource( audioElement );
 
-    cube[i].position.x = Math.random() * 400 - 200
-    // cube[i].position.y = Math.random() * 400 -200;
-    cube[i].position.z = Math.random() * 400 - 200
+var aSourceMaterial = new THREE.MeshBasicMaterial( {
+  color: 0xffffff,
+  envMap: scene.background,
+  refractionRatio: 0.75
+} );
 
-    let tam = Math.random() * 100
+                     var aSourceGeometry = new THREE.BoxGeometry(20, 20, 20);
 
-    cube[i].scale.x = 0.1
-    cube[i].scale.y = tam
+                      var aSource = new THREE.Mesh( aSourceGeometry, aSourceMaterial );
 
-    cube[i].scale.z = 0.1
+                      //aSource.add( positionalAudio ); // asociar el audio a una fuente
 
-    scene.add(cube[i])
-			    }
+                      scene.add(aSource);                     
 
-			    // let geometry = new THREE.BoxGeometry();
-			    let geometryCli = new THREE.CylinderBufferGeometry(100, 100, 10, 64)
+                      analyser = new THREE.AudioAnalyser( audio, fftSize );
+                      
+                      //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
-			    geometryCli.computeVertexNormals()
+                      var pilaresMaterial = new THREE.MeshBasicMaterial( {
+                          color: 0xffffff,
+                          envMap: scene.background,
+                          refractionRatio: 0.75
+                      } );
+                      
+                      var pilaresGeometry = new THREE.BoxGeometry(20, 20, 20);
+                      
+                      var cube = []
 
-			    let cilMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    envMap: scene.background,
-    refractionRatio: 0.75
-			    })
+                      // Pilares 
 
-			    cil1 = new THREE.Mesh(geometryCli, cilMaterial)
-			    scene.add(cil1)
 
-			    // floor
+                      for(var i = 0; i < 100 ; i ++){                   
+                          
+                          cube[i] = new THREE.Mesh( pilaresGeometry, pilaresMaterial );
+                          cube[i].position.x = Math.random() * 800 -400;
+                          //cube[i].position.y = Math.random() * 400 -200;
+                          cube[i].position.z = Math.random() * 800 -900;
+                          var tam = Math.random() * 100; 
+                          cube[i].scale.x = 0.2;
+                          cube[i].scale.y = tam;
+                          cube[i].scale.z = 0.2;
+                          scene.add(cube[i]); 
 
-			    let floorGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100)
-			    floorGeometry.rotateX(-Math.PI / 2)
+                          // Aqui agregar unas hojas
+                          
+                      }
 
-			    // let texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
+                      // Ciudad             
+                            
+                      var cityLoader = new THREE.TextureLoader();
+                      
+                      var cityGeometry = new THREE.BoxGeometry(20, 20, 20);
+                      
+                      var cityTexture = cityLoader.load( 'img/after.jpg', function ( cityTexture ) {
+                          cityTexture.wrapS = cityTexture.wrapT = THREE.RepeatWrapping;
+                          cityTexture.offset.set( 0, 0 );
+                          cityTexture.repeat.set( 0.5, 0.5 );
+                          
+                      });
+                                      
+                      var cityMaterial = new THREE.MeshStandardMaterial( {
+                          color: 0xffffff,
+                         
+                          metalness: 0.1,
+                          roughness: 0.89,
+                          //envmap: scene.background, 
+                          //side: THREE.DoubleSide,
+                          map: cityTexture,
+                          //transparent: true,
+                          //opacity: 0.75,        
+                      } );
 
-			    // texture.wrapS = THREE.RepeatWrapping;
-			    // texture.wrapT = THREE.RepeatWrapping;
+                                      for(var i = 0; i < 4; i++){
+                          for(var j = 0; j < 6; j++){
+                              var city = new THREE.Mesh( cityGeometry, cityMaterial );
+                              //city.wireframe = true;
+                              //city.wireframeLinewidth = 2; 
+                              var tam = Math.random() * 10; 
+                              
+                              city.position.x = i * 100 - 500; 
+                              city.position.z = j*100 + 400;
+                              city.position.y = tam  + 80 ; 
+                              city.scale.x = 3;
+                              city.scale.y = tam;
+                              city.scale.z = 3; 
+                              
+                              scene.add( city);
+                          }
+                      }
 
-			    let loader = new THREE.TextureLoader()
+                    for(var i = 0; i < 4; i++){
+                          for(var j = 0; j < 6; j++){
+                              var city = new THREE.Mesh( cityGeometry, cityMaterial);
+                              //city.wireframe = true;
+                              //city.wireframeLinewidth = 2;
+                              var tam = Math.random() * 10;
 
-			    let texture = loader.load('img/texture.jpg', function (texture) {
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-    texture.offset.set(0, 0)
-    texture.repeat.set(15, 15)
-			    })
+                              city.position.x = i * 100+200;
+                              city.position.z = j*100+400;
+                              city.position.y = tam  + 80 ;
+                              city.scale.x = 3;
+                              city.scale.y = tam;
+                              city.scale.z = 3;
 
-  // your code
+                              scene.add( city);
+                          }
+                      }
 
-			    let floorMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    metalness: 0.4,
-    roughness: 0.7,
-    map: texture
-    // transparent: true,
-    // opacity: 0.75,
-			    })
+                      // Zordon
 
-			    // let floorMaterial = new THREE.MeshBasicMaterial( { map: texture } );
+                     var zordonGeometry = new THREE.CylinderGeometry(150,150,270, 32, 1, true, 0, Math.PI );
+                      
+                      //var textureZordon = new THREE.TextureLoader().load( 'img/cyber.png' ); // textura fija
+                      
+                      video = document.getElementById( 'videoElement' );
+                      
+                      zordonTexture = new THREE.VideoTexture( video );
+                      
+                      var zordonMaterial = new THREE.MeshStandardMaterial({
+                          color: 0xffffff,
+                          metalness: 0.2,
+                          roughness: 0.9,
+                          map: zordonTexture,
+                          side: THREE.DoubleSide
+                      });
 
-			    let floor = new THREE.Mesh(floorGeometry, floorMaterial)
-			    scene.add(floor)
+                      var zordonMesh = new THREE.Mesh(zordonGeometry, zordonMaterial); 
 
-  //
+                      zordonMesh.position.z = 1000;
+                      zordonMesh.position.y = 270/2; 
+                      zordonMesh.rotation.y = Math.PI/2; 
+
+                      scene.add( zordonMesh ); 
+                      
+                      // Huachimontones
+                                      
+                      audioSphere =  new THREE.SphereGeometry(80, 32, 32);
+
+                      audioSphereOrg =  new THREE.SphereGeometry(80, 32, 32);
+                      
+                      var audioMaterial = new THREE.MeshStandardMaterial({
+                          color: 0xffffff,
+                          metalness: 0.8,
+                          roughness: 0.1,
+                          //envMap: scene.background,
+                          // 
+                      });
+
+                     sphere = new THREE.Mesh(audioSphere, zordonMaterial);
+                      sphere.geometry.verticesNeedUpdate = true;
+                      sphere.geometry.normalsNeedUpdate = true;
+                      
+                      sphere.position.z = -500;
+                      sphere.position.y = 150; 
+                      
+                      scene.add(sphere);
+
+                      var cilMaterial = new THREE.MeshBasicMaterial( {
+                          color: 0xffffff,
+                          envMap: scene.background,
+                          refractionRatio: 0.95
+                      } );
+                      
+                      for(var i = 1; i < 14; i++){
+                          
+                          var geometryCli = new THREE.CylinderBufferGeometry(200-(i*3), 200-(i*3), 4, 128);
+                          geometryCli.computeVertexNormals();  
+                          cil1 = new THREE.Mesh( geometryCli, cilMaterial );
+                          cil1.position.y = i*1.5-6; 
+                          cil1.position.z = -500;
+                          scene.add( cil1 );
+                          
+                      }     
+
+                      // floor
+
+                      floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 400, 400 );
+                      wetfloorGeometry = new THREE.PlaneGeometry( 2000, 2000, 200, 200 );
+
+                      floorGeometry.rotateX( - Math.PI / 2 );
+                      wetfloorGeometry.rotateX( - Math.PI / 2 );
+
+                      floorGeometry.computeVertexNormals();
+                      floorGeometry.computeFaceNormals();
+
+                      for (var i = 0; i < floorGeometry.vertices.length; i++) {
+                          floorGeometry.vertices[i].y += (Math.random()*6)-3;
+                      }
+                      
+                      //var texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
+                      
+                      //texture.wrapS = THREE.RepeatWrapping;
+                      //texture.wrapT = THREE.RepeatWrapping;
+
+                      var floorLoader = new THREE.TextureLoader();
+                            
+                      var floorTexture = floorLoader.load( 'img/city6.jpg', function ( floorTexture ) {
+
+                          floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+                          floorTexture.offset.set( 0, 0 );
+                          floorTexture.repeat.set( 10, 10 );
+                          
+                      });
+                      
+                      var floorMaterial = new THREE.MeshStandardMaterial( {
+                          color: 0xffffff,
+                          metalness: 0.5,
+                          roughness: 0.99,
+                          map: floorTexture, 
+                          //transparent: true,
+                          //opacity: 0.75,        
+                      } );
+                      
+                      
+                      // var floorMaterial = new THREE.MeshBasicMaterial( { map: texture } );
+                                                    
+                      var floor = new THREE.Mesh( floorGeometry, floorMaterial );
+                      var wetfloor = new THREE.Mesh( wetfloorGeometry, pilaresMaterial); 
+
+                      wetfloor.position.y = -4;   
+                      floor.position.y = -4;
+                      
+                      scene.add( floor );
+                      scene.add (wetfloor);
+
+
 
   renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setPixelRatio(window.devicePixelRatio)
@@ -261,6 +444,29 @@ function animate () {
   light4.position.x = Math.sin(time * 0.3) * 30
   light4.position.y = 50 + Math.cos(time * 0.7) * 40
   light4.position.z = Math.sin(time * 0.5) * 30
+
+                      // City lights
+            
+                      clight1.position.x = Math.sin( time * 0.7 ) * 260;
+                      clight1.position.y = 100 +Math.cos( time * 0.5 ) * 80+10;
+                      clight1.position.z = Math.cos( time * 0.3 ) * 260 +800;
+                      
+                      clight2.position.x = Math.cos( time * 0.3 ) * 260;
+                      clight2.position.y = 100+Math.sin( time * 0.5 ) * 80 + 10;
+                      clight2.position.z = Math.sin( time * 0.7 ) * 260 +800;
+                      
+                      clight3.position.x = Math.sin( time * 0.7 ) * 230;
+                      clight3.position.y = 100+Math.cos( time * 0.3 ) * 40 + 10;
+                      clight3.position.z = Math.sin( time * 0.5 ) * 230 +800;
+                      
+                      clight4.position.x = Math.sin( time * 0.3 ) * 230;
+                      clight4.position.y = 100+Math.cos( time * 0.7 ) * 40 + 10;
+                      clight4.position.z = Math.sin( time * 0.5 ) * 230 +800;
+
+                      scene.background.rotation.y += 0.2;
+
+
+
 
   if (controls.isLocked === true) {
     raycaster.ray.origin.copy(controls.getObject().position)
@@ -391,8 +597,33 @@ mandarMensajebutton.addEventListener('click', function(e){
 })
 
 instructions.addEventListener('click', function () {
-  instructions.style.display = 'none'
+	instructions.style.display = 'none'
 	controls.lock()
+	if(!initMedia){
+		audioElement.play(); // esto tiene que hacerse solamente una ez
+		if (flvjs.isSupported()) {
+			var videoElement = document.getElementById('videoElement');
+			flvPlayer = flvjs.createPlayer({
+				type: 'flv',
+				isLive: true,
+				url: 'http://134.122.125.230/live?port=1935&app=testing&stream=hola'
+			});
+			
+			flvPlayer.attachMediaElement(videoElement);
+			flvPlayer.load();
+			flvPlayer.play();
+			flvPlayer.on('error',function(err){
+				if(err==="NetworkError"){
+					flvPlayer.unload()
+					flvPlayer.load()
+					flvPlayer.play();
+				}
+			});
+		}
+		initMedia = true;
+
+	}
+
 }, false)
 
 window.addEventListener('addUser', function(event){
@@ -488,4 +719,3 @@ window.addEventListener('putChat', function(event){
 
 	document.querySelector("#mensajes").appendChild(mensaje)
 })
-

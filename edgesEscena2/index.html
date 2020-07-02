@@ -36,13 +36,17 @@
 				<button type="button" id="mandarMensaje">mandar</button>
 			</div>
 		</div>
-
+		
+		<video id="videoElement" muted style='display: none;'></video>		
+		<audio id="music" crossorigin="anonymous"> 
+			<source src="http://127.0.0.1:8001/distopia.ogg" type="audio/ogg">
+		</audio>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script src="https://threejs.org/build/three.min.js"></script>
 		<script src="https://threejs.org/examples/js/controls/PointerLockControls.js"></script>
 		<script src="js/Users.js"></script>
 		<script src="js/Server.js"></script>
 		<script src="js/script.js"></script>
-		
+		 <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
 	</body>
 </html>

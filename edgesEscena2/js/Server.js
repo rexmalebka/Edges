@@ -18,7 +18,8 @@ const Server = {
 		const position = Users.me.position;
 		const rotation = Users.me.rotation;
 		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
-		this.socket = io("http://localhost:8020", {query:`user=${JSON.stringify(query)}`});
+//		  myIo = io('https://www.example.com.br:3009', { secure: true, reconnect: true, rejectUnauthorized: false });
+		this.socket = io("134.122.28.24", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
 		const server = this.socket;
 
 		server.on("connect", function(){
@@ -151,3 +152,5 @@ function chat(msg){
 window.Users = Users
 window.chat = chat
 console.log(Users)
+
+

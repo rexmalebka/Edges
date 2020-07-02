@@ -118,4 +118,8 @@ button{
 #mensajes{
 	white-space:pre-line;
 	word-break:break-all;
+	position:relative;
+	height:80%;
+	overflow-y: scroll;
 }
+
