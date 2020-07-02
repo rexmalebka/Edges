@@ -72,10 +72,15 @@
 		<script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
 		<video id="videoElement" muted style='display: none;'></video>
 
-
-		<audio autoplay>
+		<!--
+		<audio id="audioElement" autoplay>
 		  <source src="http://127.0.0.1:8001/distopia.ogg" type="audio/ogg">
 		      Your browser does not support the audio element.
+		</audio>
+		-->
+		
+		<audio id="music" autoplay crossorigin="anonymous">
+		  <source src="http://127.0.0.1:8001/distopia.ogg" type="audio/ogg">
 		</audio>
 		
 		<script src="https://threejs.org/build/three.min.js"></script>
@@ -114,7 +119,7 @@
 		  var direction = new THREE.Vector3();
 		  var vertex = new THREE.Vector3();
 		  var color = new THREE.Color();
-
+		  var audioElement; 
 
 		  var stream = "http://127.0.0.1:8001/distopia.ogg";
 
@@ -153,6 +158,7 @@
 		      
 		      var blocker = document.getElementById( 'blocker' );
 		      var instructions = document.getElementById( 'instructions' );
+
 		      
 		      instructions.addEventListener( 'click', function () {
 			  
@@ -162,21 +168,8 @@
 		      
 			    controls.addEventListener( 'lock', function () {
 
-
-				/*
-				loader = new THREE.AudioLoader();
-				loader.load( 'audio, function ( buffer ) {
-				    
-				    //audio.setBuffer( buffer );
-				    //audio.play();
-
-				    audio.setBuffer(buffer);
-				    audio.setLoop(true);
-				    audio.play();
-				    
-				} );
-				*/
-
+				audioElement.play(); 
+				
 				let flvPlayer; 
 				   
 				if (flvjs.isSupported()) {
@@ -302,12 +295,60 @@
 
 		      // Audio
 
-		      listener = new THREE.AudioListener();
+		      /*
+		      var audioElement = document.getElementById('audioElement');
 		      
 		      audio = new THREE.Audio( listener );
+
+		      // audio = new THREE.Audio(audioElement); 
 		      
-		      file = './sounds/rggtrn.mp3';
-      
+		      //file = './sounds/rggtrn.mp3';
+
+
+		      var loader = new THREE.AudioLoader();
+		      loader.load( audioElement, function ( buffer ) {
+			  
+		     	  audio.setBuffer( buffer );
+			  //audio.play();
+			  
+		      } );
+		      */
+
+		      
+		      var listener = new THREE.AudioListener();
+		      //camera.add( listener );
+
+		      audioElement = document.getElementById( 'music' );
+		      audio = new THREE.Audio( listener ); 
+
+		      // audioElement.play();
+
+		      //var positionalAudio = new THREE.PositionalAudio( listener );
+		      //audio.setMediaElementSource( audioElement );
+
+		      audio.setMediaElementSource( audioElement );
+		      
+		      // audio.play(); 
+		      // audio.setRefDistance( 2 );
+		      // positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
+		      var aSourceMaterial = new THREE.MeshBasicMaterial( {
+			  color: 0xffffff,
+			  envMap: scene.background,
+			  refractionRatio: 0.75
+		      } );
+		      
+		      var aSourceGeometry = new THREE.BoxGeometry(20, 20, 20);
+
+		      var aSource = new THREE.Mesh( aSourceGeometry, aSourceMaterial );
+
+		      //aSource.add( positionalAudio );
+
+		      scene.add(aSource); 
+		      
+		      // 
+		      
+		      
 		      analyser = new THREE.AudioAnalyser( audio, fftSize );
 
 		      clight1.castShadow = true;			    
@@ -380,7 +421,7 @@
 		      
 		      var cityMaterial = new THREE.MeshStandardMaterial( {
 			  color: 0xffffff,
-			  
+			 
 			  metalness: 0.1,
 			  roughness: 0.89,
 			  //envmap: scene.background, 
@@ -671,6 +712,9 @@
 
 		      sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
 
+
+		      
+		      
 		      data = analyser.getFrequencyData();
 
 		      for (let i = 0, len = audioSphere.vertices.length; i < len; i++) {
@@ -685,6 +729,8 @@
 		      	  //audioSphere.vertices[i].z = data[i%128] *0.5;
 		            
 		      }
+
+		     
 
 		      /*
 		      cloudParticles.forEach(p => {
