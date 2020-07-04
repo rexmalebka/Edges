@@ -60,7 +60,6 @@ export const Server = {
 		});
 
 		server.on("add", function(data){
-			console.log("asdf",data)
 			const uuid = data[0];
 			const nickname = data[1];
 			const position = {
@@ -74,6 +73,7 @@ export const Server = {
 				y: data[6],
 				z: data[7],
 			};
+
 			if(uuid != Users.me.uuid){
 				console.info(`adding user ${uuid} ${position} ${rotation}`)
 				Users[uuid] = new User(uuid, nickname, position, rotation); 

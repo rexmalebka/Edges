@@ -616,79 +616,83 @@ const edges = {
 let ctrl = false
 
 function onKeyDown(event) {
-	switch (event.keyCode) {
-		case 38: // up
-		case 87: // w
-			edges.moveForward = true
-			break
-			
-		case 37: // left
-		case 65: // a
-			edges.moveLeft = true
-			break
-			
-		case 40: // down
-		case 83: // s
-			edges.moveBackward = true
-			break
-		case 39: // right
-		case 68: // d
-			edges.moveRight = true
-			break	
-		case 32: // space
-			if (edges.canJump === true) // velocity.y += 350
-			{ edges.canJump = false }
-			break
-		case 17:
-			ctrl = true;
-		case 13:
-			// chat
-			if(!ctrl) {
-				mandarMensaje(event)
-			}else{
-				inputMensaje.innerText += '\n'
-				
-				let range,selection;
-				range = document.createRange();//Create a range (a range is a like the selection but invisible)
-				range.selectNodeContents(inputMensaje);//Select the entire contents of the element with the range
-				range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
-				selection = window.getSelection();//get the selection object (allows you to change selection)
-				selection.removeAllRanges();//remove any selections already made
-				selection.addRange(range);//make the range you have just created the visible selection
-			}
-			
+        console.log(document.activeElement)
+        switch (event.keyCode) {
+                case 38: // up
+                case 87: // w
+                        if(document.activeElement == document.body) edges.moveForward = true
+                        break
 
-	}
+                case 37: // left
+                case 65: // a
+                        if(document.activeElement == document.body) edges.moveLeft = true
+                        break
+
+                case 40: // down
+                case 83: // s
+                        if(document.activeElement == document.body) edges.moveBackward = true
+                        break
+                case 39: // right
+                case 68: // d
+                        if(document.activeElement == document.body) edges.moveRight = true
+                        break
+                case 32: // space
+                        if (edges.canJump === true) // velocity.y += 350
+                        { edges.canJump = false }
+                        break
+                case 17:
+                        ctrl = true;
+                case 13:
+                        // chat
+                        if(document.activeElement != document.querySelector("#inputMensaje")) break
+                        if(!ctrl) {
+                                mandarMensaje(event)
+                        }else{
+                                inputMensaje.innerText += '\n'
+
+                                let range,selection;
+                                range = document.createRange();//Create a range (a range is a like the selection but invisible)
+                                range.selectNodeContents(inputMensaje);//Select the entire contents of the element with the range
+                                range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+                                selection = window.getSelection();//get the selection object (allows you to change selection)
+                                selection.removeAllRanges();//remove any selections already made
+                                selection.addRange(range);//make the range you have just created the visible selection
+                        }
+
+
+        }
 }
 
 
 function onKeyUp (event) {
-	switch (event.keyCode) {
-		case 38: // up
-		case 87: // w
-			edges.moveForward = false
-			break
-		case 37: // left
-		case 65: // a
-			edges.moveLeft = false
-			break
-			
-		case 40: // down
-		case 83: // s
-			edges.moveBackward = false
-			break
-			
-		case 39: // right
-		case 68: // d
-			edges.moveRight = false
-			break
-		case 84:
-			// t
-			inputMensaje.focus()
-		case 17:
-			ctrl = false;
-	}
+        switch (event.keyCode) {
+                case 38: // up
+                case 87: // w
+                        if(document.activeElement == document.body) edges.moveForward = false
+                        break
+                case 37: // left
+                case 65: // a
+                        if(document.activeElement == document.body) edges.moveLeft = false
+                        break
+
+                case 40: // down
+                case 83: // s
+                        if(document.activeElement == document.body) edges.moveBackward = false
+                        break
+
+                case 39: // right
+                case 68: // d
+                        if(document.activeElement == document.body) edges.moveRight = false
+                        break
+                case 84:
+                        // t
+                        document.querySelector("#chat").style.display = ''
+                        inputMensaje.focus()
+                case 17:
+                        ctrl = false;
+        }
 }
+
 
 function onWindowResize() {
 	edges.camera.aspect = window.innerWidth / window.innerHeight
@@ -800,8 +804,8 @@ function removeUser(event) {
 	const uuid = event.detail.uuid
 	personajes[uuid].geometry.dispose()
 	personajes[uuid].material.dispose()
-	scene.remove(personajes[uuid])
-	renderer.renderLists.dispose()
+	edges.scene.remove(personajes[uuid])
+	edges.renderer.renderLists.dispose()
 	delete personajes[uuid]
 }
 
@@ -822,7 +826,12 @@ function addUser(event) {
 	mimir.position.x = position.x
 	mimir.position.y = position.y
 	mimir.position.z = position.z
-  
+        if(uuid == 'me'){
+		edges.camera.position.x = position.x
+		edges.camera.position.y = position.y
+		edges.camera.position.z = position.z
+        }
+
        /* 
 	// model
 	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")

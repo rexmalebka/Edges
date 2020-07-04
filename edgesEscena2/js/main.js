@@ -262,9 +262,6 @@ const edges = {
                 this.scene.add(aSource);
                 this.analyser = new THREE.AudioAnalyser( audio, fftSize );
 		
-		
-		/////////// 
-		
 		let audioSphere =  new THREE.SphereGeometry(80, 32, 32);
 		let audioSphereOrg =  new THREE.SphereGeometry(80, 32, 32);
 		
@@ -449,24 +446,25 @@ const edges = {
 let ctrl = false
 
 function onKeyDown(event) {
+	console.log(document.activeElement)
 	switch (event.keyCode) {
 		case 38: // up
 		case 87: // w
-			edges.moveForward = true
+			if(document.activeElement == document.body) edges.moveForward = true
 			break
 			
 		case 37: // left
 		case 65: // a
-			edges.moveLeft = true
+			if(document.activeElement == document.body) edges.moveLeft = true
 			break
 			
 		case 40: // down
 		case 83: // s
-			edges.moveBackward = true
+			if(document.activeElement == document.body) edges.moveBackward = true
 			break
 		case 39: // right
 		case 68: // d
-			edges.moveRight = true
+			if(document.activeElement == document.body) edges.moveRight = true
 			break	
 		case 32: // space
 			if (edges.canJump === true) // velocity.y += 350
@@ -476,6 +474,7 @@ function onKeyDown(event) {
 			ctrl = true;
 		case 13:
 			// chat
+			if(document.activeElement != document.querySelector("#inputMensaje")) break
 			if(!ctrl) {
 				mandarMensaje(event)
 			}else{
@@ -499,24 +498,25 @@ function onKeyUp (event) {
 	switch (event.keyCode) {
 		case 38: // up
 		case 87: // w
-			edges.moveForward = false
+			if(document.activeElement == document.body) edges.moveForward = false
 			break
 		case 37: // left
 		case 65: // a
-			edges.moveLeft = false
+			if(document.activeElement == document.body) edges.moveLeft = false
 			break
 			
 		case 40: // down
 		case 83: // s
-			edges.moveBackward = false
+			if(document.activeElement == document.body) edges.moveBackward = false
 			break
 			
 		case 39: // right
 		case 68: // d
-			edges.moveRight = false
+			if(document.activeElement == document.body) edges.moveRight = false
 			break
 		case 84:
 			// t
+			document.querySelector("#chat").style.display = ''
 			inputMensaje.focus()
 		case 17:
 			ctrl = false;
@@ -614,27 +614,27 @@ function moveUser(event) {
 	
 	function interpolate (i) {
 		personajes[uuid].position.x = oldPos.x + (dx * i / mi) 
-    personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
-    personajes[uuid].position.z = oldPos.z + (dz * i / mi) 
-  }
-  const intfunc = setInterval(function () {
-    i++
-    interpolate(i)
-    if (i == (mi - 1)) {
-      personajes[uuid].position.x = newPos.x
-      personajes[uuid].position.y = newPos.y
-      personajes[uuid].position.z = newPos.z
-      clearInterval(intfunc)
-    }
-  }, 10)
+		personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
+		personajes[uuid].position.z = oldPos.z + (dz * i / mi) 
+	}
+	const intfunc = setInterval(function () {
+		i++
+		interpolate(i)
+		if (i == (mi - 1)) {
+			personajes[uuid].position.x = newPos.x
+			personajes[uuid].position.y = newPos.y
+			personajes[uuid].position.z = newPos.z
+			clearInterval(intfunc)
+		}
+	}, 10)
 }
 
 function removeUser(event) {
 	const uuid = event.detail.uuid
 	personajes[uuid].geometry.dispose()
 	personajes[uuid].material.dispose()
-	scene.remove(personajes[uuid])
-	renderer.renderLists.dispose()
+	edges.scene.remove(personajes[uuid])
+	edges.renderer.renderLists.dispose()
 	delete personajes[uuid]
 }
 
@@ -655,7 +655,12 @@ function addUser(event) {
 	mimir.position.x = position.x
 	mimir.position.y = position.y
 	mimir.position.z = position.z
-  
+
+	if(uuid == 'me'){
+		edges.camera.position.x = position.x
+		edges.camera.position.y = position.y
+		edges.camera.position.z = position.z
+	}
        /* 
 	// model
 	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
@@ -678,7 +683,6 @@ function cambiarNombre(e) {
 		document.querySelector("#cambiarNombre").disabled = true
 	}
 }
-
 
 
 function cambiarNombrebutton (e) {
