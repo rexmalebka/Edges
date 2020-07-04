@@ -1,4 +1,4 @@
-class User {
+export class User {
         constructor(uuid, nickname, position, rotation){
                 this.uuid = uuid;
                 this.nickname = nickname;

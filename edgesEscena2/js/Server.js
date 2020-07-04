@@ -1,6 +1,6 @@
-const Users = {}
-const mimirs = {}
-const Server = {
+import {User} from '/js/Users.js';
+export const Users = {}
+export const Server = {
 	init: function(){
 		let uuid = Math.random().toString(16).substr(2);
 		
@@ -11,7 +11,8 @@ const Server = {
 		}
 		
 		if(!Users.me){
-			Users.me = new User(uuid, "---", {x:0, y:10, z:0}, {x:0, y:0, z:0}); 
+			Users.me = new User(uuid, "anon-"+Math.random().toString(16).slice(2,6), {x:0, y:10, z:0}, {x:0, y:0, z:0}); 
+			dispatchEvent(Users.me.add)
 		}
 
 		const nickname = Users.me.nickname;
@@ -51,7 +52,6 @@ const Server = {
 
 			window.addEventListener('move', function(e){
 				if(e.detail.uuid == Users.me.uuid){
-					console.log("AAAAAAAA moving")
 					const position = Users.me.position;
 					Users.me.move(position);
 				}
@@ -95,6 +95,7 @@ const Server = {
 				z: data[3]
 			};
 
+			console.debug("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", position)
 			Users[uuid].position = position;
 			dispatchEvent(Users[uuid].moveUser);
 		});
@@ -130,7 +131,7 @@ const Server = {
 		});
 	},
 }
-function chat(msg){
+export function chat(msg){
 	
 	msg = msg.replace( /^(\s\n)+/g, '');
 	msg = msg.replace(/(\s|\n)+$/,'')
@@ -149,8 +150,7 @@ function chat(msg){
 	chatEvent = null
 }
 
+window.Server = Server
 window.Users = Users
-window.chat = chat
 console.log(Users)
-
 

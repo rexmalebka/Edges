@@ -13,9 +13,13 @@
     "@airbnb/node-memwatch": "^2.0.0",
     "artillery": "^1.6.0",
     "express": "^4.17.1",
+    "flv": "0.0.1",
+    "flv.js": "^1.5.0",
+    "flvplayer": "^1.1.8",
     "redis": "^3.0.2",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
+    "three": "^0.118.3",
     "ws": "^7.3.0"
   },
   "optionalDependencies": {
