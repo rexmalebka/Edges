@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Edges</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div id="blocker">
+
+
+			<div id="query">
+				<div>
+					<label for="usuarix">Nombre de usuarix</label>
+					<input type="text" required id="usuarix"></input> 
+					<button type="button" disabled id="cambiarNombre">cambiar</button>
+				<button type="button" id="mostrarChat">chat</button>
+				</div>
+			</div>
+			<div id="instructions">
+				<span style="font-size:36px">EDGES - Click para iniciar/pausar</span>
+				<br /><br />
+				Movimiento: WASD<br/>
+				Salto: SPACE<br/>
+				Mirada: MOUSE
+			</div>
+			
+		</div>
+		<div id="distopia"></div>
+		<div id="chat">
+			<div id="mensajes"></div>
+			<div id="inputChat">
+				<span id="mostrarUsuarix"></span>
+				<div contenteditable id="inputMensaje"></div>
+				<button type="button" id="mandarMensaje">mandar</button>i
+			</div>
+		</div>
+		
+		<video id="streaming-video" muted style='display: none;'></video>		
+		<audio id="music" crossorigin="anonymous"src="http://134.122.125.230/distopia.ogg" type="audio/ogg">
+		</audio>
+
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+		<script type="module" src="js/main.js"></script>
+
+		<!--
+		<script src="https://threejs.org/build/three.min.js"></script>
+		<script src="https://threejs.org/examples/js/controls/PointerLockControls.js"></script>
+		<script src="https://threejs.org/examples/js/libs/inflate.min.js"></script>
+		<script src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
+		<script src="js/Users.js"></script>
+		<script src="js/Server.js"></script>
+		<script src="js/script.js"></script>
+		 <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+		 -->
+	</body>
+</html>
