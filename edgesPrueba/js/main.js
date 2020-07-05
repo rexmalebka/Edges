@@ -1,21 +1,3 @@
-/*
-
-Cambios
-
-- fftsize = 2048
-- camera está declarada dos veces 
-- camera fov 1500
-- hemisphere light 
-- intensidad de luces en huachimontones y en la ciudad
-- floor texture y material 
-- tamaño y distribución de la ciudad
--screens
-- add satelites
- 
-
-*/
-
-
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
@@ -61,7 +43,7 @@ const edges = {
 		this.addLightCiudad();
 		this.addLightHuachimontones();
 
-		this.addAudio()
+		//this.addAudio()
 	        this.addScreen()
 	        this.mkSat()
 	    
@@ -254,7 +236,7 @@ const edges = {
 		
 		this.scene.add( zordonMesh );
 	},
-	addAudio: function(){
+	addAudio: function(element){
 		let fftSize = 2048;
 		const listener = new THREE.AudioListener();
 		//camera.add( listener ); // Si es positionalAudio
@@ -266,7 +248,7 @@ const edges = {
                 // audio.setRefDistance( 2 );
                 // audio.setDirectionalCone( 180, 230, 0.1 );
 
-                audio.setMediaElementSource(  document.getElementById( 'music' ) );
+                audio.setMediaElementSource(  element );
 
 		let aSourceMaterial = new THREE.MeshBasicMaterial( {
 			color: 0xffffff,
@@ -537,7 +519,7 @@ const edges = {
 	
         edges.clight2.position.x = Math.cos( time * 0.3/2 ) * 400;
         edges.clight2.position.y = 500+Math.sin( time * 0.5/2 ) * 50;
-	edges.cilght2.position.z = 800+Math.sin( time * 0.7/2 ) * 400;
+	edges.clight2.position.z = 800+Math.sin( time * 0.7/2 ) * 400;
 	
 	edges.clight3.position.x = Math.cos( time * 0.7/2 ) * 400;
 	edges.clight3.position.y = 500+Math.cos( time * 0.3/2 ) * 50;
@@ -597,9 +579,9 @@ const edges = {
 	animate: function(){
 		requestAnimationFrame( edges.animate );
 		edges.renderer.render(edges.scene, edges.camera);
-		edges.moveAudioSphere();
-	    edges.moveLight();
-	    edges.moveSat(); 
+		if (edges.streamingAudio) edges.moveAudioSphere()
+		edges.moveLight();
+		edges.moveSat(); 
 		if(edges.controls.isLocked) edges.move()
 	},
 	velocity: new THREE.Vector3(),
@@ -611,12 +593,12 @@ const edges = {
 	canJumpt: false,
 	moving: false,
 	stoping: false,
+	streamingAudio: false,
 };
 
 let ctrl = false
 
 function onKeyDown(event) {
-        console.log(document.activeElement)
         switch (event.keyCode) {
                 case 38: // up
                 case 87: // w
@@ -701,7 +683,25 @@ function onWindowResize() {
 }
 
 function onLoadMedia(){
-	document.querySelector('#music').play();
+	let audio = new Audio('http://134.122.125.230:8001/distopia.ogg');
+	audio.crossOrigin = "anonymous";
+
+	window.audio=audio
+	let playPromise = audio.play()
+	if (playPromise !== undefined) {
+		playPromise.then(aaa => {
+			// Automatic playback started!
+			// Show playing UI.
+			if(!edges.streamingAudio){
+				edges.addAudio(audio)
+				edges.streamingAudio= true
+			}
+		}).catch(error => {
+			// Auto-play was prevented
+			// // Show paused UI.
+		});
+	}
+
 	if(flvjs.isSupported()){
 		let flvPlayer = flvjs.createPlayer({
 			type: "flv",
@@ -806,7 +806,9 @@ function removeUser(event) {
 	personajes[uuid].material.dispose()
 	edges.scene.remove(personajes[uuid])
 	edges.renderer.renderLists.dispose()
+
 	delete personajes[uuid]
+	document.querySelector("#numUsuarios").textContent = Object.keys(personajes).length
 }
 
 function addUser(event) {
@@ -831,6 +833,8 @@ function addUser(event) {
 		edges.camera.position.y = position.y
 		edges.camera.position.z = position.z
         }
+
+	document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
 
        /* 
 	// model

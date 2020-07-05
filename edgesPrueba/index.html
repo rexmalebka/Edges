@@ -12,10 +12,11 @@
 
 			<div id="query">
 				<div>
+					<label for="" id=numUsuariosLabel><span id="numUsuarios"></span> conectados </label>
 					<label for="usuarix">Nombre de usuarix</label>
 					<input type="text" required id="usuarix"></input> 
 					<button type="button" disabled id="cambiarNombre">cambiar</button>
-				<button type="button" id="mostrarChat">chat</button>
+					<button type="button" id="mostrarChat">chat</button>
 				</div>
 			</div>
 			<div id="instructions">
@@ -38,8 +39,6 @@
 		</div>
 		
 		<video id="streaming-video" muted style='display: none;'></video>		
-		<audio id="music" crossorigin="anonymous"src="http://134.122.125.230/distopia.ogg" type="audio/ogg">
-		</audio>
 
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script type="module" src="js/main.js"></script>

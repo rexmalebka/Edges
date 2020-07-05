@@ -562,7 +562,6 @@ function onLock(){
 
 function onUnlock(){
 	document.querySelector("#instructions").style.display = "block";
-	document.querySelector("#blocker").style.display = "";
 }
 
 function putChat(){
