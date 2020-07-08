@@ -123,3 +123,8 @@ button{
 	overflow-y: scroll;
 }
 
+#numUsuariosLabel{
+	float: left;
+	margin-left: 4em;
+
+}

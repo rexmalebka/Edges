@@ -60,7 +60,6 @@ export const Server = {
 		});
 
 		server.on("add", function(data){
-			console.log("asdf",data)
 			const uuid = data[0];
 			const nickname = data[1];
 			const position = {
@@ -95,7 +94,6 @@ export const Server = {
 				z: data[3]
 			};
 
-			console.debug("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", position)
 			Users[uuid].position = position;
 			dispatchEvent(Users[uuid].moveUser);
 		});
@@ -152,5 +150,4 @@ export function chat(msg){
 
 window.Server = Server
 window.Users = Users
-console.log(Users)
 
