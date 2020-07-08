@@ -277,8 +277,8 @@ const edges = {
 		
 		/////////// 
 		
-		let audioSphere =  new THREE.SphereGeometry(400, 32, 32);
-		let audioSphereOrg =  new THREE.SphereGeometry(400, 32, 32);
+		let audioSphere =  new THREE.SphereGeometry(200, 32, 32);
+		let audioSphereOrg =  new THREE.SphereGeometry(200, 32, 32);
 		
 		
 		var audioMaterial = new THREE.MeshStandardMaterial({
@@ -293,8 +293,8 @@ const edges = {
 		sphere.geometry.verticesNeedUpdate = true;
                 sphere.geometry.normalsNeedUpdate = true;
                       
-                sphere.position.z = -500;
-                sphere.position.y = 300; 
+                sphere.position.z = -400;
+                sphere.position.y = 100; 
             //sphere.rotation.x = Math.PI ;     
                 this.scene.add(sphere);
 		
@@ -952,7 +952,8 @@ function addUser(event) {
         });
        */
 
-   
+    var loader2 = new THREE.FontLoader();
+
     var loader = new GLTFLoader();
 
     loader.load(
@@ -960,6 +961,39 @@ function addUser(event) {
 	'models/hand.glb',
 	// called when the resource is loaded
 	function ( gltf ) {
+
+
+	    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+		var matDark = new THREE.LineBasicMaterial( {
+		    color: 0xffffff,
+		    side: THREE.DoubleSide
+		} );
+		
+	
+		var message = "Pedro Navajas";
+		
+		var shapes = font.generateShapes( message, 0.25 );
+		
+		var geometry = new THREE.ShapeBufferGeometry( shapes );
+		
+		geometry.computeBoundingBox();
+		
+		var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+		
+		geometry.translate( xMid, 0, 0 );
+		
+		var text = new THREE.Mesh( geometry, matDark );
+
+
+		text.position.x = position.x;
+		text.position.y = position.y+2;
+		text.position.z = position.z;
+				
+		gltf.scene.add( text ); 
+	
+	    }); 
+
 	    
 	    gltf.scene.scale.set(10,10,10) // scale here
 	    
@@ -974,7 +1008,10 @@ function addUser(event) {
 		edges.camera.position.x = position.x
 		edges.camera.position.y = position.y
 		edges.camera.position.z = position.z
-        }
+             }
+
+	    
+
 
 	    
 	    gltf.animations; // Array<THREE.AnimationClip>
