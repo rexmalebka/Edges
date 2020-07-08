@@ -83,17 +83,18 @@ button{
 
 #chat{
 	width:25%;
-	height:80%;
+	height:45%;
 	background-color: rgba(0,0,0,0.5);
 	right:0px;
-	top:10%;
+	bottom:10%;
 	position:absolute;
 	color: #ffffff;
 	padding:2em;
 }
 
 .nombre{
-	color: yellow
+	color: yellow;
+	margin-right: 1em;
 }
 
 #inputChat{
@@ -121,10 +122,15 @@ button{
 	position:relative;
 	height:80%;
 	overflow-y: scroll;
+	scrollbar-width: thin;
 }
 
 #numUsuariosLabel{
 	float: left;
 	margin-left: 4em;
 
+}
+
+.log{
+	color:greenyellow;
 }

@@ -39,7 +39,7 @@ const edges = {
 		this.addFloor();
 
 		this.addCiudad();
-		this.addHuachimontones();
+		//this.addHuachimontones();
 
 		this.addZordon();
 		this.addScreen
