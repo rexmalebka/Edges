@@ -11,7 +11,7 @@ export const Server = {
 		}
 		
 		if(!Users.me){
-			Users.me = new User(uuid, "anon-"+Math.random().toString(16).slice(2,6), {x:0, y:10, z:0}, {x:0, y:0, z:0}); 
+			Users.me = new User(uuid, "anon-"+Math.random().toString(16).slice(2,6), {x:0, y:0, z:0}, {x:0, y:0, z:0}); 
 			dispatchEvent(Users.me.add)
 		}
 

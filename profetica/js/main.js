@@ -649,7 +649,7 @@ const edges = {
 			Users.me.position.z = camPos.z
 			
 			personajes.me.position.x = camPos.x
-			personajes.me.position.y = camPos.y
+			//personajes.me.position.y = camPos.y
 			personajes.me.position.z = camPos.z
 			if(!edges.moving){
 				edges.stoping = false
@@ -874,12 +874,12 @@ function moveUser(event) {
 	const uuid = event.detail.uuid
 	const newPos = {
 		x: Users[uuid].position.x,
-		y: 0,//Users[uuid].position.y,
+		y: -10,//Users[uuid].position.y,
 		z: Users[uuid].position.z
 	}
 	const oldPos = {
 		x: personajes[uuid].position.x,
-		y: 0,//personajes[uuid].position.y,
+		y: -10,//personajes[uuid].position.y,
 		z: personajes[uuid].position.z
 	}
 
@@ -893,7 +893,7 @@ function moveUser(event) {
 	
 	function interpolate (i) {
 		personajes[uuid].position.x = oldPos.x + (dx * i / mi) 
-    personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
+//    personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
     personajes[uuid].position.z = oldPos.z + (dz * i / mi) 
   }
   const intfunc = setInterval(function () {
@@ -901,7 +901,7 @@ function moveUser(event) {
     interpolate(i)
     if (i == (mi - 1)) {
       personajes[uuid].position.x = newPos.x
-      personajes[uuid].position.y = newPos.y
+//      personajes[uuid].position.y = newPos.y
       personajes[uuid].position.z = newPos.z
       clearInterval(intfunc)
     }
@@ -931,19 +931,6 @@ function addUser(event) {
 
         const position = Users[uuid].position
 
-        const geom = new THREE.SphereBufferGeometry(5, 32, 32)
-        const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
-        const mimir = new THREE.Mesh(geom, mat)
-
-        mimir.position.x = position.x
-        mimir.position.y = position.y
-        mimir.position.z = position.z
-        if(uuid == 'me'){
-                edges.camera.position.x = position.x
-                edges.camera.position.y = position.y
-                edges.camera.position.z = position.z
-        }
-
         document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
 
     var loader = new GLTFLoader();
@@ -957,7 +944,7 @@ function addUser(event) {
             gltf.scene.scale.set(10,10,10) // scale here
 
             gltf.scene.position.x = position.x;
-            gltf.scene.position.y = 0//position.y-10;
+            gltf.scene.position.y = -10//position.y-10;
             gltf.scene.position.z = position.z;
 
             edges.scene.add( gltf.scene );
@@ -965,7 +952,7 @@ function addUser(event) {
 
              if(uuid == 'me'){
                 edges.camera.position.x = position.x
-                edges.camera.position.y = position.y
+                edges.camera.position.y = 5 //position.y
                 edges.camera.position.z = position.z
         }
 
