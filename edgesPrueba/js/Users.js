@@ -30,6 +30,8 @@ export class User {
                 this.renameUser = new CustomEvent('renameUser', {
                         detail: {
                                 uuid: uuid,
+				oldNickname: "",
+				newNickname: ""
                         }
                 });
                 this.remove = new CustomEvent('removeUser', {

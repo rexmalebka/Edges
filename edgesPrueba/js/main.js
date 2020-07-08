@@ -732,8 +732,16 @@ function onLock(){
 }
 
 function onUnlock(){
-	document.querySelector("#instructions").style.display = "block";
-	document.querySelector("#blocker").style.display = "";
+        if(document.activeElement == document.querySelector("#inputMensaje")){
+		// mostrarChat()
+		document.querySelector("#inputMensaje").blur()
+		document.querySelector("#chat").style.display = 'none'
+		document.querySelector("body").focus();
+		edges.controls.lock()
+	}else{
+		document.querySelector("#instructions").style.display = "block";
+		document.querySelector("#blocker").style.display = "";
+	}
 }
 
 function putChat(){
@@ -819,6 +827,7 @@ function addUser(event) {
 		uuid = event.detail.uuid
 	}
   
+	console.log("adding user:", uuid)
         const position = Users[uuid].position
 	
 	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
@@ -836,19 +845,26 @@ function addUser(event) {
 
 	document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
 
-       /* 
-	// model
-	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	var loader = new THREE.FBXLoader();
-	loader.load( '/models/fbx/monito.fbx', function ( object ) {
-                personajes[uuid] = object
-                console.log("UWU")
-
-        });
-	*/
 	edges.scene.add( mimir );
 	personajes[uuid] = mimir
 
+}
+
+function renameUser(event){
+	let oldNickname = event.detail.oldNickname
+	let newNickname = event.detail.newNickname
+	content = `Usuarix "${oldNickname}" se llama ahora "${newNickname}"`
+	console.debug(content, '<-')
+	const mensaje = document.createElement('div')
+	mensaje.classList.add('mensaje')
+	
+	const contenido = document.createElement('span')
+	contenido.classList.add('log')
+	contenido.textContent = content
+	
+	mensaje.appendChild(contenido)
+	
+	document.querySelector('#mensajes').appendChild(mensaje)
 }
 
 function cambiarNombre(e) {
@@ -863,8 +879,8 @@ function cambiarNombre(e) {
 
 function cambiarNombrebutton (e) {
 	e.preventDefault()
-	Users.me.rename(document.querySelector("#usuarix").value)
-	document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
+	console.log("000", document.querySelector("#usuarix").value)
+	if(Users.me.rename(document.querySelector("#usuarix").value)) 	document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
 }
 
 
@@ -875,10 +891,10 @@ function mandarMensaje(e) {
 	inputMensaje.textContent = ''
 }
 
-document.querySelector("#mostrarChat").addEventListener('click', function (e) {
+function mostrarChat(e) {
 	e.preventDefault()
 	document.querySelector("#chat").style.display = document.querySelector("#chat").style.display == 'none' ? '' : 'none'
-})
+}
 
 inputMensaje.addEventListener('input', function (e) {
   if (inputMensaje.textContent.length > 248) {
@@ -895,12 +911,22 @@ document.querySelector("#instructions").addEventListener('click', ()=> edges.con
 document.querySelector('#cambiarNombre').addEventListener('click', cambiarNombrebutton)
 document.querySelector('#mandarMensaje').addEventListener('click', mandarMensaje)
 
+document.querySelector("#mostrarChat").addEventListener('click', mostrarChat)
+
+
 window.addEventListener('addUser', addUser)
 window.addEventListener('removeUser', removeUser)
 window.addEventListener('moveUser', moveUser)
+window.addEventListener('renameUser', renameUser)
+
 window.addEventListener('putChat', putChat)
 
-
+window.addEventListener('blur', function(e){
+	if(!edges.controls.isLocked) return
+	document.querySelector("#chat").style.display = 'none'
+	document.querySelector("#instructions").style.display = "block";
+	document.querySelector("#blocker").style.display = "";
+})
 edges.init();
 Server.init();
 
