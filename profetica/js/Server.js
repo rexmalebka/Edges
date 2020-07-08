@@ -25,7 +25,7 @@ export const Server = {
 		const rotation = Users.me.rotation;
 		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
 //		  myIo = io('https://www.example.com.br:3009', { secure: true, reconnect: true, rejectUnauthorized: false });
-		this.socket = io("134.122.28.24", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
+		this.socket = io("https://notasdeausencia.cc", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
 		const server = this.socket;
 
 		server.on("connect", function(){

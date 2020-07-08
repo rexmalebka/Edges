@@ -783,7 +783,7 @@ function onWindowResize() {
 }
 
 function onLoadMedia(){
-	let audio = new Audio('http://134.122.125.230:8001/distopia.ogg');
+	let audio = new Audio('https://notasdeausencia.cc/audio/distopia.ogg');
 	audio.crossOrigin = "anonymous";
 
 	window.audio=audio
@@ -806,7 +806,7 @@ function onLoadMedia(){
 		let flvPlayer = flvjs.createPlayer({
 			type: "flv",
 			isLive: true,
-			url: 'http://134.122.125.230/live?port=1935&app=testing&stream=hola'
+			url: 'https://notasdeausencia.cc/video/live?port=1935&app=testing&stream=hola'
 		});
 		flvPlayer.attachMediaElement(document.querySelector('#streaming-video'))
 		flvPlayer.load();
@@ -933,6 +933,8 @@ function addUser(event) {
 
         document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
 
+    var loader2 = new THREE.FontLoader();
+
     var loader = new GLTFLoader();
 
     loader.load(
@@ -941,10 +943,41 @@ function addUser(event) {
         // called when the resource is loaded
         function ( gltf ) {
 
+
+            loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+                var matDark = new THREE.LineBasicMaterial( {
+                    color: 0xffffff,
+                    side: THREE.DoubleSide
+                } );
+
+
+                var message = "Pedro Navajas";
+
+                var shapes = font.generateShapes( message, 0.25 );
+
+                var geometry = new THREE.ShapeBufferGeometry( shapes );
+
+                geometry.computeBoundingBox();
+
+                var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+
+                geometry.translate( xMid, 0, 0 );
+
+                var text = new THREE.Mesh( geometry, matDark );
+
+
+                text.position.x = position.x;
+                text.position.y = position.y+2;
+                text.position.z = position.z;
+
+                gltf.scene.add( text );
+
+            });
             gltf.scene.scale.set(10,10,10) // scale here
 
             gltf.scene.position.x = position.x;
-            gltf.scene.position.y = -10//position.y-10;
+            gltf.scene.position.y = position.y-10;
             gltf.scene.position.z = position.z;
 
             edges.scene.add( gltf.scene );
@@ -952,9 +985,12 @@ function addUser(event) {
 
              if(uuid == 'me'){
                 edges.camera.position.x = position.x
-                edges.camera.position.y = 5 //position.y
+                edges.camera.position.y = position.y
                 edges.camera.position.z = position.z
-        }
+             }
+
+
+
 
 
             gltf.animations; // Array<THREE.AnimationClip>
