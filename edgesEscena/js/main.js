@@ -1,6 +1,7 @@
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
+import {GLTFLoader} from '/js/three/examples/jsm/loaders/GLTFLoader.js'; 
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users, chat} from '/js/Server.js';
 import { Fire } from '/js/Fire.js'; 
@@ -901,8 +902,11 @@ function moveUser(event) {
 
 function removeUser(event) {
 	const uuid = event.detail.uuid
-	personajes[uuid].geometry.dispose()
-	personajes[uuid].material.dispose()
+	//personajes[uuid].geometry.dispose()
+    //personajes[uuid].material.dispose()
+    personajes[uuid].remove(personajes[uuid].children[0]);
+    personajes[uuid].remove(personajes[uuid].children[1]);
+    personajes[uuid].remove(personajes[uuid].children[2]);
 	edges.scene.remove(personajes[uuid])
 	edges.renderer.renderLists.dispose()
 
@@ -948,8 +952,8 @@ function addUser(event) {
         });
        */
 
-    /*
-    var loader = new THREE.GLTFLoader();
+   
+    var loader = new GLTFLoader();
 
     loader.load(
 	// resource URL
@@ -958,22 +962,32 @@ function addUser(event) {
 	function ( gltf ) {
 	    
 	    gltf.scene.scale.set(10,10,10) // scale here
-	    gltf.scene.position.set(0, 0, 0); 
-	    //scene.add( gltf.scene );
-	    personajes[uuid] = gltf.scene; 
 	    
-	    //gltf.animations; // Array<THREE.AnimationClip>
-	    //gltf.scene; // THREE.Group
-	    //gltf.scenes; // Array<THREE.Group>
-	    //gltf.cameras; // Array<THREE.Camera>
-	    //gltf.asset; // Object
+	    gltf.scene.position.x = position.x;
+	    gltf.scene.position.y = position.y-10;
+	    gltf.scene.position.z = position.z;
+
+	    edges.scene.add( gltf.scene );
+	    personajes[uuid] = gltf.scene;
+
+	     if(uuid == 'me'){
+		edges.camera.position.x = position.x
+		edges.camera.position.y = position.y
+		edges.camera.position.z = position.z
+        }
+
+	    
+	    gltf.animations; // Array<THREE.AnimationClip>
+	    gltf.scene; // THREE.Group
+	    gltf.scenes; // Array<THREE.Group>
+	    gltf.cameras; // Array<THREE.Camera>
+	    gltf.asset; // Object
 	    
 	},
     );
-    */
     
-    edges.scene.add( mimir );
-    personajes[uuid] = mimir
+    //edges.scene.add( mimir );
+    //personajes[uuid] = mimir
 
 }
 
