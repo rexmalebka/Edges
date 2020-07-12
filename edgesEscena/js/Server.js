@@ -3,6 +3,7 @@ export const Users = {}
 export const Server = {
 	init: function(){
 		let uuid = Math.random().toString(16).substr(2);
+		let nickname = "anon-"+Math.random().toString(16).slice(2,6)
 		
 		if(!localStorage.getItem("uuid")){
 			localStorage.setItem("uuid", uuid)
@@ -10,12 +11,16 @@ export const Server = {
 			uuid = localStorage.getItem("uuid")
 		}
 		
-		if(!Users.me){
-			Users.me = new User(uuid, "anon-"+Math.random().toString(16).slice(2,6), {x:0, y:0, z:0}, {x:0, y:0, z:0}); 
-			dispatchEvent(Users.me.add)
+		if(!localStorage.getItem("nickname")){
+			localStorage.setItem("nickname", nickname)
+		}else{
+			nickname = localStorage.getItem("nickname")
 		}
-
-		const nickname = Users.me.nickname;
+		
+		if(!Users.me){
+			Users.me = new User(uuid, nickname, {x:0, y:10, z:0}, {x:0, y:0, z:0}); 
+		}
+		
 		const position = Users.me.position;
 		const rotation = Users.me.rotation;
 		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
@@ -42,10 +47,19 @@ export const Server = {
 				Server.socket.emit("rotate", [rotation.x, rotation.y, rotation.z])
 			};
 			*/
-			Users.me.rename = function(name){
-				Users.me.nickname = name;
-				Server.socket.emit("rename", name)
+			Users.me.rename = function(nickname){
+				console.log("AAAAAAAAA", nickname)
+				nickname = nickname.replace( /^(\s\n)+/g, '');
+				nickname = nickname.replace(/(\s|\n)+$/,'')
+				
+				if(nickname.length == 0) return false
+				if(nickname == Users.me.nickname) return false
+				Server.socket.emit("rename", nickname)
+				Users.me.renameUser.detail.oldNickname = Users.me.nickname
+				Users.me.renameUser.detail.newNickname = nickname
 				dispatchEvent(Users.me.renameUser)
+				Users.me.nickname = nickname;
+				return true
 			}
 
 			dispatchEvent(Users.me.add)
@@ -110,8 +124,10 @@ export const Server = {
 			const uuid = data[0];
 			const nickname = data[1];
 			console.info(`user '${Users[uuid]}' renamed to '${nickname}'`)
-			Users[uuid].nickname = nickname
+			Users[uuid].renameUser.detail.oldNickname = Users[uuid].nickname
+			Users[uuid].renameUser.detail.newNickname = nickname
 			dispatchEvent(Users[uuid].renameUser)
+			Users[uuid].nickname = nickname
 		});
 		server.on("chat", function(msg){
 			const from = msg[0];
@@ -134,7 +150,6 @@ export function chat(msg){
 	msg = msg.replace( /^(\s\n)+/g, '');
 	msg = msg.replace(/(\s|\n)+$/,'')
 
-	console.debug(`${msg}"`,"**")
 	if(msg.length == 0) return
 
 	Server.socket.emit("chat", msg)
@@ -147,7 +162,12 @@ export function chat(msg){
 	dispatchEvent(chatEvent);
 	chatEvent = null
 }
+function toHex(uuid){
+	let a = uuid.split('').map( x => x.charCodeAt())
+	console.debug(a)
+
+}
 
 window.Server = Server
 window.Users = Users
-
+window.toHex = toHex

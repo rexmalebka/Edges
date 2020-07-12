@@ -1,19 +1,14 @@
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
-import {GLTFLoader} from '/js/three/examples/jsm/loaders/GLTFLoader.js'; 
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users, chat} from '/js/Server.js';
-import { Fire } from '/js/Fire.js'; 
-
-// Aqui?
-
 const personajes = {}
 const edges = {
 	init: function(){
 		this.scene = new THREE.Scene()
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1500)
-		this.camera.position.z = 800;
+		this.camera.position.z = 400;
 		//this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 		this.renderer  = new THREE.WebGLRenderer({ antialias: true })
 
@@ -40,10 +35,11 @@ const edges = {
 		this.addFloor();
 
 		this.addCiudad();
-		//this.addHuachimontones();
+		this.addHuachimontones();
 
-		this.addZordon();
-		this.addScreen
+	    this.addZordon();
+	    this.addScreen(); 
+	    this.addVideo();
 
 		this.addLightCiudad();
 		this.addLightHuachimontones();
@@ -51,6 +47,7 @@ const edges = {
 		//this.addAudio()
 	        this.addScreen()
 	        this.mkSat()
+	    
 
 		this.animate();
 
@@ -84,7 +81,7 @@ const edges = {
 		//texture.wrapT = THREE.RepeatWrapping;
 	
 		
-		var floorTexture = new THREE.TextureLoader().load( 'img/texture.jpg', function ( floorTexture ) {
+		var floorTexture = new THREE.TextureLoader().load( 'img/after.jpg', function ( floorTexture ) {
 			floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 			floorTexture.offset.set( 0, 0 );
 			floorTexture.repeat.set( 40, 40 );
@@ -93,7 +90,7 @@ const edges = {
 		let floorMaterial = new THREE.MeshStandardMaterial( {
 			color: 0xffffff,
 			metalness: 0.5,
-			roughness: 0.85,
+			roughness: 0.65,
 			map: floorTexture,
                         //transparent: true,
                         //opacity: 0.75,
@@ -107,14 +104,14 @@ const edges = {
 		floor.position.y = -4;
 
                 this.scene.add( floor );
-            // this.scene.add (wetfloor);
+                this.scene.add (wetfloor);
 	},
 	addLightHuachimontones: function(){
 
-		this.light1 = new THREE.PointLight(0xa58ea8, 0.5)
-		this.light2 = new THREE.PointLight(0x7d2f74, 0.5)
-		this.light3 = new THREE.PointLight(0x2a315b, 0.5)
-		this.light4 = new THREE.PointLight(0x4484b0, 0.5)
+		this.light1 = new THREE.PointLight(0x63a4c6, 0.125)
+		this.light2 = new THREE.PointLight(0xb2cadf, 0.125)
+		this.light3 = new THREE.PointLight(0x3e689f, 0.125)
+		this.light4 = new THREE.PointLight(0x9360c8, 0.125)
 	
 		this.scene.add( this.light1 )
 		this.scene.add( this.light2 )
@@ -123,30 +120,29 @@ const edges = {
 
 	},
 	addLightCiudad: function(){
-		this.clight1 = new THREE.PointLight(0xa58ea8, 0.5)
-		this.clight2 = new THREE.PointLight(0x7d2f74, 0.5)
-		this.clight3 = new THREE.PointLight(0x2a315b, 0.5)
-		this.clight4 = new THREE.PointLight(0x4484b0, 0.5)
+		this.clight1 = new THREE.PointLight(0x63a4c6, 0.125)
+		this.clight2 = new THREE.PointLight(0xb2cadf, 0.125)
+		this.clight3 = new THREE.PointLight(0x3e689f, 0.125)
+		this.clight4 = new THREE.PointLight(0x9360c8, 0.125)
 		
 		this.scene.add( this.clight1 )
 		this.scene.add( this.clight2 )
 		this.scene.add( this.clight3 )
 		this.scene.add( this.clight4 )
 	},
-    addHuachimontones: function(){
-
-	/*
+	addHuachimontones: function(){
 		let pilaresMaterial = new THREE.MeshBasicMaterial( {
 			color: 0xffffff,
 			envMap: this.scene.background,
 			refractionRatio: 0.75
 		} );
 		
-		const pilaresGeometry = new THREE.BoxGeometry(20, 20, 20);
-		let tam;
-		for(let i = 0; i < 100 ; i ++){
+	    const pilaresGeometry = new THREE.BoxGeometry(40, 40, 40);
+	    let tam;
+	    
+	    for(let i = 0; i < 50 ; i ++){
 			const cube = new THREE.Mesh( pilaresGeometry, pilaresMaterial );
-			cube.position.x = Math.random() * 800 - 400;
+			cube.position.x = 600 - Math.random() * 400 ;
 			//cube[i].position.y = Math.random() * 400 -200;
 			cube.position.z = Math.random() * 800 - 900;
 			tam = Math.random() * 100;
@@ -154,24 +150,47 @@ const edges = {
 			cube.scale.y = tam;
 			cube.scale.z = 0.2;
 			this.scene.add(cube);
-		}
-	*/
+	    }
+
+	    
+	    for(let i = 0; i < 50 ; i ++){
+		const cube = new THREE.Mesh( pilaresGeometry, pilaresMaterial );
+		cube.position.x = -600 + Math.random() * 400 ;
+		//cube[i].position.y = Math.random() * 400 -200;
+		cube.position.z = Math.random() * 800 - 900;
+		tam = Math.random() * 100;
+		cube.scale.x = 0.2;
+		cube.scale.y = tam;
+		cube.scale.z = 0.2;
+		this.scene.add(cube);
+	    }
+
+	    
+	    
+	    for(let i = 0; i < 25 ; i ++){
+		const cube = new THREE.Mesh( pilaresGeometry, pilaresMaterial );
+		cube.position.x = -300+Math.random() * 600 ;
+		//cube[i].position.y = Math.random() * 400 -200;
+		cube.position.z = Math.random() * 800 - 1500;
+		tam = Math.random() * 100;
+		cube.scale.x = 0.2;
+		cube.scale.y = tam;
+		cube.scale.z = 0.2;
+		this.scene.add(cube);
+	    }
+
+	   
 	},
 	addCiudad: function(){
-		//let cityLoader = new THREE.TextureLoader();
+		let cityLoader = new THREE.TextureLoader();
 		
-		//let cityGeometry = new THREE.BoxGeometry(10, 10, 10);
-
-	    let cityGeometry = new THREE.TorusKnotBufferGeometry(15, 0.5, 100, 16 );
-
-/*	    
+		let cityGeometry = new THREE.BoxGeometry(10, 10, 10);
+		
 		let cityTexture = cityLoader.load( 'img/after.jpg', function ( cityTexture ) {
 			cityTexture.wrapS = cityTexture.wrapT = THREE.RepeatWrapping;
 			cityTexture.offset.set( 0, 0 );
 			cityTexture.repeat.set( 0.5, 0.5 );
 		});
-
-*/
 		
 		var cityMaterial = new THREE.MeshStandardMaterial( {
 			
@@ -187,34 +206,33 @@ const edges = {
 		let tam;
 
 
-	    		      for(var i = 0; i < 20; i++){
-			  for(var j = 0; j < 20; j++){
+	    		      for(var i = 0; i < 10; i++){
+			  for(var j = 0; j < 18; j++){
 			      var city = new THREE.Mesh( cityGeometry, cityMaterial );
 			      //city.wireframe = true;
 			      //city.wireframeLinewidth = 2; 
-			      tam = Math.random() * 320; 
+			      tam = Math.random() * 300; 
 			      
-			      city.position.x = i * 100 - 1000; 
-			      city.position.z = j* 100 - 1000;
+			      city.position.x = i * 50 - 650; 
+			      city.position.z = j* 50 + 200;
 			      city.position.y = tam  ; 
 			      city.scale.x = 3;
 			      city.scale.y = 3;
 			      city.scale.z = 3; 
-			      city.rotation.x = Math.PI /2 * Math.random(); 
+			      
 			      this.scene.add( city);
 			  }
 		      }
-
-	    /*
+		      
 		      for(var i = 0; i < 10; i++){
-			  for(var j = 0; j < 12; j++){
+			  for(var j = 0; j < 18; j++){
 			      var city = new THREE.Mesh( cityGeometry, cityMaterial);
 			      //city.wireframe = true;
 			      //city.wireframeLinewidth = 2; 
-			      tam = Math.random() * 160; 
+			      tam = Math.random() * 300; 
 			      
 			      city.position.x = i * 50+200; 
-			      city.position.z = j*50+400;
+			      city.position.z = j*50+200;
 			      city.position.y = tam; 
 			      city.scale.x = 3;
 			      city.scale.y = 3;
@@ -224,7 +242,7 @@ const edges = {
 			  }
 		      }
 
-	    */
+
 
 	},
 	addZordon: function(){
@@ -233,8 +251,8 @@ const edges = {
 		
 		this.zordonMaterial = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
-			//metalness: 0.2,
-			//roughness: 0.6,
+			//metalness: 0.6,
+			//roughness: 0.7, 
                         map: this.zordonTexture,
                         side: THREE.DoubleSide,
                         //castShadow: false,
@@ -251,7 +269,8 @@ const edges = {
 	},
 	addAudio: function(element){
 		let fftSize = 2048;
-		const listener = new THREE.AudioListener();
+
+	       const listener = new THREE.AudioListener();
 		//camera.add( listener ); // Si es positionalAudio
 		
 		const audio = new THREE.Audio( listener );
@@ -264,21 +283,27 @@ const edges = {
                 audio.setMediaElementSource(  element );
 
 	    /*
-		let aSourceMaterial = new THREE.MeshStandardMaterial( {
+		let aSourceMaterial = new THREE.MeshBasicMaterial( {
 			color: 0xffffff,
 			envMap: this.scene.background,
 			refractionRatio: 0.75
 		} );
-	    */
+		
+		let aSourceGeometry = new THREE.BoxGeometry(20, 20, 20);
+		let aSource = new THREE.Mesh( aSourceGeometry, aSourceMaterial );
 
+	    */
 	    
-	    this.analyser = new THREE.AudioAnalyser( audio, fftSize );
+                //aSource.add( positionalAudio ); // asociar el audio a una fuente
+
+                // this.scene.add(aSource);
+                this.analyser = new THREE.AudioAnalyser( audio, fftSize );
 		
 		
 		/////////// 
 		
-		let audioSphere =  new THREE.SphereGeometry(200, 32, 32);
-		let audioSphereOrg =  new THREE.SphereGeometry(200, 32, 32);
+		let audioSphere =  new THREE.SphereGeometry(60, 32, 32);
+		let audioSphereOrg =  new THREE.SphereGeometry(60, 32, 32);
 		
 		
 		var audioMaterial = new THREE.MeshStandardMaterial({
@@ -293,9 +318,9 @@ const edges = {
 		sphere.geometry.verticesNeedUpdate = true;
                 sphere.geometry.normalsNeedUpdate = true;
                       
-                sphere.position.z = -400;
-                sphere.position.y = 100; 
-            //sphere.rotation.x = Math.PI ;     
+                sphere.position.z = -500;
+                sphere.position.y = 300; 
+                      
                 this.scene.add(sphere);
 		
 		this.sphere = sphere
@@ -309,8 +334,6 @@ const edges = {
 			refractionRatio: 0.95
 		} );
 
-
-	    /*
 		let geometryCli, cil1;
 
 		for(let i = 1; i < 14; i++){
@@ -322,100 +345,76 @@ const edges = {
 			this.scene.add( cil1 );
 		}
 
-	    */
+
+
+
 	},
 
-    addScreen: function(){
+    addVideo: function(){
 
-	this.clock = new THREE.Clock();
-	
-	var fireLoader = new THREE.TextureLoader();
-	//fireLoader.crossOrigin = '';
-	
-	var fireTex = fireLoader.load("/img/mor.png");
-	
-	    var wireframeMat = new THREE.MeshBasicMaterial({
-		color : new THREE.Color(0xffffff),
-		wireframe : true
-	    });
+	for(var i = 1; i < 10; i++){
 
-
-	this.fire = new Fire(fireTex);
+	    var video = document.getElementById( 'video'+i );
+	    video.play();
+	    video.addEventListener('play', function() {
+		this.currentTime = 3;
+	    }, false);
 	
-	var wireframe = new THREE.Mesh(this.fire.geometry, wireframeMat.clone());
-	this.fire.add(wireframe);
-	wireframe.visible = true;
-	wireframe.visible = false;
-	
-	console.log(this.fire);
-	//this.fire.position.set(0, 0, 0);
-	this.fire.position.y = 160;
-	this.fire.position.x = -200; 
-	this.fire.scale.x = 180;
-	this.fire.scale.y = 300;
-	this.fire.scale.z = 180; 
-	
-	this.fire.matrixWorldNeedsUpdate = true; 
-
-	this.scene.add(this.fire);
-
-	this.fire2 = new Fire(fireTex);
-	
-	var wireframe = new THREE.Mesh(this.fire2.geometry, wireframeMat.clone());
-	this.fire2.add(wireframe);
-	wireframe.visible = true;
-	wireframe.visible = false;
-	
-	console.log(this.fire);
-	//this.fire.position.set(0, 0, 0);
-	this.fire2.position.y = 160;
-	this.fire2.position.x = 200; 
-	this.fire2.scale.x = 180;
-	this.fire2.scale.y = 300;
-	this.fire2.scale.z = 180; 
-	
-	this.fire2.matrixWorldNeedsUpdate = true; 
-
-	this.scene.add(this.fire2);
-
-	
-	var aSourceMaterial = new THREE.MeshStandardMaterial( {
+	    let texture = new THREE.VideoTexture( video );
 	    
-	    color: 0xffffff,
-	    metalness: 0.9,
-	    roughness: 0.49,
-            //envmap: scene.background,
-            //side: THREE.DoubleSide,
-            // map: cityTexture,
-            //transparent: true,
-            //opacity: 0.75,
-        } );
-	
-	let aSourceGeometry = new THREE.BoxGeometry(100, 20, 100);
+	    let videoGeometry = new THREE.PlaneGeometry(60, 60, 4);
+	    let videoMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
+	    
+	    let videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
 
-        //aSource.add( positionalAudio ); // asociar el audio a una fuente
+	    videoMesh.position.x = 80*i-400; 	    
+	    videoMesh.position.z = 100; 
+	    videoMesh.position.y = 40; 
+	    
+	    edges.scene.add(videoMesh);
 
-	for(var i = 0; i < 2; i++){
-	    let aSource = new THREE.Mesh( aSourceGeometry, aSourceMaterial );
-	    aSource.position.x = -600 + ((i+1) *400);
-	 
-            this.scene.add(aSource);
-	 
+	    
 	}
-
 	    
-	let screensGeometry = new THREE.PlaneGeometry( 400, 200, 8 );
 	
-	let screen;
+	    
+	
+
+	
+	/*
+	var video2 = document.getElementById( 'video2' );
+	video2.play();
+	video2.addEventListener('play', function() {
+	    this.currentTime = 3;
+	}, false);
+	
+	let texture2 = new THREE.VideoTexture( video2 );
+
+	let videoGeometry2 = new THREE.PlaneGeometry(100, 100, 8);
+	let videoMaterial2 = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture2 } );
+
+	let videoMesh2 = new THREE.Mesh(videoGeometry2, videoMaterial2);
+	videoMesh2.position.x = -100; 
+	edges.scene.add(videoMesh2);
+	*/
+
+    },
+    
+
+	addScreen: function(){
+
+	    let screensGeometry = new THREE.PlaneGeometry( 100, 50, 8 );
+
+	    let screen;
 	    
 		for(let i = 0; i < 3; i++){		
 		    screen = new THREE.Mesh(screensGeometry, this.zordonMaterial);
 		    
 		    screen.position.z = 200 + ((i+1)*200);
-		    screen.position.x = 40+(((3-i)+1)*150);
-		    screen.position.y = 100;
+		    screen.position.x = 150;
+		    screen.position.y = 25;
 		    
-		    screen.rotation.y = -Math.PI; 
+		    screen.rotation.y = -Math.PI /2; 
 		    
                     this.scene.add(screen);
 		}
@@ -425,10 +424,10 @@ const edges = {
 		    screen = new THREE.Mesh(screensGeometry, this.zordonMaterial);
 
 		    screen.position.z = 200 + ((i+1)*200);
-		    screen.position.x = -40+(((3-i)+1)* -150);
-		    screen.position.y = 100;
+		    screen.position.x = -150;
+		    screen.position.y = 25;
 		    
-		    screen.rotation.y = -Math.PI; 
+		    screen.rotation.y = Math.PI /2; 
 
 		    this.scene.add(screen);
 		}
@@ -437,7 +436,7 @@ const edges = {
 
 
     mkSat: function(){
-/*
+
 	// Satelite
 
 	let group = new THREE.Group();
@@ -471,82 +470,167 @@ const edges = {
 		      } );
 		      
 
-		      var satHeadGeometry = new THREE.SphereBufferGeometry(25, 8, 6, 0, 2*Math.PI, 0, 0.5 * Math.PI);
+	var satHeadGeometry = new THREE.SphereBufferGeometry(25, 8, 6, 0, 2*Math.PI, 0, 0.5 * Math.PI);
 
-		      var satHeadGeometry2 = new THREE.SphereGeometry(4, 20, 20);
-
-		      var satHeadMesh2 = new THREE.Mesh(satHeadGeometry2, satHeadMaterial); 
-
-		      satHeadMesh2.position.z = 55;
-		      satHeadMesh2.position.y = 40; 
-		      
-		      group.add(satHeadMesh2); 
-
-		      var satHeadMesh = new THREE.Mesh(satHeadGeometry, satHeadMaterial);
-
-		      satHeadMesh.position.y = 40; 
-		      satHeadMesh.position.z = 45;
-		      satHeadMesh.rotation.x = -Math.PI /2; 
-
-		      group.add(satHeadMesh); 
-
-
-		       var satWingsMaterial = new THREE.MeshStandardMaterial( {
-			  color: 0x3377FF,
-			  envMap: this.scene.background,
-			  side: THREE.DoubleSide,
-			  metalness: 0.7,
-			  roughness: 0.1
-			  //refractionRatio: 0.75
-		      } );
-		      
-		      var satWingsGeometry = new THREE.PlaneGeometry(20, 40, 10);
-
-
-		      for(var i = 0; i < 5; i++){
-			  
-		      var satWingsMesh = new THREE.Mesh(satWingsGeometry, satWingsMaterial);
-
-
-			  satWingsMesh.position.z = 0;
-			  
-			  satWingsMesh.position.y = 40;
-			  satWingsMesh.position.x = 25 + (i*25); 
-			  //satWingsMesh.rotation.x = -Math.PI / 2; 
-			  group.add(satWingsMesh); 
-
-		      }
-
-		      
-		      for(var i = 0; i < 5; i++){
-			  
-		      var satWingsMesh = new THREE.Mesh(satWingsGeometry, satWingsMaterial);
-
-
-			  satWingsMesh.position.z = 0; 
-			  satWingsMesh.position.y = 40;
-			  satWingsMesh.position.x = -25 + (i*-25); 
-			  //satWingsMesh.rotation.x = -Math.PI / 2; 
-			  group.add(satWingsMesh); 
-
-		      }
+	var satHeadGeometry2 = new THREE.SphereGeometry(4, 20, 20);
 
 	
-		      for(var i = 0; i < 4; i++){
-			  edges.sats[i] = group.clone(); 
-			  edges.sats[i].scale.x = 0.4; 
-			  edges.sats[i].scale.y = 0.4;
-			  edges.sats[i].scale.z = 0.4; 
-			  this.scene.add(edges.sats[i]);
-		      }
+	var satHeadGeometry3 = new THREE.SphereGeometry(8, 20, 20);
 
-*/
+	
+	var satHeadMesh2 = new THREE.Mesh(satHeadGeometry2, satHeadMaterial); 
+
+	
+	satHeadMesh2.position.z = 55;
+	satHeadMesh2.position.y = 40; 
+	
+	group.add(satHeadMesh2); 
+	
+	var satHeadMesh = new THREE.Mesh(satHeadGeometry, satHeadMaterial);
+	
+	satHeadMesh.position.y = 40; 
+	satHeadMesh.position.z = 45;
+	satHeadMesh.rotation.x = -Math.PI /2; 
+	
+	group.add(satHeadMesh); 
+	
+	var satHeadMaterial2 = new THREE.MeshBasicMaterial({ color: 0xffffff })
+	var satHeadMesh3 = new THREE.Mesh(satHeadGeometry3, satHeadMaterial2);
+
+	satHeadMesh3.position.z = 55;
+	satHeadMesh3.position.y = 40;
+	satHeadMesh3.position.x = 40;
+
+	group.add(satHeadMesh3); 
+
+	
+	var satWingsMaterial = new THREE.MeshStandardMaterial( {
+	    color: 0x3377FF,
+	    envMap: this.scene.background,
+	    side: THREE.DoubleSide,
+	    metalness: 0.7,
+	    roughness: 0.1
+	    //refractionRatio: 0.75
+	} );
+	
+	var satWingsGeometry = new THREE.PlaneGeometry(20, 40, 10);
+	
+	
+	for(var i = 0; i < 5; i++){
+			  
+	    var satWingsMesh = new THREE.Mesh(satWingsGeometry, satWingsMaterial);
+	    
+	    
+	    satWingsMesh.position.z = 0;
+	    
+	    satWingsMesh.position.y = 40;
+	    satWingsMesh.position.x = 25 + (i*25); 
+	    //satWingsMesh.rotation.x = -Math.PI / 2; 
+	    group.add(satWingsMesh); 
+	    
+	}
+	
+
+	
+
+	
+	for(var i = 0; i < 5; i++){
+	    
+	    var satWingsMesh = new THREE.Mesh(satWingsGeometry, satWingsMaterial);
+
+	    
+	    satWingsMesh.position.z = 0; 
+	    satWingsMesh.position.y = 40;
+	    satWingsMesh.position.x = -25 + (i*-25); 
+	    //satWingsMesh.rotation.x = -Math.PI / 2; 
+	    group.add(satWingsMesh); 
+
+	}
+
+
+	
+	var sphereSats = new THREE.BoxGeometry( 20, 20, 16 );
+	var material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+	
+	
+	// Sonidos
+	
+	var listener = new THREE.AudioListener();
+	edges.camera.add( listener );
+	
+	var audioLoader = new THREE.AudioLoader();
+	
+	var sound1 = new THREE.PositionalAudio( listener );
+	var sound2 = new THREE.PositionalAudio( listener );
+	var sound3 = new THREE.PositionalAudio( listener );	    
+	var sound4 = new THREE.PositionalAudio( listener );
+	
+	
+	audioLoader.load( '/audio/0.mp3', function( buffer ) {
+	    sound1.setBuffer( buffer );
+	    sound1.setLoop(true);
+	    sound1.setRefDistance( 80 );
+	    sound1.play();
+	    sound1.setVolume(1);
+	    });
+	
+	
+	audioLoader.load( '/audio/1.mp3', function( buffer ) {
+	    sound2.setBuffer( buffer );
+	    sound2.setLoop(true);
+	    sound2.setRefDistance( 80 );
+	    sound2.play();
+	    sound2.setVolume(1);
+	});
+
+	
+	audioLoader.load( '/audio/2.mp3', function( buffer ) {
+	    sound3.setBuffer( buffer );
+	    sound3.setLoop(true);
+	    sound3.setRefDistance( 80 );
+	    sound3.play();
+	    sound3.setVolume(1);
+	});
+
+	
+	audioLoader.load( '/audio/3.mp3', function( buffer ) {
+	    sound4.setBuffer( buffer );
+	    sound4.setLoop(true);
+	    sound4.setRefDistance( 80 );
+	    sound4.play();
+	    sound4.setVolume(1);
+	});
+	
+	
+	    
+	
+	for(var i = 0; i < 4; i++){
+
+	    edges.sats[i] = group.clone();
+	    	    
+	    //edges.sats[i].add( sound ); 
+
+	    edges.sats[i].scale.x = 0.4; 
+	    edges.sats[i].scale.y = 0.4;
+	    edges.sats[i].scale.z = 0.4;
+	    
+	    this.scene.add(edges.sats[i]);
+	 
+	}
+
+	
+	edges.sats[0].add( sound1 );	
+	edges.sats[1].add( sound2 );
+	edges.sats[2].add( sound3 );
+	edges.sats[3].add( sound4 );
+	
+	
+
     },
 
     moveSat: function(){
 
-	/*
-	var time = Date.now() * 0.0005;
+		var time = Date.now() * 0.0005;
 
 	
 	for(var i = 0; i < 4; i++){
@@ -568,7 +652,7 @@ const edges = {
 	edges.sats[3].position.x = Math.sin( time * 0.3/2 ) * 400;
 	edges.sats[3].position.y = 500+Math.cos( time * 0.7/2 ) * 50;
 	edges.sats[3].position.z = 800+Math.sin( time * 0.5/2 ) * 400;
-*/
+
 	
     },
     
@@ -578,57 +662,49 @@ const edges = {
 		
 		for (let i = 0, len = edges.audioSphere.vertices.length; i < len; i++) {
 			//audioSphere.vertices[i].y = audioSphereOrg.vertices[i].y;
-                        edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i] / 256) ;
-                        edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i] / 256);
-                        edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i] / 256);
+                        edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i%128] / 128) ;
+                        edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 128);
+                        edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 128);
 		}
 
 	},
 	moveLight: function(){
-	    var time = Date.now() * 0.0005;
+		var time = Date.now() * 0.0005;
 		
-	    edges.light1.position.x = Math.sin( time * 0.7 ) * 260;
-	    edges.light1.position.y = 150 +Math.cos( time * 0.5 ) * 80+10;
-	    edges.light1.position.z = Math.cos( time * 0.3 ) * 60 -500;
-	    
-	    edges.light2.position.x = Math.cos( time * 0.3 ) * 260;
-	    edges.light2.position.y = 150+Math.sin( time * 0.5 ) * 80 + 10;
-	    edges.light2.position.z = Math.sin( time * 0.7 ) * 60 -500;
-	    
-	    edges.light3.position.x = Math.sin( time * 0.7 ) * 230;
-	    edges.light3.position.y = 150+Math.cos( time * 0.3 ) * 40 + 10;
-	    edges.light3.position.z = Math.sin( time * 0.5 ) * 30 -500;
-	    
-	    edges.light4.position.x = Math.sin( time * 0.3 ) * 230;
-	    edges.light4.position.y = 150+Math.cos( time * 0.7 ) * 40 + 10;
-	    edges.light4.position.z = Math.sin( time * 0.5 ) * 30 -500;
-	    
-            // City lights
-	    
-	    edges.clight1.position.x = Math.sin( time * 0.7/2 ) * 400;
-	    edges.clight1.position.y = 500 +Math.cos( time * 0.5/2 ) * 50;
-	    edges.clight1.position.z = 800+Math.cos( time * 0.3/2 ) * 400;
+		edges.light1.position.x = Math.sin( time * 0.7 ) * 260;
+		edges.light1.position.y = 150 +Math.cos( time * 0.5 ) * 80+10;
+		edges.light1.position.z = Math.cos( time * 0.3 ) * 60 -500;
 	
-            edges.clight2.position.x = Math.cos( time * 0.3/2 ) * 400;
-            edges.clight2.position.y = 500+Math.sin( time * 0.5/2 ) * 50;
-	    edges.clight2.position.z = 800+Math.sin( time * 0.7/2 ) * 400;
-	    
-	    edges.clight3.position.x = Math.cos( time * 0.7/2 ) * 400;
-	    edges.clight3.position.y = 500+Math.cos( time * 0.3/2 ) * 50;
-	    edges.clight3.position.z = 800+Math.sin( time * 0.5/2 ) * 400;
-	    
-	    edges.clight4.position.x = Math.sin( time * 0.3/2 ) * 400;
-	    edges.clight4.position.y = 500+Math.cos( time * 0.7/2 ) * 50;
-	    edges.clight4.position.z = 800+Math.sin( time * 0.5/2 ) * 400;
+		edges.light2.position.x = Math.cos( time * 0.3 ) * 260;
+		edges.light2.position.y = 150+Math.sin( time * 0.5 ) * 80 + 10;
+		edges.light2.position.z = Math.sin( time * 0.7 ) * 60 -500;
 
-	    var delta = edges.clock.getDelta();
-	    
-	    //var t = clock.elapsedTime * controller.speed;
-	    var t = edges.clock.elapsedTime;
-	    edges.fire.update(t);
-	    edges.fire2.update(t);
-	    
-	    
+		edges.light3.position.x = Math.sin( time * 0.7 ) * 230;
+		edges.light3.position.y = 150+Math.cos( time * 0.3 ) * 40 + 10;
+		edges.light3.position.z = Math.sin( time * 0.5 ) * 30 -500;
+
+		edges.light4.position.x = Math.sin( time * 0.3 ) * 230;
+		edges.light4.position.y = 150+Math.cos( time * 0.7 ) * 40 + 10;
+		edges.light4.position.z = Math.sin( time * 0.5 ) * 30 -500;
+
+                // City lights
+
+	edges.clight1.position.x = Math.sin( time * 0.7/2 ) * 400;
+	edges.clight1.position.y = 500 +Math.cos( time * 0.5/2 ) * 50;
+	edges.clight1.position.z = 800+Math.cos( time * 0.3/2 ) * 400;
+	
+        edges.clight2.position.x = Math.cos( time * 0.3/2 ) * 400;
+        edges.clight2.position.y = 500+Math.sin( time * 0.5/2 ) * 50;
+	edges.clight2.position.z = 800+Math.sin( time * 0.7/2 ) * 400;
+	
+	edges.clight3.position.x = Math.cos( time * 0.7/2 ) * 400;
+	edges.clight3.position.y = 500+Math.cos( time * 0.3/2 ) * 50;
+	edges.clight3.position.z = 800+Math.sin( time * 0.5/2 ) * 400;
+	
+	edges.clight4.position.x = Math.sin( time * 0.3/2 ) * 400;
+	edges.clight4.position.y = 500+Math.cos( time * 0.7/2 ) * 50;
+	edges.clight4.position.z = 800+Math.sin( time * 0.5/2 ) * 400;
+
 	},
 	move: function(){
 		const delta = 0.015
@@ -832,8 +908,16 @@ function onLock(){
 }
 
 function onUnlock(){
-	document.querySelector("#instructions").style.display = "block";
-	document.querySelector("#blocker").style.display = "";
+        if(document.activeElement == document.querySelector("#inputMensaje")){
+		// mostrarChat()
+		document.querySelector("#inputMensaje").blur()
+		document.querySelector("#chat").style.display = 'none'
+		document.querySelector("body").focus();
+		edges.controls.lock()
+	}else{
+		document.querySelector("#instructions").style.display = "block";
+		document.querySelector("#blocker").style.display = "";
+	}
 }
 
 function putChat(){
@@ -902,11 +986,8 @@ function moveUser(event) {
 
 function removeUser(event) {
 	const uuid = event.detail.uuid
-	//personajes[uuid].geometry.dispose()
-    //personajes[uuid].material.dispose()
-    personajes[uuid].remove(personajes[uuid].children[0]);
-    personajes[uuid].remove(personajes[uuid].children[1]);
-    personajes[uuid].remove(personajes[uuid].children[2]);
+	personajes[uuid].geometry.dispose()
+	personajes[uuid].material.dispose()
 	edges.scene.remove(personajes[uuid])
 	edges.renderer.renderLists.dispose()
 
@@ -922,6 +1003,7 @@ function addUser(event) {
 		uuid = event.detail.uuid
 	}
   
+	console.log("adding user:", uuid)
         const position = Users[uuid].position
 	
 	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
@@ -939,93 +1021,26 @@ function addUser(event) {
 
 	document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
 
-    /// Aquí va el avatar
-    
-       /* 
-	// model
-	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	var loader = new THREE.FBXLoader();
-	loader.load( '/models/fbx/monito.fbx', function ( object ) {
-                personajes[uuid] = object
-                console.log("UWU")
+	//edges.scene.add( mimir );
+	personajes[uuid] = mimir
 
-        });
-       */
+}
 
-    var loader2 = new THREE.FontLoader();
-
-    var loader = new GLTFLoader();
-
-    loader.load(
-	// resource URL
-	'models/hand.glb',
-	// called when the resource is loaded
-	function ( gltf ) {
-
-
-	    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-
-		var matDark = new THREE.LineBasicMaterial( {
-		    color: 0xffffff,
-		    side: THREE.DoubleSide
-		} );
-		
+function renameUser(event){
+	let oldNickname = event.detail.oldNickname
+	let newNickname = event.detail.newNickname
+	content = `Usuarix "${oldNickname}" se llama ahora "${newNickname}"`
+	console.debug(content, '<-')
+	const mensaje = document.createElement('div')
+	mensaje.classList.add('mensaje')
 	
-		var message = "Pedro Navajas";
-		
-		var shapes = font.generateShapes( message, 0.25 );
-		
-		var geometry = new THREE.ShapeBufferGeometry( shapes );
-		
-		geometry.computeBoundingBox();
-		
-		var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-		
-		geometry.translate( xMid, 0, 0 );
-		
-		var text = new THREE.Mesh( geometry, matDark );
-
-
-		text.position.x = position.x;
-		text.position.y = position.y+2;
-		text.position.z = position.z;
-				
-		gltf.scene.add( text ); 
+	const contenido = document.createElement('span')
+	contenido.classList.add('log')
+	contenido.textContent = content
 	
-	    }); 
-
-	    
-	    gltf.scene.scale.set(10,10,10) // scale here
-	    
-	    gltf.scene.position.x = position.x;
-	    gltf.scene.position.y = position.y-10;
-	    gltf.scene.position.z = position.z;
-
-	    edges.scene.add( gltf.scene );
-	    personajes[uuid] = gltf.scene;
-
-	     if(uuid == 'me'){
-		edges.camera.position.x = position.x
-		edges.camera.position.y = position.y
-		edges.camera.position.z = position.z
-             }
-
-	    
-
-
-	    
-	    gltf.animations; // Array<THREE.AnimationClip>
-	    gltf.scene; // THREE.Group
-	    gltf.scenes; // Array<THREE.Group>
-	    gltf.cameras; // Array<THREE.Camera>
-	    gltf.asset; // Object
-	    
-	},
-    );
-    
-    //edges.scene.add( mimir );
-    //personajes[uuid] = mimir
-
+	mensaje.appendChild(contenido)
+	
+	document.querySelector('#mensajes').appendChild(mensaje)
 }
 
 function cambiarNombre(e) {
@@ -1040,8 +1055,8 @@ function cambiarNombre(e) {
 
 function cambiarNombrebutton (e) {
 	e.preventDefault()
-	Users.me.rename(document.querySelector("#usuarix").value)
-	document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
+	console.log("000", document.querySelector("#usuarix").value)
+	if(Users.me.rename(document.querySelector("#usuarix").value)) 	document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
 }
 
 
@@ -1052,10 +1067,10 @@ function mandarMensaje(e) {
 	inputMensaje.textContent = ''
 }
 
-document.querySelector("#mostrarChat").addEventListener('click', function (e) {
+function mostrarChat(e) {
 	e.preventDefault()
 	document.querySelector("#chat").style.display = document.querySelector("#chat").style.display == 'none' ? '' : 'none'
-})
+}
 
 inputMensaje.addEventListener('input', function (e) {
   if (inputMensaje.textContent.length > 248) {
@@ -1072,12 +1087,22 @@ document.querySelector("#instructions").addEventListener('click', ()=> edges.con
 document.querySelector('#cambiarNombre').addEventListener('click', cambiarNombrebutton)
 document.querySelector('#mandarMensaje').addEventListener('click', mandarMensaje)
 
+document.querySelector("#mostrarChat").addEventListener('click', mostrarChat)
+
+
 window.addEventListener('addUser', addUser)
 window.addEventListener('removeUser', removeUser)
 window.addEventListener('moveUser', moveUser)
+window.addEventListener('renameUser', renameUser)
+
 window.addEventListener('putChat', putChat)
 
-
+window.addEventListener('blur', function(e){
+	if(!edges.controls.isLocked) return
+	document.querySelector("#chat").style.display = 'none'
+	document.querySelector("#instructions").style.display = "block";
+	document.querySelector("#blocker").style.display = "";
+})
 edges.init();
 Server.init();
 
