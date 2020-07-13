@@ -26,8 +26,7 @@ const edges = {
 			'pz.jpg',
 			'nz.jpg'
 		]);
-		
-		
+				
 		let light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.05 );
 		light.position.set( 0, 30, 0 );
 		this.scene.add( light );
@@ -41,15 +40,16 @@ const edges = {
 	    this.addScreen(); 
 	    this.addVideo();
 
-		this.addLightCiudad();
-		this.addLightHuachimontones();
-
-		//this.addAudio()
-	        this.addScreen()
-	        this.mkSat()
+	    this.addLightCiudad();
+	    this.addLightHuachimontones();
+	    this.mkAvatar(); 
 	    
-
-		this.animate();
+	    //this.addAudio()
+	    this.addScreen()
+	    this.mkSat()
+	    
+	    
+	    this.animate();
 
 		window.addEventListener('resize', onWindowResize);
 		this.controls.addEventListener('lock', onLock )
@@ -81,12 +81,12 @@ const edges = {
 		//texture.wrapT = THREE.RepeatWrapping;
 	
 		
-		var floorTexture = new THREE.TextureLoader().load( 'img/after.jpg', function ( floorTexture ) {
-			floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-			floorTexture.offset.set( 0, 0 );
-			floorTexture.repeat.set( 40, 40 );
-		});
-		
+	    var floorTexture = new THREE.TextureLoader().load( 'img/city6.jpg', function ( floorTexture ) {
+		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+		floorTexture.offset.set( 0, 0 );
+		floorTexture.repeat.set( 40, 40 );
+	    });
+	    
 		let floorMaterial = new THREE.MeshStandardMaterial( {
 			color: 0xffffff,
 			metalness: 0.5,
@@ -350,6 +350,81 @@ const edges = {
 
 	},
 
+    mkAvatar: function(){
+
+	let group = new THREE.Group();
+	let avatar = new THREE.Group();	
+	
+	var texture = new THREE.TextureLoader().load( 'img/avTex4.jpg', function ( floorTexture ) {
+	    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	    floorTexture.offset.set( 0.6, 0.6 );
+	    floorTexture.repeat.set( 1, 1 );
+	});
+	
+	let avbodyMaterial = new THREE.MeshBasicMaterial( {
+	    color: 0xffffff,
+	    //metalness: 0.9,
+	    //roughness: 0.8,
+	    map: texture,
+            //transparent: true,
+            //opacity: 0.75,
+        });
+	
+	
+	var avbodyGeometry = new THREE.CylinderGeometry( 1.5, 0.5, 6, 32 );
+	//var avbodyMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+	var avbodyMesh = new THREE.Mesh(avbodyGeometry, avbodyMaterial);  
+
+	avbodyMesh.position.y = 4;
+	group.add(avbodyMesh);
+
+
+	var avheadMaterial = new THREE.MeshStandardMaterial({
+	    color: 0xffffff,
+	    metalness: 0.8,
+	    roughness: 0.5,
+            //envMap: scene.background,
+            // 
+        });
+          
+	
+	var avheadGeometry = new THREE.SphereGeometry( 1.75, 10, 10 );
+	//var avheadMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	var avheadSphere = new THREE.Mesh( avheadGeometry, avbodyMaterial );
+
+	avheadSphere.position.y = 10;
+	group.add(avheadSphere); 
+
+
+	var aveyeGeometry = new THREE.SphereGeometry( 0.7, 10, 10 );
+	var aveyeMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+	var aveyeSphere = new THREE.Mesh( aveyeGeometry, aveyeMaterial );
+
+	aveyeSphere.position.y = 10;
+	aveyeSphere.position.z = 1.7;
+
+	aveyeSphere.scale.y = 0.5;
+	aveyeSphere.scale.z = 0.25; 
+
+	group.add(aveyeSphere);
+	
+	var aveye2Geometry = new THREE.SphereGeometry( 0.2, 10, 10 );
+	var aveye2Material = new THREE.MeshBasicMaterial( {color: 0x00000} );
+	var aveye2Sphere = new THREE.Mesh( aveye2Geometry, aveye2Material );
+
+	aveye2Sphere.position.y = 10;
+	aveye2Sphere.position.z = 1.9;
+
+	//aveyeSphere.scale.y = 0.5;
+	aveye2Sphere.scale.z = 0.25; 
+
+	group.add(aveye2Sphere); 
+
+	edges.scene.add(group); 
+	
+    },
+ 
+    
     addVideo: function(){
 
 	for(var i = 1; i < 10; i++){
@@ -363,13 +438,13 @@ const edges = {
 	    let texture = new THREE.VideoTexture( video );
 	    
 	    let videoGeometry = new THREE.PlaneGeometry(60, 60, 4);
-	    let videoMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
+	    let videoMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
 	    
 	    let videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
 
 	    videoMesh.position.x = 80*i-400; 	    
 	    videoMesh.position.z = 100; 
-	    videoMesh.position.y = 40; 
+	    videoMesh.position.y = 30; 
 	    
 	    edges.scene.add(videoMesh);
 
@@ -655,17 +730,17 @@ const edges = {
 
 	
     },
-    
-	moveAudioSphere: function(){
-		let data = edges.analyser.getFrequencyData();
-		edges.sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
-		
-		for (let i = 0, len = edges.audioSphere.vertices.length; i < len; i++) {
-			//audioSphere.vertices[i].y = audioSphereOrg.vertices[i].y;
-                        edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i%128] / 128) ;
-                        edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 128);
-                        edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 128);
-		}
+   
+    moveAudioSphere: function(){
+	let data = edges.analyser.getFrequencyData();
+	edges.sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
+	
+	for (let i = 0, len = edges.audioSphere.vertices.length; i < len; i++) {
+	    //audioSphere.vertices[i].y = audioSphereOrg.vertices[i].y;
+            edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i%128] / 128) ;
+            edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 128);
+            edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 128);
+	}
 
 	},
 	moveLight: function(){
