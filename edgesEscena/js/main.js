@@ -353,7 +353,7 @@ const edges = {
     mkAvatar: function(){
 
 	let group = new THREE.Group();
-	let avatar = new THREE.Group();	
+	this.avatar = new THREE.Group();	
 	
 	var texture = new THREE.TextureLoader().load( 'img/avTex4.jpg', function ( floorTexture ) {
 	    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
@@ -420,7 +420,8 @@ const edges = {
 
 	group.add(aveye2Sphere); 
 
-	edges.scene.add(group); 
+	//edges.scene.add(group); 
+	this.avatar = group.clone(); 
 	
     },
  
@@ -796,11 +797,11 @@ const edges = {
 		if (edges.moveForward || edges.moveBackward || edges.moveLeft || edges.moveRight) {
 			const camPos = edges.camera.position
 			Users.me.position.x = camPos.x
-			Users.me.position.y = camPos.y
+			//Users.me.position.y = camPos.y
 			Users.me.position.z = camPos.z
 			
 			personajes.me.position.x = camPos.x
-			personajes.me.position.y = camPos.y
+			//personajes.me.position.y = camPos.y 
 			personajes.me.position.z = camPos.z
 			if(!edges.moving){
 				edges.stoping = false
@@ -1025,12 +1026,12 @@ function moveUser(event) {
 	const uuid = event.detail.uuid
 	const newPos = {
 		x: Users[uuid].position.x,
-		y: Users[uuid].position.y,
+	    y: 0,// Users[uuid].position.y,
 		z: Users[uuid].position.z
 	}
 	const oldPos = {
 		x: personajes[uuid].position.x,
-		y: personajes[uuid].position.y,
+	    y: 0,//personajes[uuid].position.y,
 		z: personajes[uuid].position.z
 	}
 
@@ -1043,9 +1044,9 @@ function moveUser(event) {
 
 	
 	function interpolate (i) {
-		personajes[uuid].position.x = oldPos.x + (dx * i / mi) 
-    personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
-    personajes[uuid].position.z = oldPos.z + (dz * i / mi) 
+	    personajes[uuid].position.x = oldPos.x + (dx * i / mi) 
+	    personajes[uuid].position.y = oldPos.y + (dy * i / mi) 
+	    personajes[uuid].position.z = oldPos.z + (dz * i / mi) 
   }
   const intfunc = setInterval(function () {
     i++
@@ -1060,11 +1061,21 @@ function moveUser(event) {
 }
 
 function removeUser(event) {
-	const uuid = event.detail.uuid
-	personajes[uuid].geometry.dispose()
-	personajes[uuid].material.dispose()
-	edges.scene.remove(personajes[uuid])
-	edges.renderer.renderLists.dispose()
+    const uuid = event.detail.uuid
+
+    personajes[uuid].remove(personajes[uuid].children[0]);
+    personajes[uuid].remove(personajes[uuid].children[1]); 
+    personajes[uuid].remove(personajes[uuid].children[2]); 
+    personajes[uuid].remove(personajes[uuid].children[3]); 
+    personajes[uuid].remove(personajes[uuid].children[4]); 
+     
+    edges.scene.remove(personajes[uuid])
+
+    //personajes[uuid].geometry.dispose()
+    //personajes[uuid].material.dispose()
+    //	edges.scene.remove(personajes[uuid])
+
+    edges.renderer.renderLists.dispose()
 
 	delete personajes[uuid]
 	document.querySelector("#numUsuarios").textContent = Object.keys(personajes).length
@@ -1080,31 +1091,171 @@ function addUser(event) {
   
 	console.log("adding user:", uuid)
         const position = Users[uuid].position
-	
+
+    /*
 	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
 	const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
 	const mimir = new THREE.Mesh(geom, mat)
 	
 	mimir.position.x = position.x
 	mimir.position.y = position.y
-	mimir.position.z = position.z
-        if(uuid == 'me'){
-		edges.camera.position.x = position.x
-		edges.camera.position.y = position.y
-		edges.camera.position.z = position.z
-        }
+    mimir.position.z = position.z
 
-	document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
+    */
+    
+    edges.avatar.position.x = position.x;
+    edges.avatar.position.y = position.y;
+    edges.avatar.position.z = position.z;
 
-	//edges.scene.add( mimir );
-	personajes[uuid] = mimir
 
+    //var text; 
+    var loader2 = new THREE.FontLoader();
+
+    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+	let monito = edges.avatar.clone();
+
+        var matDark = new THREE.LineBasicMaterial( {
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+	    transparent: true,
+	    opacity: 0.5
+        } );
+	
+	
+        var message = Users[uuid].nickname;
+	
+        var shapes = font.generateShapes( message, 2 );
+	
+        var geometry = new THREE.ShapeBufferGeometry( shapes );
+	
+        geometry.computeBoundingBox();
+	
+        var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+	
+        geometry.translate( xMid, 0, 0 );
+	
+        var text = new THREE.Mesh( geometry, matDark );
+	
+	
+        text.position.x = position.x;
+        text.position.y = position.y+20;
+        text.position.z = position.z;
+    
+        monito.add( text.clone() );
+
+	edges.scene.add( monito );
+	personajes[uuid] = monito;
+
+    	
+    });
+
+    if(uuid == 'me'){
+	edges.camera.position.x = position.x
+	edges.camera.position.y = 14
+	edges.camera.position.z = position.z
+    }
+    
+    document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
+
+    //edges.scene.add( mimir );
+    // personajes[uuid] = mimir
+    
 }
 
 function renameUser(event){
+
+    let uuid
+    if (event.detail.uuid === Users.me.uuid) {
+	uuid = 'me'
+    } else {
+	uuid = event.detail.uuid
+    }
+    
+    console.log("adding user:", uuid)
+    const position = personajes[uuid].position
+
+    personajes[uuid].remove(personajes[uuid].children[0]);
+    personajes[uuid].remove(personajes[uuid].children[1]); 
+    personajes[uuid].remove(personajes[uuid].children[2]); 
+    personajes[uuid].remove(personajes[uuid].children[3]); 
+    personajes[uuid].remove(personajes[uuid].children[4]); 
+     
+    edges.scene.remove(personajes[uuid])
+
+
+    /*
+	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
+	const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
+	const mimir = new THREE.Mesh(geom, mat)
+	
+	mimir.position.x = position.x
+	mimir.position.y = position.y
+    mimir.position.z = position.z
+
+    */
+    
+    //edges.avatar.position.x = position.x;
+    //edges.avatar.position.y = position.y;
+    //edges.avatar.position.z = position.z;
+
+
+    //var text; 
+    var loader2 = new THREE.FontLoader();
+
+    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+	
+	let monito = edges.avatar.clone();
+
+	monito.position.x = position.x;
+	monito.position.y = position.y;
+	monito.position.z = position.z;
+	
+	
+        var matDark = new THREE.LineBasicMaterial( {
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+	    transparent: true,
+	    opacity: 0.5
+        } );
+	
+        var message = Users[uuid].nickname;
+	
+        var shapes = font.generateShapes( message, 2 );
+	
+        var geometry = new THREE.ShapeBufferGeometry( shapes );
+	
+        geometry.computeBoundingBox();
+	
+        var xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+	
+        geometry.translate( xMid, 0, 0 );
+	
+        var text = new THREE.Mesh( geometry, matDark );
+	
+	
+        text.position.x = position.x;
+        text.position.y = position.y+20;
+        text.position.z = position.z;
+    
+        monito.add( text.clone() );
+
+	edges.scene.add( monito );
+	personajes[uuid] = monito;
+
+    	
+    });
+
+    if(uuid == 'me'){
+	edges.camera.position.x = position.x
+	edges.camera.position.y = 14
+	edges.camera.position.z = position.z
+    }
+
+    
 	let oldNickname = event.detail.oldNickname
 	let newNickname = event.detail.newNickname
-	content = `Usuarix "${oldNickname}" se llama ahora "${newNickname}"`
+	let content = `Usuarix "${oldNickname}" se llama ahora "${newNickname}"`
 	console.debug(content, '<-')
 	const mensaje = document.createElement('div')
 	mensaje.classList.add('mensaje')
@@ -1115,7 +1266,10 @@ function renameUser(event){
 	
 	mensaje.appendChild(contenido)
 	
-	document.querySelector('#mensajes').appendChild(mensaje)
+    document.querySelector('#mensajes').appendChild(mensaje)
+
+    personajes[uuid].remove(personajes[uuid].children[4]); 
+
 }
 
 function cambiarNombre(e) {

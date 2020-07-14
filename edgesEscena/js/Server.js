@@ -18,14 +18,14 @@ export const Server = {
 		}
 		
 		if(!Users.me){
-			Users.me = new User(uuid, nickname, {x:0, y:10, z:0}, {x:0, y:0, z:0}); 
+			Users.me = new User(uuid, nickname, {x:0, y:0, z:0}, {x:0, y:0, z:0}); 
 		}
 		
 		const position = Users.me.position;
 		const rotation = Users.me.rotation;
 		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
 //		  myIo = io('https://www.example.com.br:3009', { secure: true, reconnect: true, rejectUnauthorized: false });
-		this.socket = io("134.122.28.24", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
+		this.socket = io("edges.piranhalab.cc", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
 		const server = this.socket;
 
 		server.on("connect", function(){

@@ -253,7 +253,7 @@ const edges = {
 		let fftSize = 2048;
 		const listener = new THREE.AudioListener();
 		//camera.add( listener ); // Si es positionalAudio
-		
+		o
 		const audio = new THREE.Audio( listener );
 
                 //var audio = new THREE.PositionalAudio( listener ); // Sustituir por Three.audio
