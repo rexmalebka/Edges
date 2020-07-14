@@ -100,6 +100,12 @@ export const Server = {
 			delete Users[uuid];
 		});
 
+	    server.on("changeTex", function(data){
+		const uuid = data[0];
+		const textura = data[1];
+		dispatchEvent(Users[uuid].changeTex)
+	    });
+
 		server.on("move", function(data){
 			const uuid = data[0];
 			const position = {

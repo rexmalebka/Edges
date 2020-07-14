@@ -5,27 +5,6 @@ import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users, chat} from '/js/Server.js';
 const personajes = {}
 
-let alarma = setInterval(function(){
-    
-    var today = new Date();
-    var utcdate = today.getUTCDate();
-    var utchours = today.getUTCHours();
-    var utcminutes = today.getUTCMinutes();
-
-    //var myVar = setInterval(myTimer, 1000);
-    
-    if(utcdate >= 14 && utchours >= 6 && utcminutes >=55 ){
-	console.log("ya paso");
-	clearInterval(alarma);
-	edges.sound1.stop();
-	edges.sound2.stop();
-	edges.sound3.stop();
-	edges.sound4.stop(); 
-
-	
-    }
-    
-}, 2000)
 
 const edges = {
 	init: function(){
@@ -393,18 +372,42 @@ const edges = {
 
 	let group = new THREE.Group();
 	this.avatar = new THREE.Group();	
-	
-	var texture = new THREE.TextureLoader().load( 'img/avTex4.jpg', function ( floorTexture ) {
+
+	    var texture1 = new THREE.TextureLoader().load( 'img/avTex1.jpg', function ( floorTexture ) {
+		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+		floorTexture.offset.set( 0.6, 0.6 );
+		floorTexture.repeat.set( 1, 1 );
+	    });
+	    
+	    
+	    var texture2 = new THREE.TextureLoader().load( 'img/avTex2.jpg', function ( floorTexture ) {
+		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+		floorTexture.offset.set( 0.6, 0.6 );
+		floorTexture.repeat.set( 1, 1 );
+	    });
+	    
+	    
+	    var texture3 = new THREE.TextureLoader().load( 'img/avTex3.jpg', function ( floorTexture ) {
 	    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-	    floorTexture.offset.set( 0.6, 0.6 );
-	    floorTexture.repeat.set( 1, 1 );
+		floorTexture.offset.set( 0.6, 0.6 );
+		floorTexture.repeat.set( 1, 1 );
+	    });
+	    
+	    
+	    var texture4 = new THREE.TextureLoader().load( 'img/avTex4.jpg', function ( floorTexture ) {
+		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+		floorTexture.offset.set( 0.6, 0.6 );
+		floorTexture.repeat.set( 1, 1 );
 	});
+
+	
+	this.texturas = {"avTex1.jpg": texture1, "avTex2.jpg": texture2, "avTex3.jpg": texture3, "avTex4.jpg": texture4}
 	
 	let avbodyMaterial = new THREE.MeshBasicMaterial( {
 	    color: 0xffffff,
 	    //metalness: 0.9,
 	    //roughness: 0.8,
-	    map: texture,
+	    map: texture1,
             //transparent: true,
             //opacity: 0.75,
         });
@@ -985,6 +988,29 @@ function onLoadMedia(){
     edges.sound2.play();
     edges.sound3.play();
     edges.sound4.play(); 
+
+
+    let alarma = setInterval(function(){
+	
+	var today = new Date();
+	//var utcdate = today.getUTCDate();
+	//var utchours = today.getUTCHours();
+	//var utcminutes = today.getUTCMinutes();
+	var fechaGmt = new Date(Date.UTC(20, 7, 14, 9, 0, 0));
+
+	//var myVar = setInterval(myTimer, 1000);
+        
+	console.log(); 
+	if( today >= fechaGmt ){
+	    console.log("ya paso");
+	    clearInterval(alarma);
+	    edges.sound1.stop();
+	    edges.sound2.stop();
+	    edges.sound3.stop();
+	    edges.sound4.stop(); 	
+	}
+	
+    }, 2000)
     
 	let audio = new Audio('http://134.122.125.230:8001/distopia.ogg');
 	audio.crossOrigin = "anonymous";
@@ -1374,6 +1400,33 @@ function mostrarChat(e) {
 	document.querySelector("#chat").style.display = document.querySelector("#chat").style.display == 'none' ? '' : 'none'
 }
 
+function selTex(e) {
+    e.preventDefault()
+    document.querySelector("#textura2").style.display = document.querySelector("#textura2").style.display == 'none' ? '' : 'none'
+    document.querySelector("#textura3").style.display = document.querySelector("#textura3").style.display == 'none' ? '' : 'none'
+    document.querySelector("#textura4").style.display = document.querySelector("#textura4").style.display == 'none' ? '' : 'none'
+    
+}
+
+function changeTex(e) {
+    e.preventDefault()
+    var c = document.querySelector("#textura1").src 
+    var l = e.target.src.split('/')
+
+    document.querySelector("#textura1").src  = e.target.src
+    e.target.src = c
+    // console.log(c)
+    
+    // Cambiar textura del mono en cuestión
+    // personajes.me.algo que es la textura
+
+    personajes.me.children[0].material.map = edges.texturas[l[ l.length -1 ]]
+    personajes.me.children[1].material.map = edges.texturas[l[ l.length -1 ]]
+
+    Server.socket.emit('changeTex', l[l.length-1]); 
+    
+}
+
 inputMensaje.addEventListener('input', function (e) {
   if (inputMensaje.textContent.length > 248) {
     inputMensaje.textContent = inputMensaje.textContent.slice(0, 248)
@@ -1390,6 +1443,12 @@ document.querySelector('#cambiarNombre').addEventListener('click', cambiarNombre
 document.querySelector('#mandarMensaje').addEventListener('click', mandarMensaje)
 
 document.querySelector("#mostrarChat").addEventListener('click', mostrarChat)
+
+document.querySelector("#textura1").addEventListener('click', selTex)
+
+document.querySelector("#textura2").addEventListener('click', changeTex)
+document.querySelector("#textura3").addEventListener('click', changeTex)
+document.querySelector("#textura4").addEventListener('click', changeTex)
 
 
 window.addEventListener('addUser', addUser)

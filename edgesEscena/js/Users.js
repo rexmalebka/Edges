@@ -3,7 +3,8 @@ export class User {
                 this.uuid = uuid;
                 this.nickname = nickname;
                 this.position = position;
-                this.rotation = rotation;
+            this.rotation = rotation;
+	    this.textura = 'avTex1.jpg';
                 this.moving = {
                         frontal: false,
                         left: false,
@@ -51,7 +52,18 @@ export class User {
                 detail:{
                     uuid: uuid
                 }
+
+		
             })
+
+	    this.changeTex = new CustomEvent('changeTex', {
+                detail:{
+                    uuid: uuid
+                }
+		
+		
+            })
+	    
         }
 };
 
