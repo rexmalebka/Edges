@@ -1,0 +1,142 @@
+body{
+	margin: 0;
+	padding:0;
+	overflow: hidden;
+}
+
+#blocker {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+#distopia{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	position:absolute;
+	z-index: -1;
+}
+
+#query{
+	width: 100%;
+	background-color: rgba(0,0,0,0.5);
+	display: inline;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 14px;
+	line-height: 24px;
+	float: right;
+}
+
+#instructions {
+	width: 100%;
+	height: 80%;
+
+	display: -webkit-box;
+	display: -moz-box;
+
+	-webkit-box-orient: horizontal;
+	-moz-box-orient: horizontal;
+	box-orient: horizontal;
+	-webkit-box-pack: center;
+	-moz-box-pack: center;
+	box-pack: center;
+
+	-webkit-box-align: center;
+	-moz-box-align: center;
+	box-align: center;
+
+	color: #ffffff;
+	text-align: center;
+	font-family: Arial;
+	font-size: 14px;
+	line-height: 24px;
+
+	cursor: pointer;
+}
+
+#query div{
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 14px;
+	line-height: 24px;
+	cursor: pointer;
+	text-align: right;
+	padding: 1em;
+}
+
+button{
+	color: #ffffff;
+	background-color: rgba(0,0,0);
+	padding: 0.5em;
+	border:none;
+}
+
+#query input{
+	color: #ffffff;
+	background-color: rgba(0,0,0);
+	padding: 0.5em;
+	border-radius:1em;
+}
+
+
+#chat{
+	width:25%;
+	height:45%;
+	background-color: rgba(0,0,0,0.5);
+	right:0px;
+	bottom:10%;
+	position:absolute;
+	color: #ffffff;
+	padding:0.25em;
+}
+
+.nombre{
+	color: yellow;
+	margin-right: 1em;
+}
+
+#inputChat{
+	position:absolute;
+	bottom:0px;
+	margin-bottom:2em;
+	width:80%;
+}
+
+#inputMensaje{
+	width:70%;
+	float: left;
+	resize:none;
+	border: 2px solid white;
+	border-radius:0.5em;
+	margin-bottom:1em;
+	padding:0.5em;
+	word-break:break-all;
+	background-color: black;
+	white-space:pre-line;
+}
+
+#mensajes{
+	white-space:pre-line;
+	word-break:break-all;
+	position:relative;
+	height:80%;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+	bottom:2em;
+}
+
+#numUsuariosLabel{
+	float: left;
+	margin-left: 4em;
+
+}
+
+.log{
+	color:greenyellow;
+}
+
+.contenido {
+	line-height:1.2em;
+}

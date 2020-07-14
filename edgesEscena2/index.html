@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Edges</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div id="blocker">
+
+
+			<div id="query">
+				<div>
+					<label for="" id=numUsuariosLabel><span id="numUsuarios"></span> conectados </label>
+					<label for="usuarix">Nombre de usuarix</label>
+					<input type="text" required id="usuarix"></input> 
+					<button type="button" disabled id="cambiarNombre">cambiar</button>
+					<button type="button" id="mostrarChat">chat</button>
+				</div>
+			</div>
+			<div id="instructions">
+				<span style="font-size:36px">EDGES - Click para iniciar/pausar</span>
+				<br /><br />
+				Movimiento: WASD<br/>
+				Salto: SPACE<br/>
+				Mirada: MOUSE
+			</div>
+			
+		</div>
+		<div id="distopia"></div>
+		<div id="chat" style="display:none;">
+			<div id="mensajes"></div>
+			<div id="inputChat">
+				<span id="mostrarUsuarix"></span>
+				<div>
+					<div contenteditable id="inputMensaje"></div>
+					<button type="button" id="mandarMensaje">mandar</button>
+				</div>
+			</div>
+		</div>
+		
+		<video id="streaming-video" muted style='display: none;'></video>
+		
+		<video id="video1" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/1.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+		<video id="video2" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/2.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+		
+		<video id="video3" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/3.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+		
+		<video id="video4" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/4.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+		<video id="video5" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/5.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+		
+		<video id="video6" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/6.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+		
+		<video id="video7" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/7.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+		
+		<video id="video8" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/8.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+		
+		<video id="video9" loop crossOrigin="anonymous" playsinline style="display:none" muted="muted">
+		    <source src="video/9.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+
+
+
+		
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+		<script type="module" src="js/main.js"></script>
+	</body>
+</html>
