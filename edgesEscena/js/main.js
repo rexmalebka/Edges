@@ -4,6 +4,29 @@ import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockCo
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users, chat} from '/js/Server.js';
 const personajes = {}
+
+let alarma = setInterval(function(){
+    
+    var today = new Date();
+    var utcdate = today.getUTCDate();
+    var utchours = today.getUTCHours();
+    var utcminutes = today.getUTCMinutes();
+
+    //var myVar = setInterval(myTimer, 1000);
+    
+    if(utcdate >= 14 && utchours >= 6 && utcminutes >=55 ){
+	console.log("ya paso");
+	clearInterval(alarma);
+	edges.sound1.stop();
+	edges.sound2.stop();
+	edges.sound3.stop();
+	edges.sound4.stop(); 
+
+	
+    }
+    
+}, 2000)
+
 const edges = {
 	init: function(){
 		this.scene = new THREE.Scene()
@@ -282,6 +305,8 @@ const edges = {
 
                 audio.setMediaElementSource(  element );
 
+	        this.analyser = new THREE.AudioAnalyser( audio, fftSize );
+
 	    /*
 		let aSourceMaterial = new THREE.MeshBasicMaterial( {
 			color: 0xffffff,
@@ -297,9 +322,23 @@ const edges = {
                 //aSource.add( positionalAudio ); // asociar el audio a una fuente
 
                 // this.scene.add(aSource);
-                this.analyser = new THREE.AudioAnalyser( audio, fftSize );
-		
-		
+/*
+            this.analyser = new THREE.AudioAnalyser( audio, fftSize );
+
+	    var today = new Date();
+	    var utcdate = today.getUTCDate();
+	    var utchours = today.getUTCHours();
+	    var utcminutes = today.getUTCHours();
+
+	    
+	    var myVar = setInterval(myTimer, 1000);
+
+	    
+	    if(utcdate >= 14 || utchours >= 6  || utcminutes >=40 ){
+		console.log(hours);
+	
+	    }
+*/
 		/////////// 
 		
 		let audioSphere =  new THREE.SphereGeometry(60, 32, 32);
@@ -636,45 +675,44 @@ const edges = {
 	
 	var audioLoader = new THREE.AudioLoader();
 	
-	var sound1 = new THREE.PositionalAudio( listener );
-	var sound2 = new THREE.PositionalAudio( listener );
-	var sound3 = new THREE.PositionalAudio( listener );	    
-	var sound4 = new THREE.PositionalAudio( listener );
+	this.sound1 = new THREE.PositionalAudio( listener );
+	this.sound2 = new THREE.PositionalAudio( listener );
+	this.sound3 = new THREE.PositionalAudio( listener );	    
+	this.sound4 = new THREE.PositionalAudio( listener );
 	
 	
 	audioLoader.load( '/audio/0.mp3', function( buffer ) {
-	    sound1.setBuffer( buffer );
-	    sound1.setLoop(true);
-	    sound1.setRefDistance( 80 );
-	    sound1.play();
-	    sound1.setVolume(1);
+	    edges.sound1.setBuffer( buffer );
+	    edges.sound1.setLoop(true);
+	    edges.sound1.setRefDistance( 80 );
+	    //edges.sound1.play();
+	    edges.sound1.setVolume(1);
 	    });
 	
 	
 	audioLoader.load( '/audio/1.mp3', function( buffer ) {
-	    sound2.setBuffer( buffer );
-	    sound2.setLoop(true);
-	    sound2.setRefDistance( 80 );
-	    sound2.play();
-	    sound2.setVolume(1);
+	    edges.sound2.setBuffer( buffer );
+	    edges.sound2.setLoop(true);
+	    edges.sound2.setRefDistance( 80 );
+	    //edges.sound2.play();
+	    edges.sound2.setVolume(1);
 	});
 
 	
 	audioLoader.load( '/audio/2.mp3', function( buffer ) {
-	    sound3.setBuffer( buffer );
-	    sound3.setLoop(true);
-	    sound3.setRefDistance( 80 );
-	    sound3.play();
-	    sound3.setVolume(1);
+	    edges.sound3.setBuffer( buffer );
+	    edges.sound3.setLoop(true);
+	    edges.sound3.setRefDistance( 80 );
+	    //edges.sound3.play();
+	    edges.sound3.setVolume(1);
 	});
-
 	
 	audioLoader.load( '/audio/3.mp3', function( buffer ) {
-	    sound4.setBuffer( buffer );
-	    sound4.setLoop(true);
-	    sound4.setRefDistance( 80 );
-	    sound4.play();
-	    sound4.setVolume(1);
+	    edges.sound4.setBuffer( buffer );
+	    edges.sound4.setLoop(true);
+	    edges.sound4.setRefDistance( 80 );
+	    //edges.sound4.play();
+	    edges.sound4.setVolume(1);
 	});
 	
 	
@@ -695,10 +733,10 @@ const edges = {
 	}
 
 	
-	edges.sats[0].add( sound1 );	
-	edges.sats[1].add( sound2 );
-	edges.sats[2].add( sound3 );
-	edges.sats[3].add( sound4 );
+	edges.sats[0].add( this.sound1 );	
+	edges.sats[1].add( this.sound2 );
+	edges.sats[2].add( this.sound3 );
+	edges.sats[3].add( this.sound4 );
 	
 	
 
@@ -706,7 +744,7 @@ const edges = {
 
     moveSat: function(){
 
-		var time = Date.now() * 0.0005;
+	var time = Date.now() * 0.0005;
 
 	
 	for(var i = 0; i < 4; i++){
@@ -799,21 +837,28 @@ const edges = {
 			Users.me.position.x = camPos.x
 			//Users.me.position.y = camPos.y
 			Users.me.position.z = camPos.z
-			
+
+		    const rotPos = edges.camera.rotation
+		    //Users.me.rotation.x = rotPos.x
+		    Users.me.rotation.y = rotPos.y
+		    //Users.me.rotation.z = rotPos.z
+		    
 			personajes.me.position.x = camPos.x
 			//personajes.me.position.y = camPos.y 
 			personajes.me.position.z = camPos.z
 			if(!edges.moving){
 				edges.stoping = false
 				edges.moving = setInterval(function(){
-					Users.me.move();
+				    Users.me.move();
+				    Users.me.rotate(); 
 				},400)
 			}
 		}else{
 			clearInterval(edges.moving)
 			if(!edges.stoping && edges.moving){
 				edges.stoping = true
-				Users.me.move()
+			    Users.me.move()
+			    Users.me.rotate()
 			}
 			edges.moving = false
 		
@@ -935,6 +980,12 @@ function onWindowResize() {
 }
 
 function onLoadMedia(){
+
+    edges.sound1.play();
+    edges.sound2.play();
+    edges.sound3.play();
+    edges.sound4.play(); 
+    
 	let audio = new Audio('http://134.122.125.230:8001/distopia.ogg');
 	audio.crossOrigin = "anonymous";
 
@@ -1060,6 +1111,44 @@ function moveUser(event) {
   }, 10)
 }
 
+function rotateUser(event) {
+	const uuid = event.detail.uuid
+	const newPos = {
+	    x: Users[uuid].rotation.x,
+	    y: Users[uuid].rotation.y,
+	    z: Users[uuid].rotation.z
+	}
+	const oldPos = {
+	    x: personajes[uuid].rotation.x,
+	    y: personajes[uuid].rotation.y,
+	    z: personajes[uuid].rotation.z
+	}
+
+	const dx = newPos.x - oldPos.x
+	const dy = newPos.y - oldPos.y
+	const dz = newPos.z - oldPos.z
+
+	const mi = 20
+	let i = 1
+
+	
+	function interpolate (i) {
+	    personajes[uuid].rotation.x = oldPos.x + (dx * i / mi) 
+	    personajes[uuid].rotation.y = oldPos.y + (dy * i / mi) 
+	    personajes[uuid].rotation.z = oldPos.z + (dz * i / mi) 
+  }
+  const intfunc = setInterval(function () {
+    i++
+    interpolate(i)
+    if (i == (mi - 1)) {
+      personajes[uuid].rotation.x = newPos.x
+      personajes[uuid].rotation.y = newPos.y
+      personajes[uuid].rotation.z = newPos.z
+      clearInterval(intfunc)
+    }
+  }, 10)
+}
+
 function removeUser(event) {
     const uuid = event.detail.uuid
 
@@ -1103,10 +1192,9 @@ function addUser(event) {
 
     */
     
-    edges.avatar.position.x = position.x;
-    edges.avatar.position.y = position.y;
-    edges.avatar.position.z = position.z;
-
+    //edges.avatar.position.x = position.x;
+    //edges.avatar.position.y = position.y;
+    //edges.avatar.position.z = position.z;
 
     //var text; 
     var loader2 = new THREE.FontLoader();
@@ -1138,11 +1226,12 @@ function addUser(event) {
         var text = new THREE.Mesh( geometry, matDark );
 	
 	
-        text.position.x = position.x;
+        text.position.x = 0;
         text.position.y = position.y+20;
-        text.position.z = position.z;
-    
-        monito.add( text.clone() );
+        text.position.z = 0;
+
+	text.nick_ = true; 
+        monito.add( text );
 
 	edges.scene.add( monito );
 	personajes[uuid] = monito;
@@ -1175,15 +1264,10 @@ function renameUser(event){
     console.log("adding user:", uuid)
     const position = personajes[uuid].position
 
-    personajes[uuid].remove(personajes[uuid].children[0]);
-    personajes[uuid].remove(personajes[uuid].children[1]); 
-    personajes[uuid].remove(personajes[uuid].children[2]); 
-    personajes[uuid].remove(personajes[uuid].children[3]); 
-    personajes[uuid].remove(personajes[uuid].children[4]); 
-     
-    edges.scene.remove(personajes[uuid])
+    let nickmesh = personajes[uuid].children.filter(x => x.nick_)[0];
 
-
+    personajes[uuid].remove(nickmesh);
+    
     /*
 	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
 	const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
@@ -1204,12 +1288,6 @@ function renameUser(event){
     var loader2 = new THREE.FontLoader();
 
     loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-	
-	let monito = edges.avatar.clone();
-
-	monito.position.x = position.x;
-	monito.position.y = position.y;
-	monito.position.z = position.z;
 	
 	
         var matDark = new THREE.LineBasicMaterial( {
@@ -1233,16 +1311,11 @@ function renameUser(event){
 	
         var text = new THREE.Mesh( geometry, matDark );
 	
-	
-        text.position.x = position.x;
+        text.position.x = 0;
         text.position.y = position.y+20;
-        text.position.z = position.z;
+        text.position.z = 0;
     
-        monito.add( text.clone() );
-
-	edges.scene.add( monito );
-	personajes[uuid] = monito;
-
+	personajes[uuid].add(text);
     	
     });
 
@@ -1322,6 +1395,7 @@ document.querySelector("#mostrarChat").addEventListener('click', mostrarChat)
 window.addEventListener('addUser', addUser)
 window.addEventListener('removeUser', removeUser)
 window.addEventListener('moveUser', moveUser)
+window.addEventListener('rotateUser', rotateUser)
 window.addEventListener('renameUser', renameUser)
 
 window.addEventListener('putChat', putChat)

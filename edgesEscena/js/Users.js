@@ -47,6 +47,11 @@ export class User {
                                 uuid: uuid
                         }
                 })
+	    this.rotateUser = new CustomEvent('rotateUser', {
+                detail:{
+                    uuid: uuid
+                }
+            })
         }
 };
 

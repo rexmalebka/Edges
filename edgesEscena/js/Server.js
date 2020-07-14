@@ -41,12 +41,12 @@ export const Server = {
 				Server.socket.emit("stop", direction)
 			};
 */
-			/*
-			Users.me.rotate = function(rotation){
-				Users.me.rotation = rotation;    
-				Server.socket.emit("rotate", [rotation.x, rotation.y, rotation.z])
+		
+			Users.me.rotate = function(){
+			    const rot = Users.me.rotation;
+			    Server.socket.emit("rotate", [rot.x, rot.y, rot.z])
 			};
-			*/
+		
 			Users.me.rename = function(nickname){
 				console.log("AAAAAAAAA", nickname)
 				nickname = nickname.replace( /^(\s\n)+/g, '');
@@ -111,14 +111,16 @@ export const Server = {
 			Users[uuid].position = position;
 			dispatchEvent(Users[uuid].moveUser);
 		});
-		server.on("rotate", function(data){
+	    server.on("rotate", function(data){
+		console.log("rotandoooooo");
 			const uuid = data[0];
 			const rotation = {
 				x: data[1],
 				y: data[2],
 				z: data[3]
 			};
-			Users[uuid].rotation = rotation;
+		    Users[uuid].rotation = rotation;
+		    dispatchEvent(Users[uuid].rotateUser);
 		});
 		server.on("rename", function(data){
 			const uuid = data[0];
