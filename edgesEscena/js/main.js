@@ -1001,7 +1001,7 @@ function onLoadMedia(){
 	//var utcdate = today.getUTCDate();
 	//var utchours = today.getUTCHours();
 	//var utcminutes = today.getUTCMinutes();
-	var fechaGmt = new Date(Date.UTC(20, 7, 14, 9, 0, 0));
+	var fechaGmt = new Date(Date.UTC(20, 7, 16, 0, 15, 0));
 
 	//var myVar = setInterval(myTimer, 1000);
         
