@@ -188,11 +188,6 @@ const edges = {
 		
 		let cityGeometry = new THREE.BoxGeometry(10, 10, 10);
 		
-		let cityTexture = cityLoader.load( 'img/after.jpg', function ( cityTexture ) {
-			cityTexture.wrapS = cityTexture.wrapT = THREE.RepeatWrapping;
-			cityTexture.offset.set( 0, 0 );
-			cityTexture.repeat.set( 0.5, 0.5 );
-		});
 		
 		var cityMaterial = new THREE.MeshStandardMaterial( {
 			
@@ -226,23 +221,23 @@ const edges = {
 		}
 	    }
 		      
-		      for(var i = 0; i < 10; i++){
-			  for(var j = 0; j < 18; j++){
-			      var city = new THREE.Mesh( cityGeometry, cityMaterial);
-			      //city.wireframe = true;
-			      //city.wireframeLinewidth = 2; 
-			      tam = Math.random() * 300; 
-			      
-			      city.position.x = i * 50+200; 
-			      city.position.z = j*50+200;
-			      city.position.y = tam; 
-			      city.scale.x = 3;
-			      city.scale.y = 3;
-			      city.scale.z = 3; 
-			      
-			      this.scene.add( city);
-			  }
-		      }
+	    for(var i = 0; i < 10; i++){
+		for(var j = 0; j < 18; j++){
+		    var city = new THREE.Mesh( cityGeometry, cityMaterial);
+		    //city.wireframe = true;
+		    //city.wireframeLinewidth = 2; 
+		    tam = Math.random() * 300; 
+		    
+		    city.position.x = i * 50+200; 
+		    city.position.z = j*50+200;
+		    city.position.y = tam; 
+		    city.scale.x = 3;
+		    city.scale.y = 3;
+		    city.scale.z = 3; 
+		    
+		    this.scene.add( city);
+		}
+	    }
 
 
 
@@ -503,9 +498,38 @@ const edges = {
 	    
 	}
 	    
-	
+
+
+	var zgamuTex = new THREE.TextureLoader().load( 'img/zgamu.png', function ( zgamuTexture ) {
+
+	});
 	    
+	let zgamuGeometry = new THREE.PlaneGeometry(60, 60, 4);
+	let zgamuMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: zgamuTex, side: THREE.DoubleSide, transparent: true, overdraw: true } );
 	
+	let zgamuMesh = new THREE.Mesh(zgamuGeometry, zgamuMaterial);
+
+	zgamuMesh.position.x = 400;
+	zgamuMesh.position.z = 100;
+	zgamuMesh.position.y = 30; 
+	
+	edges.scene.add(zgamuMesh); 
+	
+	
+	var martaTex = new THREE.TextureLoader().load( 'img/lv.png', function ( martaTexture ) {
+
+	});
+	    
+	let martaGeometry = new THREE.PlaneGeometry(60, 60, 4);
+	let martaMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: martaTex, side: THREE.DoubleSide, transparent: true, overdraw: true } );
+	
+	let martaMesh = new THREE.Mesh(martaGeometry, martaMaterial);
+
+	martaMesh.position.x = -400;
+	martaMesh.position.z = 100;
+	martaMesh.position.y = 30; 
+	
+	edges.scene.add(martaMesh); 
 
 	
 	/*
