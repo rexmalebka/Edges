@@ -65,7 +65,7 @@ function onKeyDown(event){
 			}else{
 				Chat.chat(document.querySelector('#inputMensaje').innerText)
 				document.querySelector('#inputMensaje').innerHTML = ""
-				Chat.blur();
+				//Chat.blur();
 				event.preventDefault();
 			}
 			break
@@ -94,15 +94,3 @@ document.querySelector('#mandarMensaje').addEventListener('click', function(even
 document.querySelector('#inputMensaje').addEventListener('keydown', onKeyDown, false)
 document.querySelector('#inputMensaje').addEventListener('keyup', onKeyUp, false)
 
-
-document.addEventListener('keyup', function(event){
-	switch (event.key){
-		case 't':
-		case 'T':
-			console.log("asdfsdfs")
-			document.querySelector("#chat").style.display = ''
-			document.querySelector('#inputMensaje').focus()
-			break
-	}
-
-}, false)

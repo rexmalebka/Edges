@@ -4,6 +4,7 @@ export const Server = {
 	init: function(){
 		let uuid = Math.random().toString(16).substr(2);
 		let nickname = "anon-"+Math.random().toString(16).slice(2,6)
+		const texture = "avTex1.jpg"
 		
 		if(!localStorage.getItem("uuid")){
 			localStorage.setItem("uuid", uuid)
@@ -18,12 +19,12 @@ export const Server = {
 		}
 		
 		if(!Users.me){
-			Users.me = new User(uuid, nickname, {x:0, y:0, z:0}, {x:0, y:0, z:0}); 
+			Users.me = new User(uuid, nickname, {x:0, y:0, z:0}, {x:0, y:0, z:0}, texture); 
 		}
 		
 		const position = Users.me.position;
 		const rotation = Users.me.rotation;
-		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z];
+		const query = [uuid, nickname, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, texture];
 //		  myIo = io('https://www.example.com.br:3009', { secure: true, reconnect: true, rejectUnauthorized: false });
 		this.socket = io("edges.piranhalab.cc", {path:"/sockets", query:`user=${JSON.stringify(query)}`});
 		const server = this.socket;
@@ -87,9 +88,10 @@ export const Server = {
 				y: data[6],
 				z: data[7],
 			};
+			const texture = data[8]
 			if(uuid != Users.me.uuid){
 				console.info(`adding user ${uuid} ${position} ${rotation}`)
-				Users[uuid] = new User(uuid, nickname, position, rotation); 
+				Users[uuid] = new User(uuid, nickname, position, rotation, texture); 
 				dispatchEvent(Users[uuid].add)
 			}
 		});
@@ -144,6 +146,20 @@ export const Server = {
 			})
 			dispatchEvent(chatEvent);
 			chatEvent = null
+		});
+		server.on("changeTex", function(msg){
+			const uuid = msg[0];
+			const name = msg[1];
+			console.log(`changing texture ${uuid}: ${name}`)
+
+			let changeTexEvent = new CustomEvent('changeTex', {
+				detail: {
+					uuid: uuid,
+					name: name
+				}
+			})
+			dispatchEvent(changeTexEvent);
+			changeTexEvent = null
 		});
 	},
 }

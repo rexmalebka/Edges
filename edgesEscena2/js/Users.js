@@ -1,9 +1,10 @@
 export class User {
-        constructor(uuid, nickname, position, rotation){
+        constructor(uuid, nickname, position, rotation, texture){
                 this.uuid = uuid;
                 this.nickname = nickname;
                 this.position = position;
                 this.rotation = rotation;
+                this.texture = texture;
                 this.moving = {
                         frontal: false,
                         left: false,
@@ -48,6 +49,11 @@ export class User {
                         }
                 })
 	    this.rotateUser = new CustomEvent('rotateUser', {
+                detail:{
+                    uuid: uuid
+                }
+            })
+	    this.changeTex = new CustomEvent('changeTex', {
                 detail:{
                     uuid: uuid
                 }

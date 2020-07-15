@@ -140,3 +140,20 @@ button{
 .contenido {
 	line-height:1.2em;
 }
+
+#texturasform{
+    
+        color: #ffffff;
+        background-color: rgba(0,0,0);
+        float: left;
+        margin-left: 2em;
+
+}
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
