@@ -1264,6 +1264,7 @@ function addUser(event) {
 	text.nick_ = true; 
         monito.add( text );
 
+	//monito.rotation.y = Math.PI; 
 	edges.scene.add( monito );
 	personajes[uuid] = monito;
 
@@ -1274,6 +1275,7 @@ function addUser(event) {
 	edges.camera.position.x = position.x
 	edges.camera.position.y = 14
 	edges.camera.position.z = position.z
+	edges.camera.rotation.y = Math.PI
     }
     
     document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
