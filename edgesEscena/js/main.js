@@ -208,23 +208,23 @@ const edges = {
 		let tam;
 
 
-	    		      for(var i = 0; i < 10; i++){
-			  for(var j = 0; j < 18; j++){
-			      var city = new THREE.Mesh( cityGeometry, cityMaterial );
-			      //city.wireframe = true;
-			      //city.wireframeLinewidth = 2; 
-			      tam = Math.random() * 300; 
-			      
-			      city.position.x = i * 50 - 650; 
-			      city.position.z = j* 50 + 200;
-			      city.position.y = tam  ; 
-			      city.scale.x = 3;
-			      city.scale.y = 3;
-			      city.scale.z = 3; 
-			      
-			      this.scene.add( city);
-			  }
-		      }
+	    for(var i = 0; i < 10; i++){
+		for(var j = 0; j < 18; j++){
+		    var city = new THREE.Mesh( cityGeometry, cityMaterial );
+		    //city.wireframe = true;
+		    //city.wireframeLinewidth = 2; 
+		    tam = Math.random() * 300; 
+		    
+		    city.position.x = i * 50 - 650; 
+		    city.position.z = j* 50 + 200;
+		    city.position.y = tam  ; 
+		    city.scale.x = 3;
+		    city.scale.y = 3;
+		    city.scale.z = 3; 
+		    
+		    this.scene.add( city);
+		}
+	    }
 		      
 		      for(var i = 0; i < 10; i++){
 			  for(var j = 0; j < 18; j++){
@@ -332,12 +332,23 @@ const edges = {
                         // 
                 });
             
-                let sphere = new THREE.Mesh(audioSphere, this.zordonMaterial);
-		sphere.geometry.verticesNeedUpdate = true;
-                sphere.geometry.normalsNeedUpdate = true;
+            let sphere = new THREE.Mesh(audioSphere, this.zordonMaterial);
+
+
+	    
+	    sphere.geometry.verticesNeedUpdate = true;
+            sphere.geometry.normalsNeedUpdate = true;
+	    
+	    
+	    let sphRotation = setInterval(function(){
+		
+		sphere.rotation.y += 0.001;
+		sphere.rotation.z += 0.001;
+		    
+	    }, 30)
                       
                 sphere.position.z = -500;
-                sphere.position.y = 300; 
+                sphere.position.y = 225; 
                       
                 this.scene.add(sphere);
 		
@@ -399,7 +410,6 @@ const edges = {
 		floorTexture.offset.set( 0.6, 0.6 );
 		floorTexture.repeat.set( 1, 1 );
 	});
-
 	
 	this.texturas = {"avTex1.jpg": texture1, "avTex2.jpg": texture2, "avTex3.jpg": texture3, "avTex4.jpg": texture4}
 	
@@ -410,8 +420,7 @@ const edges = {
 	    map: texture1,
             //transparent: true,
             //opacity: 0.75,
-        });
-	
+        });	
 	
 	var avbodyGeometry = new THREE.CylinderGeometry( 1.5, 0.5, 6, 32 );
 	//var avbodyMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
@@ -586,18 +595,14 @@ const edges = {
 			  roughness: 0.5
 			  //refractionRatio: 0.75
 		      } );
-		      
 
 	var satHeadGeometry = new THREE.SphereBufferGeometry(25, 8, 6, 0, 2*Math.PI, 0, 0.5 * Math.PI);
 
 	var satHeadGeometry2 = new THREE.SphereGeometry(4, 20, 20);
-
 	
 	var satHeadGeometry3 = new THREE.SphereGeometry(8, 20, 20);
-
 	
 	var satHeadMesh2 = new THREE.Mesh(satHeadGeometry2, satHeadMaterial); 
-
 	
 	satHeadMesh2.position.z = 55;
 	satHeadMesh2.position.y = 40; 
@@ -1012,7 +1017,7 @@ function onLoadMedia(){
 	
     }, 2000)
     
-	let audio = new Audio('http://134.122.125.230:8001/distopia.ogg');
+	let audio = new Audio('http://104.248.59.232:8001/distopia.ogg');
 	audio.crossOrigin = "anonymous";
 
 	window.audio=audio
@@ -1035,7 +1040,7 @@ function onLoadMedia(){
 		let flvPlayer = flvjs.createPlayer({
 			type: "flv",
 			isLive: true,
-			url: 'http://134.122.125.230/live?port=1935&app=testing&stream=hola'
+			url: 'http://edges.piranhalab.cc/live'
 		});
 		flvPlayer.attachMediaElement(document.querySelector('#streaming-video'))
 		flvPlayer.load();
