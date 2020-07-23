@@ -19,7 +19,7 @@ export const Server = {
 		}
 		
 		if(!Users.me){
-			Users.me = new User(uuid, nickname, {x:0, y:0, z:0}, {x:0, y:0, z:0}, texture); 
+			Users.me = new User(uuid, nickname, {x:0, y:0, z:-200}, {x:0, y:0, z:0}, texture); 
 		}
 		
 		const position = Users.me.position;

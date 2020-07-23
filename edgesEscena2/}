@@ -1,11 +1,32 @@
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
-import { controls } from '/js/Controls.js';
+import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users } from '/js/Server.js';
 import { Chat } from '/js/chat.js';
 const personajes = {}
 
+let alarma = setInterval(function(){
+    
+    var today = new Date();
+    var utcdate = today.getUTCDate();
+    var utchours = today.getUTCHours();
+    var utcminutes = today.getUTCMinutes();
+
+    //var myVar = setInterval(myTimer, 1000);
+    
+    if(utcdate >= 14 && utchours >= 6 && utcminutes >=55 ){
+	console.log("ya paso");
+	clearInterval(alarma);
+	edges.sound1.stop();
+	edges.sound2.stop();
+	edges.sound3.stop();
+	edges.sound4.stop(); 
+
+	
+    }
+    
+}, 2000)
 
 const edges = {
 	init: function(){
@@ -20,8 +41,7 @@ const edges = {
 
 		document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
-		//this.controls = new PointerLockControls(this.camera, document.body)
-		this.controls = controls.init(this.camera)		//PointerLockControls(this.camera, document.body)
+		this.controls = new PointerLockControls(this.camera, document.body)
 		this.scene.background = new THREE.CubeTextureLoader().setPath('/img/').load([
 			'px.jpg',
 			'nx.jpg',
@@ -56,8 +76,8 @@ const edges = {
 	    this.animate();
 
 		window.addEventListener('resize', onWindowResize);
-		//this.controls.addEventListener('lock', onLock )
-		//this.controls.addEventListener('unlock', onUnlock )
+		this.controls.addEventListener('lock', onLock )
+		this.controls.addEventListener('unlock', onUnlock )
 	}, 
 	addFloor: function(){
 		let floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 400, 400 );
@@ -338,14 +358,6 @@ const edges = {
 		sphere.geometry.verticesNeedUpdate = true;
                 sphere.geometry.normalsNeedUpdate = true;
                       
-            let sphRotation = setInterval(function(){
-     
-                sphere.rotation.y += 0.001;
-                sphere.rotation.z += 0.001;
-     
-            }, 30)
-
-
                 sphere.position.z = -500;
                 sphere.position.y = 300; 
                       
@@ -499,41 +511,6 @@ const edges = {
 	    videoMesh.position.y = 30; 
 	    
 	    edges.scene.add(videoMesh);
-
-
-        var zgamuTex = new THREE.TextureLoader().load( 'img/zgamu.png', function ( zgamuTexture ) {
-
-        });
-     
-        let zgamuGeometry = new THREE.PlaneGeometry(60, 60, 4);
-        let zgamuMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: zgamuTex, side: THREE.DoubleSide, transparent: true, overdraw: true } ); 
-     
-        let zgamuMesh = new THREE.Mesh(zgamuGeometry, zgamuMaterial);
-
-        zgamuMesh.position.x = 400; 
-        zgamuMesh.position.z = 100; 
-        zgamuMesh.position.y = 30;  
-     
-        edges.scene.add(zgamuMesh); 
-
-
-
-     var martaTex = new THREE.TextureLoader().load( 'img/lv.png', function ( martaTexture ) {
-
-        });
-
-        let martaGeometry = new THREE.PlaneGeometry(60, 60, 4);
-        let martaMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: martaTex, side: THREE.DoubleSide, transparent: true, overdraw: true } );
-
-        let martaMesh = new THREE.Mesh(martaGeometry, martaMaterial);
-
-        martaMesh.position.x = -400;
-        martaMesh.position.z = 100;
-        martaMesh.position.y = 30;
-
-        edges.scene.add(martaMesh);
-
-
 
 	    
 	}
@@ -867,7 +844,6 @@ const edges = {
 	edges.clight4.position.z = 800+Math.sin( time * 0.5/2 ) * 400;
 
 	},
-	/*
 	move: function(){
 		const delta = 0.015
 		
@@ -920,14 +896,14 @@ const edges = {
 		edges.controls.moveRight(-edges.velocity.x * delta)
 		edges.controls.moveForward(-edges.velocity.z * delta)
 
-	}, */
+	},
 	animate: function(){
 		requestAnimationFrame( edges.animate );
 		edges.renderer.render(edges.scene, edges.camera);
 		if (edges.streamingAudio) edges.moveAudioSphere()
 		edges.moveLight();
 		edges.moveSat(); 
-	//	if(edges.controls.controls.isLocked) edges.controls.move()
+		if(edges.controls.isLocked) edges.move()
 	},
 	velocity: new THREE.Vector3(),
 	direction: new THREE.Vector3(),
@@ -938,11 +914,11 @@ const edges = {
 	canJumpt: false,
 	moving: false,
 	stoping: false,
-	streamingAudio: false
+	streamingAudio: false,
 };
 
 let ctrl = false
-/*
+
 function onKeyDown(event) {
         switch (event.keyCode) {
                 case 38: // up
@@ -972,6 +948,7 @@ function onKeyDown(event) {
 
 
 function onKeyUp (event) {
+	console.log(event.keyCode)
         switch (event.keyCode) {
                 case 38: // up
                 case 87: // w
@@ -991,7 +968,8 @@ function onKeyUp (event) {
                 case 68: // d
                         if(document.activeElement == document.body) edges.moveRight = false
                         break
-                case 84:
+                case '84':
+			console.log("ASSDFSDF")
                         if(document.activeElement != document.querySelector("#usuarix")){
                                 document.querySelector("#chat").style.display = ''
                                 document.querySelector('#inputMensaje').focus()
@@ -1004,7 +982,7 @@ function onKeyUp (event) {
 
         }
 }
-*/
+
 
 function onWindowResize() {
 	edges.camera.aspect = window.innerWidth / window.innerHeight
@@ -1025,10 +1003,11 @@ function onLoadMedia(){
         //var utcdate = today.getUTCDate();
         //var utchours = today.getUTCHours();
         //var utcminutes = today.getUTCMinutes();
-        var fechaGmt = new Date(Date.UTC(20, 7, 16, 0, 15, 0));
+        var fechaGmt = new Date(Date.UTC(20, 7, 14, 9, 0, 0));
 
         //var myVar = setInterval(myTimer, 1000);
 
+        console.log();
         if( today >= fechaGmt ){
             console.log("ya paso");
             clearInterval(alarma);
@@ -1079,7 +1058,7 @@ function onLoadMedia(){
 
 	}
 }
-/*
+
 function onLock(){
 	document.querySelector("#instructions").style.display = "none";
 	document.querySelector("#blocker").style.display = "none";
@@ -1090,14 +1069,23 @@ function onLock(){
 }
 
 function onUnlock(){
+        if(document.activeElement == document.querySelector("#inputMensaje")){
+		// mostrarChat()
+		document.querySelector("#inputMensaje").blur()
+		document.querySelector("#chat").style.display = 'none'
+		document.querySelector("body").focus();
+		edges.controls.lock()
+	}else{
 		document.querySelector("#instructions").style.display = "";
 		document.querySelector("#blocker").style.display = "";
+	}
 }
-*/
+
 function putChat(){
 	const from = Users[event.detail.from].nickname
 	const content = event.detail.content
 	
+	console.debug(content, '<-')
 	const mensaje = document.createElement('div')
 	mensaje.classList.add('mensaje')
 
@@ -1289,7 +1277,6 @@ function addUser(event) {
 	edges.camera.position.x = position.x
 	edges.camera.position.y = 14
 	edges.camera.position.z = position.z
-     edges.camera.rotation.y = Math.PI
     }
     
     document.querySelector("#numUsuarios").textContent = Object.keys(Users).length
@@ -1308,7 +1295,7 @@ function renameUser(event){
 	uuid = event.detail.uuid
     }
     
-    console.log("renaming user:", uuid)
+    console.log("adding user:", uuid)
     const position = personajes[uuid].position
 
     let nickmesh = personajes[uuid].children.filter(x => x.nick_)[0];
@@ -1376,6 +1363,7 @@ function renameUser(event){
 	let oldNickname = event.detail.oldNickname
 	let newNickname = event.detail.newNickname
 	let content = `Usuarix "${oldNickname}" se llama ahora "${newNickname}"`
+	console.debug(content, '<-')
 	const mensaje = document.createElement('div')
 	mensaje.classList.add('mensaje')
 	
@@ -1403,6 +1391,7 @@ function cambiarNombre(e) {
 
 function cambiarNombrebutton (e) {
 	e.preventDefault()
+	console.log("000", document.querySelector("#usuarix").value)
 	if(Users.me.rename(document.querySelector("#usuarix").value)) 	document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
 }
 
@@ -1463,12 +1452,12 @@ inputMensaje.addEventListener('input', function (e) {
   }
 })
 
-//document.addEventListener('keydown', onKeyDown, false)
-//document.addEventListener('keyup', onKeyUp, false)
+document.addEventListener('keydown', onKeyDown, false)
+document.addEventListener('keyup', onKeyUp, false)
 
 document.querySelector('#usuarix').addEventListener('change', cambiarNombre)
 document.querySelector('#usuarix').addEventListener('keydown', cambiarNombre)
-//document.querySelector("#instructions").addEventListener('click', ()=> edges.controls.controls.lock())
+document.querySelector("#instructions").addEventListener('click', ()=> edges.controls.lock())
 document.querySelector('#cambiarNombre').addEventListener('click', cambiarNombrebutton)
 
 
@@ -1485,29 +1474,20 @@ window.addEventListener('moveUser', moveUser)
 window.addEventListener('rotateUser', rotateUser)
 window.addEventListener('renameUser', renameUser)
 window.addEventListener('changeTex', changeTexUser)
-/*
+
 window.addEventListener('blur', function(e){
-	if(!edges.controls.controls.isLocked) return
+	if(!edges.controls.isLocked) return
 	document.querySelector("#chat").style.display = 'none'
 	document.querySelector("#instructions").style.display = "block";
 	document.querySelector("#blocker").style.display = "";
 })
-*/
 edges.init();
 Chat.init()
 Server.init();
 
 document.querySelector('#usuarix').value = Users.me.nickname
 document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
-/*
-document.addEventListener("click",function(){
-	if(edges.controls.controls.isLocked){
-		Chat.blur()
-	}
-})
-	*/
+
 window.edges = edges;
-window.Users = Users;
 window.flvPlayer = flvPlayer;
 window.personajes = personajes;
-window.onLoadMedia = onLoadMedia

@@ -69,6 +69,9 @@ function onKeyDown(event){
 				event.preventDefault();
 			}
 			break
+		case 'Escape':
+			Chat.blur();
+			break
 	}
 }
 
@@ -82,6 +85,7 @@ function onKeyUp(event){
 	}
 }
 
+
 document.querySelector('#mostrarChat').addEventListener('click', function(e){ 
 	Chat.toggleShow()
 })
@@ -93,4 +97,3 @@ document.querySelector('#mandarMensaje').addEventListener('click', function(even
 
 document.querySelector('#inputMensaje').addEventListener('keydown', onKeyDown, false)
 document.querySelector('#inputMensaje').addEventListener('keyup', onKeyUp, false)
-
