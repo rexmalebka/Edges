@@ -138,12 +138,12 @@ const edges = {
 
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
 
-	let latlightv = new THREE.PointLight( 0xB80118, 3, 200);
+	let latlightv = new THREE.PointLight(  0x5691cc, 3, 200);
 
-	fococine.position.y = latlightv.position.y = 96/4-5; 
+	fococine.position.y = latlightv.position.y = 96/2-5; 
 
 	this.scene.add( latlightv ); 
-	// this.scene.add( fococine); 
+	this.scene.add( fococine); 
 	
     },
 
