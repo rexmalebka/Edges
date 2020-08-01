@@ -15,7 +15,12 @@ export const raycaster = {
 //		requestAnimationFrame(callback)
 		this.f = setInterval(callback, 1000)
 
-		this.dist = 4
+		this.dist = 8
+		this.locked_pos = {
+			x:0,
+			y:0,
+			z:0,
+		}
 		return this
 	},
 
@@ -24,9 +29,17 @@ export const raycaster = {
 		let intersects = raycaster.raycaster.intersectObjects( raycaster.scene.children, true );
 		intersects = intersects.filter(x => x.object.type == 'Mesh')
 		let unique = [...new Set(intersects.map(x => intersects.find(y => (y.object.uuid == x.object.uuid)  )))]
-		let dist = unique.map(x=>x.distance)
+		//let dist = unique.map(x=>x.distance)
 		
-		let closest = dist.filter( x => x <= raycaster.dist )
-		console.debug(dist, closest)
+		let closest = unique.filter( x => x.distance <= raycaster.dist )
+		if(closest.length > 0){
+			if(edges.controls.moveForward){
+				
+			}
+			console.debug(edges.controls.moveBackward)
+			console.debug(edges.controls.moveRight)
+			console.debug(edges.controls.moveLeft)
+		}
+		console.log(closest, "****")
 	}
 }

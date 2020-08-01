@@ -15,7 +15,7 @@ const edges = {
 		this.scene = new THREE.Scene()
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1500)
 		this.camera.position.z = 400;
-		this.renderer  = new THREE.WebGLRenderer({ antialias: true })
+		this.renderer  = new THREE.WebGLRenderer({ antialias: true,  maxLights: 30  })
 
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -59,7 +59,8 @@ const edges = {
 		this.addRocas();
 		this.addRings();
 		this.mkAvatar(); 
-	
+
+		this.addLamparitas()
 		this.animate();
 
 		window.addEventListener('resize', onWindowResize);
@@ -94,7 +95,7 @@ const edges = {
 	},
 	addCueva: function(){
 		// points - (x, y) pairs are rotated around the y-axis
-		let points = [];
+		/*let points = [];
 		for ( var deg = 0; deg <= 180; deg += 20 ) {
 			var rad = Math.PI * deg / 180;
 			var point = new THREE.Vector2( ( 0.72 + .08 * Math.cos( rad ) ) * Math.sin( rad ), - Math.cos( rad ) ); // the "egg equation"
@@ -108,11 +109,21 @@ const edges = {
 		let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
 
 		let egg = new THREE.Mesh(geom, mat)
+		*/
 
+		
+		let texture = new THREE.VideoTexture(document.querySelector('#streaming-video'));
+		let geom = new THREE.SphereBufferGeometry( 600, 32, 32, 0, Math.PI, 0, Math.PI - 0.1 );
+		let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, /*map: texture,*/ side: THREE.DoubleSide } );
+		mat.castShadow = true
+		mat.receiveShadow = true
+		let egg = new THREE.Mesh(geom, mat)
+		egg.rotateX(-Math.PI/2)
 		egg.name = 'egg'
 
-		egg.position.z = -200
-		egg.scale.multiplyScalar(850)
+		egg.position.z = -300
+
+		
 		this.egg = egg
 		this.scene.add(egg)
 	},
@@ -163,7 +174,8 @@ const edges = {
 	},
 
 	addLamparitas: function(){
-
+		let light = new THREE.PointLight( 0xff0000, 1, 50 );
+		this.scene.add(light)
 	},
 	addRocas: function(){
 		let loader = new GLTFLoader();
@@ -467,7 +479,6 @@ function onWindowResize() {
 	edges.camera.updateProjectionMatrix()
 	edges.renderer.setSize(window.innerWidth, window.innerHeight)
 }
-
 function onLoadMedia(){
 
 	let audio = new Audio('http://edges.piranhalab.cc/audio');
@@ -509,6 +520,49 @@ function onLoadMedia(){
 		console.debug("flv js not supported :( ")
 	}
 }
+/*
+function onLoadMedia(){
+
+	let audio = new Audio('http://edges.piranhalab.cc/audio');
+	audio.crossOrigin = "anonymous";
+
+	window.audio=audio
+	let playPromise = audio.play()
+	if (playPromise !== undefined) {
+		playPromise.then(aaa => {
+			// Automatic playback started!
+			// Show playing UI.
+			if(!edges.streamingAudio){
+				edges.addAudio(audio)
+				edges.streamingAudio= true
+			}
+		}).catch(error => {
+			// Auto-play was prevented
+			// // Show paused UI.
+		});
+	}
+
+	if(flvjs.isSupported()){
+		let flvPlayer = flvjs.createPlayer({
+			type: "flv",
+			isLive: true,
+			url: 'http://edges.piranhalab.cc/live'
+		});
+		flvPlayer.attachMediaElement(document.querySelector('#streaming-video'))
+		flvPlayer.load();
+		flvPlayer.play();
+		flvPlayer.on('error',function(err){
+			if(err==="NetworkError"){
+				flvPlayer.unload()
+				flvPlayer.load()
+				flvPlayer.play();
+			}
+		});
+	}else{
+		console.debug("flv js not supported :( ")
+	}
+}
+	*/
 function putChat(){
 	const from = Users[event.detail.from].nickname
 	const content = event.detail.content
@@ -933,3 +987,4 @@ window.Users = Users;
 window.flvPlayer = flvPlayer;
 window.personajes = personajes;
 window.onLoadMedia = onLoadMedia
+window.THREE = THREE
