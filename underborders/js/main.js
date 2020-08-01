@@ -103,7 +103,6 @@ const edges = {
 	    floorTexture2.offset.set( 1, 0 );
 	    floorTexture2.repeat.set( 1, 0.5 );
 	});
-
 	
 	var groundMaterial2 = new THREE.MeshStandardMaterial( {
 	    color: 0x808080,
@@ -114,11 +113,8 @@ const edges = {
             //transparent: true,
             //opacity: 0.75,
         });
-	
-
 
 	let wallGeometry = new THREE.PlaneGeometry( 96*2.5+4, 96/2+4, 40, 40 );
-
 	
 	for (let i = 0; i < wallGeometry.vertices.length; i++) {
 	    wallGeometry.vertices[i].z += (Math.random()*2)-1;
@@ -136,19 +132,18 @@ const edges = {
 	wall2.position.z = -96-3;
 	wall2.position.x = 96/4
 	this.scene.add(wall2); 
-
 		
 	var sphgeometry = new THREE.SphereGeometry( 2, 32, 32 );
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
 
-	let latlightv = new THREE.PointLight( 0xB80118, 3, 200);
+	let latlightv = new THREE.PointLight(  0x5691cc, 3, 200);
 
-	fococine.position.y = latlightv.position.y = 96/4-5; 
+	fococine.position.y = latlightv.position.y = 96/2-5; 
 
 	this.scene.add( latlightv ); 
-	// this.scene.add( fococine); 
+	this.scene.add( fococine); 
 	
     },
 
@@ -295,7 +290,7 @@ const edges = {
 	    grupov.add(tabla[i]);
 	}
 	
-	var torGeometry = new THREE.TorusKnotGeometry( 4, 0.5, 100, 16 );
+	var torGeometry = new THREE.TorusKnotGeometry( 8, 0.5, 100, 16 );
 	// var torMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
 	var torMaterial = new THREE.MeshStandardMaterial( {
 	    
@@ -408,7 +403,102 @@ const edges = {
 	
 	this.scene.add( vuelta6 ); 
 	
+	let vuelta7 = grupov.clone();
+
+	vuelta7.position.x =  w * 1.25;
+	vuelta7.position.z = -w * -2.25;
+	vuelta7.rotation.y = Math.PI; 
 	
+	// vuelta1.castShadow = true;
+		
+	this.scene.add( vuelta7 );
+
+	let vuelta8 = grupov.clone();
+	
+	vuelta8.children[4].color.setHex(  0x5691cc ); 
+
+	vuelta8.remove(vuelta8.children[3]); 
+
+	vuelta8.position.x =  w * 2.75;
+	vuelta8.position.z = -w * -2.25;
+	// vuelta8.rotation.y = -Math.PI; 
+
+	this.scene.add( vuelta8 );
+
+	let vuelta9 = grupov.clone();
+	
+	vuelta9.children[4].color.setHex( 0xB80118 ); 
+
+	//vuelta2.remove(vuelta2.children[3]); 
+
+	vuelta9.position.x =  w *4.25;
+	vuelta9.position.z = -w * -2.25;
+	// vuelta9.rotation.y = Math.PI /; 
+
+	this.scene.add( vuelta9 ); 
+	
+	let vuelta10 = grupov.clone();
+	
+	// vuelta10.children[4].color.setHex( 0xB80118 ); 
+
+	//vuelta2.remove(vuelta2.children[3]); 
+
+	vuelta10.position.x =  w *4.25;
+	vuelta10.position.z = -w * -3.75;
+	vuelta10.rotation.y = Math.PI; 
+
+	this.scene.add( vuelta10 ); 
+
+	let vuelta11 = grupov.clone();
+	
+	vuelta11.children[4].color.setHex(  0x5691cc ); 
+
+	//vuelta2.remove(vuelta2.children[3]); 
+
+	vuelta11.position.x =  w *5.75;
+	vuelta11.position.z = -w * -3.75;
+	// vuelta11.rotation.y = Math.PI; 
+
+	this.scene.add( vuelta11 );
+
+	
+
+	let vuelta12 = grupov.clone();
+	
+// 	vuelta5.children[4].color.setHex( 0xB80118 ); 
+
+	// vuelta6.children[4].color.setHex(  0x5691cc ); 
+
+	vuelta12.children[4].color.setHex( 0xB80118 );
+	
+	let entGeometry2 = new THREE.PlaneGeometry( w/2, w/2, 20, 20 );
+	
+	var entMaterial2 = new THREE.MeshBasicMaterial( {
+	    color: 0xffffff,
+	    //metalness: 0.6,
+	    //roughness: 0.85,
+	    //map: floorTexture,
+	    //side: THREE.DoubleSide
+            //transparent: true,
+            //opacity: 0.75,
+        });
+
+	let entMesh2 = new THREE.Mesh(entGeometry2, entMaterial2 );
+
+	entMesh2.position.x = -w/4;
+	entMesh2.position.y = w/4;
+	entMesh2.rotation.y = Math.PI / 2; 
+	
+	vuelta12.add(entMesh2); 
+		
+	//vuelta2.remove(vuelta2.children[3]); 
+	
+	vuelta12.position.x =  w * 5.75;
+	vuelta12.position.z = -w * -5.25;
+	vuelta12.rotation.y = Math.PI; 
+	
+	this.scene.add( vuelta12 ); 
+		
 	///////////////////////
 	///////////////////////
 	// PASILLOS CERRADOS //
@@ -606,6 +696,49 @@ const edges = {
 	pas11.position.z = -w * 4.5;
 	pas11.rotation.y = Math.PI /2;
 
+	let pas12 = grupo.clone();
+
+	pas12.position.x =  w - w*-0.25;
+	pas12.position.z = -w * -1.5;
+	pas12.rotation.y = Math.PI / 2;
+	
+	let pas13 = grupo.clone();
+
+	pas13.position.x =  w - w*-1;
+	pas13.position.z = -w * -2.25;
+	// pas13.rotation.y = Math.PI / 2;
+	
+	let pas14 = grupo.clone();
+
+	pas14.position.x =  w - w*-2.5;
+	pas14.position.z = -w * -2.25;
+	// pas13.rotation.y = Math.PI / 2;
+
+	let pas15 = grupo.clone();
+
+	pas15.position.x =  w - w*-1.75;
+	pas15.position.z = -w * -3;
+	pas15.rotation.y = Math.PI / 2;
+	
+	let pas16 = grupo.clone();
+
+	pas16.position.x =  w - w*-3.25;
+	pas16.position.z = -w * -3;
+	pas16.rotation.y = Math.PI / 2;
+
+	let pas17 = grupo.clone();
+
+	pas17.position.x =  w - w*-4;
+	pas17.position.z = -w * -3.75;
+	//pas17.rotation.y = Math.PI / 2;
+
+	
+	let pas18 = grupo.clone();
+
+	pas18.position.x =  w - w*-4.75;
+	pas18.position.z = -w * -4.5;
+	pas18.rotation.y = Math.PI / 2;	
+
 	
 	this.scene.add( pas1 );
 	this.scene.add( pas2 );
@@ -617,7 +750,15 @@ const edges = {
 	this.scene.add( pas8 );
 	this.scene.add( pas9 ); 
 	this.scene.add (pas10 ); 
-	this.scene.add( pas11 ); 
+	this.scene.add( pas11 );
+	this.scene.add( pas12 );
+	this.scene.add( pas13 );
+	this.scene.add( pas14 );
+	this.scene.add( pas15 );
+	this.scene.add( pas16 ); 
+	this.scene.add( pas17 );
+	this.scene.add( pas18 ); 
+	
     },
     
     addLightHuachimontones: function(){
