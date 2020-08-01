@@ -9,13 +9,13 @@ export const raycaster = {
 		this.raycaster.setFromCamera( this.dir, this.me );    
 
 		function callback(){
-		//	requestAnimationFrame(callback)
+			requestAnimationFrame(callback)
 			raycaster.check()
 		}
-//		requestAnimationFrame(callback)
-		this.f = setInterval(callback, 1000)
+		this.f = requestAnimationFrame(callback)
+		//this.f = setInterval(callback, 1000)
 
-		this.dist = 8
+		this.dist = 15
 		this.locked_pos = {
 			x:0,
 			y:0,
@@ -34,12 +34,21 @@ export const raycaster = {
 		let closest = unique.filter( x => x.distance <= raycaster.dist )
 		if(closest.length > 0){
 			if(edges.controls.moveForward){
-				
+				edges.controls.moveForward = false
 			}
-			console.debug(edges.controls.moveBackward)
-			console.debug(edges.controls.moveRight)
-			console.debug(edges.controls.moveLeft)
+			
+			if(edges.controls.moveBackward){
+				edges.controls.moveBackward = false
+			}
+			
+			if(edges.controls.moveRight){
+				edges.controls.moveRight = false
+			}
+			if(edges.controls.moveLeft){
+				edges.controls.moveLeft = false
+			}
+			Users.me.move();
+			Users.me.rotate();
 		}
-		console.log(closest, "****")
 	}
 }
