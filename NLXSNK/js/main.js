@@ -33,37 +33,57 @@ const edges = {
 
 				
 		//let light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.05 );
-		let hemislight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8 );
-		this.scene.add(hemislight)
-		this.hemislight = hemislight
-		var light = new THREE.SpotLight( 0xff00aa );
-		this.light = light
-		light.position.set( 0, 30, -200 );
+		//let hemislight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.25 );
+	    // this.scene.add(hemislight)
+	   //  this.hemislight = hemislight
+	    var light1 = new THREE.PointLight( 0x474C51, 2, 700 );
+	    var light2 = new THREE.PointLight( 0x386B51, 2, 700 );
+	    var light3 = new THREE.PointLight( 0xDEBEAC, 2, 700 );
+	    var light4 = new THREE.PointLight( 0xced1d0, 2, 700 );
+	    
+	    this.light1 = light1
+	    this.light2 = light2	    
+	    this.light3 = light3
+	    this.light4 = light4
 
-	        light.shadow.mapSize.width = 2048*4;  // default
-                light.shadow.mapSize.height = 2048*4; // default
-                light.shadow.camera.near = 0.5;       // default
-                light.shadow.camera.far = 500      // default
-
-                light.intensity = 0.5 
-                light.position.y = 100 
-                light.penumbra = 1 
-                light.decay = 2 
+	    // -300
+	    
+	    light1.position.set( -200, 50, -200 );
+	    light2.position.set( -200, 50, 200 );
+	    
+	    light3.position.set( 200, 50, -200 );
+	    light4.position.set( 200, 50, 200 );
 
 
-		this.scene.add( light );
+	    /*
+	    light1.shadow.mapSize.width = 2048*4;  // default
+            light1.shadow.mapSize.height = 2048*4; // default
+            light1.shadow.camera.near = 0.5;       // default
+            light1.shadow.camera.far = 500      // default
+	    
+            light1.intensity = 0.5 
+            light1.position.y = 100 
+            light1.penumbra = 1 
+            light1.decay = 2 
+	    */
+	    
+	    this.scene.add( light1 );
+	    this.scene.add( light2 );
+	    this.scene.add( light3 );
+	    this.scene.add( light4 );
 
-		this.addFloor();
-		this.addCueva();
-		this.addEstalac();
-		this.addRocas();
-		this.addRings();
-		this.mkAvatar(); 
 
-		this.addLamparitas()
-		this.animate();
+	    this.addFloor();
+	    this.addCueva();
+	    this.addEstalac();
+	    this.addRocas();
+	    this.addRings();
+	    this.mkAvatar(); 
+	    
+	    this.addLamparitas()
+	    this.animate();
 
-		window.addEventListener('resize', onWindowResize);
+	    window.addEventListener('resize', onWindowResize);
 	}, 
 	addFloor: function(){
 		let floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 400, 400 );
@@ -114,7 +134,7 @@ const edges = {
 		
 		let texture = new THREE.VideoTexture(document.querySelector('#streaming-video'));
 		let geom = new THREE.SphereBufferGeometry( 600, 32, 32, 0, Math.PI, 0, Math.PI - 0.1 );
-		let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, /*map: texture,*/ side: THREE.DoubleSide } );
+		let mat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
 		mat.castShadow = true
 		mat.receiveShadow = true
 		let egg = new THREE.Mesh(geom, mat)
@@ -134,15 +154,24 @@ const edges = {
 			'/models/stalac1.glb',
 			// called when the resource is loaded
 			function ( gltf ) {
-				let mat = new THREE.MeshStandardMaterial( { color: 0xdba9ce, transparent: true, opacity: 0.7 } );
+			    //				let mat = new THREE.MeshStandardMaterial( { color: 0xdba9ce, transparent: true, opacity: 0.7 } );
+			    var mat = new THREE.MeshStandardMaterial( {
+				color: 0xffffff,
+				metalness: 0.8,
+				roughness: 0.25,
+				// transparent: true,
+				//opacity: 0.7, 
+				// map: vueltasTexture,
+				// side: THREE.DoubleSide
+			    } );
 				mat.castShadow = true
 				gltf.scene.children[0].material = mat
 
 				let f,g;
-				for(let k=0;k<15;k++){
+				for(let k=0;k<50;k++){
 
 					let stalactita = gltf.scene.clone()
-					stalactita.scale.y = Math.random() * 7 + 1
+					stalactita.scale.y = Math.random() * 7 +2
 					stalactita.scale.z = Math.random() * 6 + 1
 					stalactita.scale.x = stalactita.scale.z
 					stalactita.rotation.x += Math.random()/2-0.25
@@ -158,12 +187,21 @@ const edges = {
 
 	},
 	addRings: function(){
-		let mat = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-		mat.transparent = true
-		mat.opacity = 0.4
+
+	    var mat = new THREE.MeshStandardMaterial( {
+		color: 0xffffff,
+		metalness: 0.8,
+		roughness: 0.25,
+		// map: vueltasTexture,
+		// side: THREE.DoubleSide
+	    } );
+
+	    // let mat = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+		//mat.transparent = true
+		// mat.opacity = 0.4
 		let rings = []
 		for (let k=0;k<10; k++){
-			let geom = new THREE.TorusGeometry( 590 - 50*k, 0.5, 16, 100 );
+			let geom = new THREE.TorusGeometry( 590 - 50*k, 1, 16, 100 );
 			let ring = new THREE.Mesh( geom, mat );
 			ring.rotateX(Math.PI/2 + k*0.1)
 			ring.position.set(0,30 + k * 80,-200)
@@ -174,8 +212,8 @@ const edges = {
 	},
 
 	addLamparitas: function(){
-		let light = new THREE.PointLight( 0xff0000, 1, 50 );
-		this.scene.add(light)
+		//let light = new THREE.PointLight( 0xff0000, 1, 50 );
+		//this.scene.add(light)
 	},
 	addRocas: function(){
 		let loader = new GLTFLoader();

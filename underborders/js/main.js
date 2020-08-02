@@ -9,7 +9,7 @@ const personajes = {}
 const edges = {
 	init: function(){
 	    this.scene = new THREE.Scene()
-	    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1500)
+	    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 500)
 	    this.camera.position.z = 400;
 	    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 	    this.renderer  = new THREE.WebGLRenderer({ antialias: true })
@@ -43,11 +43,11 @@ const edges = {
 	    this.addFloor()
 	    this.addMaze()
 	    
-	    this.addLightCiudad()
-	    this.addLightHuachimontones()
+	    // this.addLightCiudad()
+	    // this.addLightHuachimontones()
 	    this.mkAvatar()
 	    this.pasillo()
-	    
+	    this.rotaciones()
 	    //this.addAudio()
 	    
 	    this.animate();
@@ -154,7 +154,6 @@ const edges = {
 	let fc = 2.75;
 	let w = 96; 
 
-
 	/////////////
 	/////////////
 	// vueltas // 
@@ -165,7 +164,7 @@ const edges = {
 	
 
 	for (let i = 0; i < vueltasGeometry.vertices.length; i++) {
-	    vueltasGeometry.vertices[i].z += (Math.random()*2)-1;
+	    vueltasGeometry.vertices[i].z += (Math.random()*1)-0.5;
 	}
 	
 	vueltasGeometry.rotateX( - Math.PI / 2 );
@@ -205,7 +204,7 @@ const edges = {
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 
 	var foco = new THREE.Mesh( sphgeometry, sphmaterial );
-	let lightv = new THREE.PointLight( 0x01B8A0, 3, 160);
+	let lightv = new THREE.PointLight( 0x01B8A0, 4, 180);
 	// 0x5691cc
 	foco.position.y = lightv.position.y = 96/2 -5;
 	foco.position.x = lightv.position.x = 96/4-5;
@@ -226,7 +225,6 @@ const edges = {
 	// posv4.rotation.y = Math.PI; 
 	posv4.position.y = 96/4;
 	posv4.position.x = 96/4-2;
-
 
 	tabla[0].position.y = 1;
 	tabla[0].position.z = -96/4+fc;
@@ -290,8 +288,11 @@ const edges = {
 	    grupov.add(tabla[i]);
 	}
 	
-	var torGeometry = new THREE.TorusKnotGeometry( 8, 0.5, 100, 16 );
+	var torGeometry = new THREE.TorusKnotGeometry( 8, 0.75, 200, 16 );
 	// var torMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+	// child.geometry.computeVertexNormals();
+	torGeometry.computeVertexNormals();
+	
 	var torMaterial = new THREE.MeshStandardMaterial( {
 	    
 	    color: 0xffffff,
@@ -303,52 +304,48 @@ const edges = {
             //transparent: true,
             //opacity: 0.75,
         } );
+
+	// El hijo 19
+	
 	var torusKnot = new THREE.Mesh( torGeometry, torMaterial );
 	torusKnot.position.y = w/4; 
 	grupov.add( torusKnot );
 	
-	let vuelta1 = grupov.clone();
+	this.vuelta1 = grupov.clone();
 
-	vuelta1.position.x =  w - w*2.25;
-	vuelta1.position.z = -w * 2.25;
+	// para el flyer solamente
+	// this.vuelta1.remove(this.vuelta1.children[5]);
 
+	this.vuelta1.position.x =  w - w*2.25;
+	this.vuelta1.position.z = -w * 2.25;
 	// vuelta1.castShadow = true;
-		
-	this.scene.add( vuelta1 );
+	this.scene.add( this.vuelta1 );
 	
-	let vuelta2 = grupov.clone();
-	
-	vuelta2.children[4].color.setHex(  0x5691cc ); 
+	this.vuelta2 = grupov.clone();
+	this.vuelta2.children[4].color.setHex(  0x5691cc ); 
+	this.vuelta2.remove( this.vuelta2.children[3] ); 
+	this.vuelta2.position.x =  w - w*3.75;
+	this.vuelta2.position.z = -w * 2.25;
+	this.vuelta2.rotation.y = Math.PI; 
 
-	vuelta2.remove(vuelta2.children[3]); 
+	this.scene.add( this.vuelta2 );
 
-	vuelta2.position.x =  w - w*3.75;
-	vuelta2.position.z = -w * 2.25;
-	vuelta2.rotation.y = Math.PI; 
-
-	this.scene.add( vuelta2 );
-
-	
-	let vuelta3 = grupov.clone();
-	
-	vuelta3.children[4].color.setHex( 0xB80118 ); 
-
+	this.vuelta3 = grupov.clone();	
+	this.vuelta3.children[4].color.setHex( 0xB80118 ); 
 	//vuelta2.remove(vuelta2.children[3]); 
-
-	vuelta3.position.x =  w - w*5.25;
-	vuelta3.position.z = -w * 2.25;
-	vuelta3.rotation.y = Math.PI; 
-
-	this.scene.add( vuelta3 ); 
+	this.vuelta3.position.x =  w - w*5.25;
+	this.vuelta3.position.z = -w * 2.25;
+	this.vuelta3.rotation.y = Math.PI; 
+	this.scene.add( this.vuelta3 ); 
 	
-	let vuelta4 = grupov.clone();
+	this.vuelta4 = grupov.clone();
 
-	vuelta4.position.x =  w - w*5.25;
-	vuelta4.position.z = -w * 3.75;
+	this.vuelta4.position.x =  w - w*5.25;
+	this.vuelta4.position.z = -w * 3.75;
 
 	// vuelta1.castShadow = true;
 		
-	this.scene.add( vuelta4 );
+	this.scene.add( this.vuelta4 );
 
 	let vuelta5 = grupov.clone();
 	
@@ -372,7 +369,6 @@ const edges = {
 	// vuelta6.children[4].color.setHex(  0x5691cc ); 
 
 	vuelta6.children[4].color.setHex( 0xB80118 );
-
 			
 	let entGeometry = new THREE.PlaneGeometry( w/2, w/2, 20, 20 );
 	
@@ -461,8 +457,6 @@ const edges = {
 
 	this.scene.add( vuelta11 );
 
-	
-
 	let vuelta12 = grupov.clone();
 	
 // 	vuelta5.children[4].color.setHex( 0xB80118 ); 
@@ -508,7 +502,7 @@ const edges = {
 	let posGeometry = new THREE.PlaneGeometry( w+5, w/2, 20, 20 );
 
 	for (let i = 0; i < posGeometry.vertices.length; i++) {
-	    posGeometry.vertices[i].z += (Math.random()*2)-1;
+	    posGeometry.vertices[i].z += (Math.random()*1)-0.5;
 	}
 	
 	posGeometry.rotateX( - Math.PI / 2 );
@@ -518,6 +512,26 @@ const edges = {
 	    floorTexture.offset.set( 0, 0 );
 	    floorTexture.repeat.set( 1, 1 );
 	});
+
+	var grafTexture = new THREE.TextureLoader().load( 'img/graf01.png', function ( grafTexture ) {
+	    //grafTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	    //grafTexture.offset.set( 0, 0 );
+	    //grafTexture.repeat.set( 1.5, 1.5 );
+	});
+
+	var grafTexture2 = new THREE.TextureLoader().load( 'img/graf02.png', function ( grafTexture2 ) {
+	    //grafTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	    //grafTexture.offset.set( 0, 0 );
+	    //grafTexture.repeat.set( 1, 1 );
+	});
+
+	
+	var grafTexture3 = new THREE.TextureLoader().load( 'img/spongebob.png', function ( grafTexture3 ) {
+	    grafTexture3.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	    grafTexture3.offset.set( 0.85, 0 );
+	    grafTexture3.repeat.set( 1.25, 1.25 );
+	});
+
 	
 	var posMaterial = new THREE.MeshStandardMaterial( {
 	    color: 0xffffff,
@@ -527,6 +541,38 @@ const edges = {
 	    side: THREE.DoubleSide
             //transparent: true,
             //opacity: 0.75,
+        });
+
+	
+	var grafMaterial = new THREE.MeshStandardMaterial( {
+	    color: 0xffffff,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: grafTexture,
+	    side: THREE.DoubleSide,
+            transparent: true,
+            overdraw: true
+        });
+
+	
+	var grafMaterial2 = new THREE.MeshStandardMaterial( {
+	    color: 0xffffff,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: grafTexture2,
+	    side: THREE.DoubleSide,
+            transparent: true,
+            overdraw: true
+        });
+
+	var grafMaterial3 = new THREE.MeshStandardMaterial( {
+	    color: 0xffffff,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: grafTexture3,
+	    side: THREE.DoubleSide,
+            transparent: true,
+            overdraw: true
         });
 
 	// TABLAS 
@@ -566,6 +612,11 @@ const edges = {
 	let pos3 = new THREE.Mesh( posGeometry, posMaterial ); 
 	let pos4 = new THREE.Mesh( posGeometry, posMaterial ); 
 
+	let graf = new THREE.Mesh( posGeometry, grafMaterial2 );
+	
+	graf.material.needsUpdate = true;
+
+
 	//let floor2 = new THREE.Mesh( floorGeometry, groundMaterial );
 
 	pos1.position.y = 96/2-2;
@@ -576,7 +627,14 @@ const edges = {
 
 	pos4.rotation.x = Math.PI / 2;
 	pos4.position.y = 96/4;
-	pos4.position.z = -96/4+2; 
+	pos4.position.z = -96/4+2;
+
+	graf.rotation.x = Math.PI / 2;
+	graf.position.y = 96/4;
+	graf.position.z = -96/4+2;
+
+
+	//graf.position.y = 96/2-2;
 
 	// AGREGAR TODO A GRUPOS // 
 	
@@ -586,15 +644,18 @@ const edges = {
 	grupo.add( pos2 );
 	grupo.add( pos3 );
 	grupo.add( pos4 );
-
+	grupo.add( graf ); // quinto hijo 
+	
 	for( var i = 0; i < 4; i++){
 	    grupo.add(tabla0[i]);
 	}	
 
 	let pas1 = grupo.clone();
-
+	pas1.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
 	pas1.position.x =  w - w*3;
 	pas1.position.z = -w * 2.25;
+
+	pas1.children[4].material = grafMaterial;  
 
 	let pas2 = grupo.clone();
 	
@@ -603,6 +664,11 @@ const edges = {
 	pas2.rotation.y = Math.PI /2;
 
 	let pas3 = grupo.clone();
+
+	pas3.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
+
+	// pas2.children[4].material.map = grafTexture;  
+	pas3.children[4].material = grafMaterial3;  
 
 	pas3.position.x =  w - w*2.25;
 	pas3.position.z = -w * 1.5;
@@ -760,34 +826,32 @@ const edges = {
 	this.scene.add( pas18 ); 
 	
     },
-    
-    addLightHuachimontones: function(){
 
-	//this.light1 = new THREE.PointLight(0xffffff, 0.25)
-	//this.light2 = new THREE.PointLight(0xffffff, 0.25)
-	//this.light3 = new THREE.PointLight(0xffffff, 0.25)
-	//this.light4 = new THREE.PointLight(0xffffff, 0.25)
+    rotaciones: function(){
+
+	// var time = Date.now() * 0.0005;
+
+	// vuelta6.children[].color.setHex( 0xB80118 );
+
+	// 17 para los flyers
+	// Cada vuelta tiene un número distinto
 	
-	//this.scene.add( this.light1 )
-	//this.scene.add( this.light2 )
-	//this.scene.add( this.light3 )
-	//this.scene.add( this.light4 )
+	edges.vuelta1.children[18].rotation.x += 0.005;
+	edges.vuelta1.children[18].rotation.y += 0.006;
+	edges.vuelta1.children[18].rotation.z += 0.007;
 
-    },
-    
-    addLightCiudad: function(){
-
-	/*
-	this.clight1 = new THREE.PointLight(0xffffff, 0.25)
-	this.clight2 = new THREE.PointLight(0xffffff, 0.25)
-	this.clight3 = new THREE.PointLight(0xffffff, 0.25)
-	this.clight4 = new THREE.PointLight(0xffffff, 0.25)
+	edges.vuelta2.children[17].rotation.x += 0.007;
+	edges.vuelta2.children[17].rotation.y += 0.006;
+	edges.vuelta2.children[17].rotation.z += 0.005;
 	
-	this.scene.add( this.clight1 )
-	this.scene.add( this.clight2 )
-	this.scene.add( this.clight3 )
-	this.scene.add( this.clight4 )
-	*/
+	edges.vuelta3.children[18].rotation.x += 0.006;
+	edges.vuelta3.children[18].rotation.y += 0.007;
+	edges.vuelta3.children[18].rotation.z += 0.005;
+	
+	edges.vuelta4.children[18].rotation.x += 0.005;
+	edges.vuelta4.children[18].rotation.y += 0.007;
+	edges.vuelta4.children[18].rotation.z += 0.006;
+
 	
     },
 
@@ -830,7 +894,6 @@ const edges = {
 	plane2.position.z = -width;
 	//plane2.rotation.y = Math.PI /2; 
 	this.scene.add( plane2 );
-	
 	
     },
     
@@ -1152,7 +1215,8 @@ const edges = {
 		requestAnimationFrame( edges.animate );
 		edges.renderer.render(edges.scene, edges.camera);
 		if (edges.streamingAudio) edges.moveAudioSphere()
-		edges.moveLight(); 
+	    // edges.moveLight();
+	    //edges.rotaciones(); 
 	//	if(edges.controls.controls.isLocked) edges.controls.move()
 	},
 	velocity: new THREE.Vector3(),
