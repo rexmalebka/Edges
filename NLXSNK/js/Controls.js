@@ -1,16 +1,36 @@
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from '/js/three/build/three.module.js';
-/*
-const bounds = [
-	[{x:0, y:0}, {x:50, y:0}, {x:50, y:50}, {x:0, y:50}]
-]
-*/
+
+
+
 
 function checkBoundaries(position){
+	let insides = controls.bounds.map((box)=>{
+		box.geometry.computeBoundingBox();
+
+		var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+		var inverseBox = box;
+		var inversePoint = position.clone();
+
+		inverseBox.applyMatrix4(boxMatrixInverse);
+		inversePoint.applyMatrix4(boxMatrixInverse);
+
+		var bb = new THREE.Box3().setFromObject(inverseBox);
+		var isInside = bb.containsPoint(inversePoint);
+		return isInside
+	})
+	console.debug(insides)
+	return !insides.some(x=>x)
+/*
+	console.debug("---------->", isInside)
+
+
 	if(position.x < 50 && position.x > -20 && position.z > -400 && position.x < 200 ){
 		return true
 	}
 	return false
+	*/
 }
 
 export const controls = {
@@ -141,6 +161,7 @@ export const controls = {
         canJump: false,
         moving: false,
         stoping: false,
+	bounds: []
 }
 
 function onKeyDown(event) {

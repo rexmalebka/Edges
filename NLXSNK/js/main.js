@@ -84,6 +84,14 @@ const edges = {
 	    this.animate();
 
 	    window.addEventListener('resize', onWindowResize);
+
+
+		let  geometry = new THREE.BoxGeometry(100, 100, 50);
+		let  material = new THREE.MeshNormalMaterial({transparent: true, opacity: 0.8, side:THREE.DoubleSide, color:0xff0000});
+let  box = new THREE.Mesh(geometry, material);
+box.position.set(0, 0,0)
+edges.scene.add(box)
+
 	}, 
 	addFloor: function(){
 		let floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 400, 400 );
@@ -248,6 +256,7 @@ const edges = {
 				roca.position.y = 3
 				roca.position.z = 300
 				var box = new THREE.BoxHelper( roca, 0xffff00 );
+		    		edges.controls.bounds.push(box)
 				edges.scene.add(box)
 				edges.scene.add(roca)
 				edges.roca = roca
@@ -270,7 +279,9 @@ const edges = {
 				roca.position.y = 3
 				roca.position.x = 200
 				roca.position.z = -300
+		  
 				var box = new THREE.BoxHelper( roca, 0xffff00 );
+		    		//edges.controls.bounds.push(box)
 				edges.scene.add(box)
 				edges.scene.add(roca)
 				edges.roca2 = roca
@@ -293,6 +304,7 @@ const edges = {
 				roca.position.x = 10
 				roca.position.z = -50
 				var box = new THREE.BoxHelper( roca, 0xffff00 );
+		    		edges.controls.bounds.push(box)
 				edges.scene.add(box)
 				edges.scene.add(roca)
 			})
@@ -316,6 +328,7 @@ const edges = {
 				edges.scene.add(roca)
 				edges.roca3 = roca
 				var box = new THREE.BoxHelper( roca, 0xffff00 );
+		    		edges.controls.bounds.push(box)
 				edges.scene.add(box)
 			})
 	
