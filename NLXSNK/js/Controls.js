@@ -1,13 +1,28 @@
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from '/js/three/build/three.module.js';
+/*
+const bounds = [
+	[{x:0, y:0}, {x:50, y:0}, {x:50, y:50}, {x:0, y:50}]
+]
+*/
+
+function checkBoundaries(position){
+	if(position.x < 50 && position.x > -20 && position.z > -400 && position.x < 200 ){
+		return true
+	}
+	return false
+}
 
 export const controls = {
 	init: function(camera){
 		this.controls = new PointerLockControls(camera, document.body)
 		this.controls.addEventListener('lock', this.onLock )
                 this.controls.addEventListener('unlock', this.onUnlock )
+		this.raycaster = new THREE.Raycaster();
+		this.initPos = camera.position.clone()
+		this.raycaster.setFromCamera( camera.position.clone(), camera );
 
-
+		this.dist = 8
 		let callback = function(){
 			requestAnimationFrame(callback);
 			if(controls.controls.isLocked) controls.move()
@@ -33,6 +48,20 @@ export const controls = {
 	move: function(){
                 const delta = 0.015
 
+              // collistions
+    /*
+                controls.raycaster.setFromCamera( controls.initPos, edges.camera );
+                let intersects = controls.raycaster.intersectObjects( edges.scene.children, true );
+                intersects = intersects.filter(x => x.object.type == 'Mesh')
+                let unique = [...new Set(intersects.map(x => intersects.find(y => (y.object.uuid == x.object.uuid)  )))]
+
+                let closest = unique.filter( x => x.distance <= controls.dist )
+
+                        console.log(closest)
+			*/
+
+
+
                 controls.velocity.x -= controls.velocity.x * 10.0 * delta
                 controls.velocity.z -= controls.velocity.z * 10.0 * delta
                 controls.velocity.y -= 9.8 * 100.0 * delta // 100.0 = mass
@@ -43,6 +72,22 @@ export const controls = {
                 controls.direction.normalize()
 
                 if (controls.moveForward || controls.moveBackward || controls.moveLeft || controls.moveRight) {
+                if (controls.moveForward || controls.moveBackward) {
+                        controls.velocity.z -= controls.direction.z * 400.0 * delta
+                }
+                if (controls.moveLeft || controls.moveRight) {
+                        controls.velocity.x -= controls.direction.x * 400.0 * delta
+                }
+                controls.controls.moveRight(-controls.velocity.x * delta)
+                controls.controls.moveForward(-controls.velocity.z * delta)
+
+			// 0, 14 -200
+
+		if(!checkBoundaries(edges.camera.position) ){
+			controls.controls.moveRight(controls.velocity.x * delta)
+			controls.controls.moveForward(controls.velocity.z * delta)
+			return 
+		}
                         const camPos = edges.camera.position
                         Users.me.position.x = camPos.x
                         //Users.me.position.y = camPos.y
@@ -73,15 +118,6 @@ export const controls = {
                         controls.moving = false
 
                 }
-                if (controls.moveForward || controls.moveBackward) {
-                        controls.velocity.z -= controls.direction.z * 400.0 * delta
-                }
-                if (controls.moveLeft || controls.moveRight) {
-                        controls.velocity.x -= controls.direction.x * 400.0 * delta
-                }
-                controls.controls.moveRight(-controls.velocity.x * delta)
-                controls.controls.moveForward(-controls.velocity.z * delta)
-
         },
 	onLock: function(){
 		document.querySelector("#instructions").style.display = "none";
@@ -102,7 +138,7 @@ export const controls = {
         moveBackward: false,
         moveLeft: false,
         moveRight: false,
-        canJumpt: false,
+        canJump: false,
         moving: false,
         stoping: false,
 }
