@@ -48,11 +48,11 @@ const edges = {
 
 	    // -300
 	    
-	    light1.position.set( -200, 50, -200 );
-	    light2.position.set( -200, 50, 200 );
+	    light1.position.set( -200, 100, -200 );
+	    light2.position.set( -200, 100, 200 );
 	    
-	    light3.position.set( 200, 50, -200 );
-	    light4.position.set( 200, 50, 200 );
+	    light3.position.set( 200, 100, -200 );
+	    light4.position.set( 200, 100, 200 );
 
 
 	    /*
@@ -101,7 +101,7 @@ const edges = {
 		var texture = new THREE.TextureLoader().load( "/img/rockFloor.png" );
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set( 4, 4 );
+		texture.repeat.set( 32, 32 );
 
 		let floorMaterial = new THREE.MeshStandardMaterial( {
 			map: texture
@@ -132,14 +132,20 @@ const edges = {
 		*/
 
 		
-		let texture = new THREE.VideoTexture(document.querySelector('#streaming-video'));
-		let geom = new THREE.SphereBufferGeometry( 600, 32, 32, 0, Math.PI, 0, Math.PI - 0.1 );
-		let mat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
-		mat.castShadow = true
-		mat.receiveShadow = true
-		let egg = new THREE.Mesh(geom, mat)
-		egg.rotateX(-Math.PI/2)
-		egg.name = 'egg'
+	    let texture = new THREE.VideoTexture(document.querySelector('#streaming-video'));
+	    let geom = new THREE.SphereBufferGeometry( 600, 32, 32, 0, Math.PI, 0, Math.PI - 0.1 );
+	    let mat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
+
+	    texture.wrapS = THREE.MirroredRepeatWrapping;
+	    texture.wrapT = THREE.MirroredRepeatWrapping;
+	    texture.repeat.set( 2, 2 ); // 4x4 si se ve pixeleado
+
+	    mat.castShadow = true
+	    mat.receiveShadow = true
+
+	    let egg = new THREE.Mesh(geom, mat)
+	    egg.rotateX(-Math.PI/2)
+	    egg.name = 'egg'
 
 		egg.position.z = -300
 
@@ -157,8 +163,8 @@ const edges = {
 			    //				let mat = new THREE.MeshStandardMaterial( { color: 0xdba9ce, transparent: true, opacity: 0.7 } );
 			    var mat = new THREE.MeshStandardMaterial( {
 				color: 0xffffff,
-				metalness: 0.8,
-				roughness: 0.25,
+				metalness: 0.7,
+				roughness: 0.15,
 				// transparent: true,
 				//opacity: 0.7, 
 				// map: vueltasTexture,
@@ -168,10 +174,10 @@ const edges = {
 				gltf.scene.children[0].material = mat
 
 				let f,g;
-				for(let k=0;k<50;k++){
+				for(let k=0;k<70;k++){
 
 					let stalactita = gltf.scene.clone()
-					stalactita.scale.y = Math.random() * 7 +2
+					stalactita.scale.y = Math.random() * 7 + 1
 					stalactita.scale.z = Math.random() * 6 + 1
 					stalactita.scale.x = stalactita.scale.z
 					stalactita.rotation.x += Math.random()/2-0.25
@@ -215,15 +221,22 @@ const edges = {
 		//let light = new THREE.PointLight( 0xff0000, 1, 50 );
 		//this.scene.add(light)
 	},
-	addRocas: function(){
-		let loader = new GLTFLoader();
-		loader.load(
-			// resource URL
-			'/models/rock1.glb',
-			// called when the resource is loaded
-			function ( gltf ) {
-				//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: edges.floor.material.map } );
+    addRocas: function(){
+			
+	var texture2 = new THREE.TextureLoader().load( "/img/rockFloor.png" );
+	texture2.wrapS = THREE.RepeatWrapping;
+	texture2.wrapT = THREE.RepeatWrapping;
+	texture2.repeat.set( 8, 8 );
+
+	let loader = new GLTFLoader();
+	loader.load(
+	    // resource URL
+	    '/models/rock1.glb',
+	    // called when the resource is loaded
+	    function ( gltf ) {
+			    //let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+			    //let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: edges.floor.material.map } );
+			    let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 				mat.castShadow = true
 				gltf.scene.children[0].material = mat
 
@@ -242,7 +255,7 @@ const edges = {
 			'/models/rock2.glb',
 			// called when the resource is loaded
 			function ( gltf ) {
-				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: edges.floor.material.map } );
+				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 				mat.castShadow = true
 				gltf.scene.children[0].material = mat
 
@@ -263,7 +276,7 @@ const edges = {
 			'/models/rock3.glb',
 			// called when the resource is loaded
 			function ( gltf ) {
-				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: edges.floor.material.map } );
+			    let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 				mat.castShadow = true
 				gltf.scene.children[0].material = mat
 
@@ -282,7 +295,7 @@ const edges = {
 			'/models/rock4.glb',
 			// called when the resource is loaded
 			function ( gltf ) {
-				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: edges.floor.material.map } );
+				let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 				mat.castShadow = true
 				gltf.scene.children[0].material = mat
 
