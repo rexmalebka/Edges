@@ -6,7 +6,7 @@ import { controls as controls_mb } from '/js/Controls_mobile.js';
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users } from '/js/Server.js';
 import { Chat } from '/js/chat.js';
-import { raycaster } from '/js/Collisions.js';
+//import { raycaster } from '/js/Collisions.js';
 
 const personajes = {}
 
@@ -22,7 +22,7 @@ const edges = {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-		this.raycaster = raycaster.init(this.camera, this.scene)
+		//this.raycaster = raycaster.init(this.camera, this.scene)
 
 		if(detectMob()){
 			this.controls = controls_mb.init(this.camera)		//PointerLockControls(this.camera, document.body)
@@ -234,6 +234,8 @@ const edges = {
 
 				roca.position.y = 3
 				roca.position.z = 300
+				var box = new THREE.BoxHelper( roca, 0xffff00 );
+				edges.scene.add(box)
 				edges.scene.add(roca)
 				edges.roca = roca
 			})
@@ -255,6 +257,8 @@ const edges = {
 				roca.position.y = 3
 				roca.position.x = 200
 				roca.position.z = -300
+				var box = new THREE.BoxHelper( roca, 0xffff00 );
+				edges.scene.add(box)
 				edges.scene.add(roca)
 				edges.roca2 = roca
 			})
@@ -275,6 +279,8 @@ const edges = {
 				roca.position.y = 0
 				roca.position.x = 10
 				roca.position.z = -50
+				var box = new THREE.BoxHelper( roca, 0xffff00 );
+				edges.scene.add(box)
 				edges.scene.add(roca)
 			})
 		loader.load(
@@ -296,6 +302,8 @@ const edges = {
 				roca.position.z = -100
 				edges.scene.add(roca)
 				edges.roca3 = roca
+				var box = new THREE.BoxHelper( roca, 0xffff00 );
+				edges.scene.add(box)
 			})
 	
 	},
