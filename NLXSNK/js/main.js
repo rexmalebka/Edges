@@ -86,11 +86,6 @@ const edges = {
 	    window.addEventListener('resize', onWindowResize);
 
 
-		let  geometry = new THREE.BoxGeometry(100, 100, 50);
-		let  material = new THREE.MeshNormalMaterial({transparent: true, opacity: 0.8, side:THREE.DoubleSide, color:0xff0000});
-let  box = new THREE.Mesh(geometry, material);
-box.position.set(0, 0,0)
-edges.scene.add(box)
 
 	}, 
 	addFloor: function(){
@@ -255,9 +250,8 @@ edges.scene.add(box)
 
 				roca.position.y = 3
 				roca.position.z = 300
-				var box = new THREE.BoxHelper( roca, 0xffff00 );
-		    		edges.controls.bounds.push(box)
-				edges.scene.add(box)
+
+		    					
 				edges.scene.add(roca)
 				edges.roca = roca
 			})
@@ -280,9 +274,6 @@ edges.scene.add(box)
 				roca.position.x = 200
 				roca.position.z = -300
 		  
-				var box = new THREE.BoxHelper( roca, 0xffff00 );
-		    		//edges.controls.bounds.push(box)
-				edges.scene.add(box)
 				edges.scene.add(roca)
 				edges.roca2 = roca
 			})
@@ -303,10 +294,8 @@ edges.scene.add(box)
 				roca.position.y = 0
 				roca.position.x = 10
 				roca.position.z = -50
-				var box = new THREE.BoxHelper( roca, 0xffff00 );
-		    		edges.controls.bounds.push(box)
-				edges.scene.add(box)
 				edges.scene.add(roca)
+
 			})
 		loader.load(
 			// resource URL
@@ -327,9 +316,6 @@ edges.scene.add(box)
 				roca.position.z = -100
 				edges.scene.add(roca)
 				edges.roca3 = roca
-				var box = new THREE.BoxHelper( roca, 0xffff00 );
-		    		edges.controls.bounds.push(box)
-				edges.scene.add(box)
 			})
 	
 	},

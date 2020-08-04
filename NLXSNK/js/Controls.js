@@ -10,7 +10,7 @@ function checkBoundaries(position){
 
 		var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
 
-		var inverseBox = box;
+		var inverseBox = box.clone();
 		var inversePoint = position.clone();
 
 		inverseBox.applyMatrix4(boxMatrixInverse);
