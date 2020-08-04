@@ -78,7 +78,8 @@ const edges = {
 	    this.addEstalac();
 	    this.addRocas();
 	    this.addRings();
-	    this.mkAvatar(); 
+	    this.mkAvatar();
+	    this.addVideos(); 
 	    
 	    this.addLamparitas()
 	    this.animate();
@@ -195,6 +196,45 @@ const edges = {
 			})
 
 	},
+
+    addVideos: function(){
+
+	    
+	let group = new THREE.Group();
+
+
+	for(var i = 1; i < 8; i++){
+	    var video = document.getElementById( 'video'+i );
+	    video.play();
+	    video.addEventListener('play', function() {
+		this.currentTime = 3;
+	    }, false);
+	    
+	    let texture = new THREE.VideoTexture( video );
+	    
+	    let videoGeometry = new THREE.PlaneGeometry(176/4, 120/4, 4);
+	    let videoMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, side: THREE.DoubleSide } );
+	    
+	    let videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+	    
+	    videoMesh.rotation.y = Math.PI /2;
+	    videoMesh.position.z = 50*i;
+	    videoMesh.position.x = 0;  
+
+	    group.add( videoMesh ); 
+	    
+	}
+
+	group.rotation.y = Math.PI / 4;
+	group.position.z = -25; // hacerlo más adelante para poner las fichas
+	group.position.x = -520;
+	group.position.y = 120/8+10; 
+	edges.scene.add( group );
+
+
+	
+    },
+    
 	addRings: function(){
 
 	    var mat = new THREE.MeshStandardMaterial( {
@@ -441,7 +481,6 @@ const edges = {
 	    
 	    edges.scene.add(videoMesh);
 
-
         var zgamuTex = new THREE.TextureLoader().load( 'img/zgamu.png', function ( zgamuTexture ) {
 
         });
@@ -478,6 +517,7 @@ const edges = {
 
 	    
 	}
+	
 	    
 	
 	    
