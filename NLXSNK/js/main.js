@@ -53,6 +53,25 @@ const edges = {
 	    
 	    light3.position.set( 200, 100, -200 );
 	    light4.position.set( 200, 100, 200 );
+            let k = 1
+            function callback(){
+                   
+                    light1.position.x = -200 + (Math.sin(0.04 * k) * 100)
+                    light1.position.z = -200 + (Math.cos(0.04 * k) * 100)
+                    
+                    light2.position.x = -200 + (Math.sin(0.04 * k) * 120)
+                    light2.position.z = 200 + (Math.cos(0.04 * k) * 80)
+                    
+                    light3.position.x = 200 + (Math.sin(0.04 * k) * 100)
+                    light3.position.z = 100 + (Math.cos(0.04 * k) * 200)
+                   
+ 
+                    light4.position.x = 200 + (Math.sin(0.04 * k) * 370)
+                    light4.position.z = 100 + (Math.cos(0.02 * k) * 380)
+                    k = (k + 1)%500
+                requestAnimationFrame(callback)
+            }
+                requestAnimationFrame(callback)
 
 
 	    /*
@@ -82,6 +101,7 @@ const edges = {
 	    this.addVideos(); 
 	    
 	    this.addLamparitas()
+	    this.addLago()
 	    this.animate();
 
 	    window.addEventListener('resize', onWindowResize);
@@ -455,9 +475,27 @@ const edges = {
 	//edges.scene.add(group); 
 	this.avatar = group.clone(); 
 	
-    },
- 
-    
+    }, 
+     addLago: function(){
+	let loader = new GLTFLoader();
+	loader.load(
+		// resource URL
+		'/models/fuente.glb',
+		// called when the resource is loadedi
+		function ( gltf ) {
+			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
+			//mat.castShadow = true
+			//gltf.scene.children[0].material = mat
+
+			let fuente = gltf.scene
+			fuente.scale.multiplyScalar(2000)
+
+			fuente.position.set(-250, 0, 50)
+	  
+			edges.scene.add(fuente)
+			edges.fuente = fuente
+		})
+},    
     addVideo: function(){
 
 	for(var i = 1; i < 10; i++){

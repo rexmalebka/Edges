@@ -20,7 +20,6 @@ function checkBoundaries(position){
 		var isInside = bb.containsPoint(inversePoint);
 		return isInside
 	})
-	console.debug(insides)
 	return !insides.some(x=>x)
 /*
 	console.debug("---------->", isInside)
