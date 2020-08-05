@@ -1,6 +1,7 @@
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
 import { GLTFLoader } from '/js/three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from '/js/three/examples/jsm/loaders/DRACOLoader.js';
 import { controls } from '/js/Controls.js';
 import { controls as controls_mb } from '/js/Controls_mobile.js';
 import * as flvPlayer from '/js/flv.min.js';
@@ -392,8 +393,14 @@ const edges = {
 	},
 	addEsculturas: function(){
 	let loader = new GLTFLoader();
+	let loader2 = new GLTFLoader();
+
+	var dracoLoader = new DRACOLoader();
+	dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
+	loader.setDRACOLoader( dracoLoader );
+
 	loader.load(
-		'/models/goodgirl2.glb',
+		'/models/goodgirl3.glb',
 		function ( gltf ) {
 			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 			//mat.castShadow = true
@@ -406,7 +413,7 @@ const edges = {
 			edges.scene.add(escultura)
 		})
 	
-	loader.load(
+	loader2.load(
 		'/models/symbol1.glb',
 		function ( gltf ) {
 			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
