@@ -54,7 +54,7 @@ const edges = {
 	    
 	    light3.position.set( 200, 100, -200 );
 	    light4.position.set( 200, 100, 200 );
-            let k = 1
+            let k = 0.25
             function callback(){
                    
                     light1.position.x = -200 + (Math.sin(0.04 * k) * 100)
@@ -433,34 +433,34 @@ const edges = {
 	let group = new THREE.Group();
 	this.avatar = new THREE.Group();	
 	
-            var texture1 = new THREE.TextureLoader().load( 'img/avTex1.jpg', function ( floorTexture ) {                floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+            var texture1 = new THREE.TextureLoader().load( 'img/avTex11.jpg', function ( floorTexture ) {                floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
                 floorTexture.offset.set( 0.6, 0.6 );
                 floorTexture.repeat.set( 1, 1 );
             });
      
      
-            var texture2 = new THREE.TextureLoader().load( 'img/avTex2.jpg', function ( floorTexture ) {
+            var texture2 = new THREE.TextureLoader().load( 'img/avTex22.jpg', function ( floorTexture ) {
                 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
                 floorTexture.offset.set( 0.6, 0.6 );
                 floorTexture.repeat.set( 1, 1 );
             });
      
      
-            var texture3 = new THREE.TextureLoader().load( 'img/avTex3.jpg', function ( floorTexture ) {
+            var texture3 = new THREE.TextureLoader().load( 'img/avTex33.jpg', function ( floorTexture ) {
             floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
                 floorTexture.offset.set( 0.6, 0.6 );
                 floorTexture.repeat.set( 1, 1 );
             });
      
      
-            var texture4 = new THREE.TextureLoader().load( 'img/avTex4.jpg', function ( floorTexture ) {
+            var texture4 = new THREE.TextureLoader().load( 'img/avTex44.jpg', function ( floorTexture ) {
                 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
                 floorTexture.offset.set( 0.6, 0.6 );
                 floorTexture.repeat.set( 1, 1 );
         });
 
      
-        this.texturas = {"avTex1.jpg": texture1, "avTex2.jpg": texture2, "avTex3.jpg": texture3, "avTex4.jpg": texture4}
+        this.texturas = {"avTex11.jpg": texture1, "avTex22.jpg": texture2, "avTex33.jpg": texture3, "avTex44.jpg": texture4}
 	
 	let avbodyMaterial = new THREE.MeshBasicMaterial( {
 	    color: 0xffffff,
