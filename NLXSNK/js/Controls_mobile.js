@@ -150,6 +150,12 @@ export const controls = {
 	},
 	mostrar: function(e){
 		e.preventDefault()
+
+		if(onLoadMedia){
+                        onLoadMedia()
+                        onLoadMedia = null
+                }
+
 		document.querySelector('#instructions').style.display = (document.querySelector('#instructions').style.display == ''? 'none' : '')
 		if(document.querySelector('#instructions').style.display == ''){
 			document.querySelector('#moveControls').style.zIndex = -1 
