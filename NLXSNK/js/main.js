@@ -57,18 +57,18 @@ const edges = {
             let k = 1
             function callback(){
                    
-                    light1.position.x = -200 + (Math.sin(0.04 * k) * 100)
-                    light1.position.z = -200 + (Math.cos(0.04 * k) * 100)
+                    light1.position.x = -200 + (Math.sin(0.02 * k) * 100)
+                    light1.position.z = -200 + (Math.cos(0.02 * k) * 100)
                     
-                    light2.position.x = -200 + (Math.sin(0.04 * k) * 120)
-                    light2.position.z = 200 + (Math.cos(0.04 * k) * 80)
+                    light2.position.x = -200 + (Math.sin(0.02 * k) * 120)
+                    light2.position.z = 200 + (Math.cos(0.042* k) * 80)
                     
-                    light3.position.x = 200 + (Math.sin(0.04 * k) * 100)
-                    light3.position.z = 100 + (Math.cos(0.04 * k) * 200)
+                    light3.position.x = 200 + (Math.sin(0.02 * k) * 100)
+                    light3.position.z = 100 + (Math.cos(0.02 * k) * 200)
                    
  
-                    light4.position.x = 200 + (Math.sin(0.04 * k) * 370)
-                    light4.position.z = 100 + (Math.cos(0.02 * k) * 380)
+                    light4.position.x = 200 + (Math.sin(0.02 * k) * 370)
+                    light4.position.z = 100 + (Math.cos(0.01 * k) * 380)
                     k = (k + 1)%500
                 requestAnimationFrame(callback)
             }
@@ -181,6 +181,7 @@ const edges = {
 
 	    let egg = new THREE.Mesh(geom, mat)
 	    egg.rotateX(-Math.PI/2)
+	    egg.rotateZ(0.3)
 	    egg.name = 'egg'
 
 		egg.position.z = -300
@@ -302,9 +303,13 @@ const edges = {
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
 	texture2.repeat.set( 8, 8 );
-
 	let loader = new GLTFLoader();
+
+	var dracoLoader = new DRACOLoader();
+	dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
+	loader.setDRACOLoader( dracoLoader );
 	loader.load(
+
 	    // resource URL
 	    '/models/rock1.glb',
 	    // called when the resource is loaded
@@ -393,14 +398,13 @@ const edges = {
 	},
 	addEsculturas: function(){
 	let loader = new GLTFLoader();
-	let loader2 = new GLTFLoader();
 
 	var dracoLoader = new DRACOLoader();
 	dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
 	loader.setDRACOLoader( dracoLoader );
 
 	loader.load(
-		'/models/goodgirl3.glb',
+		'/models/goodgirl4.glb',
 		function ( gltf ) {
 			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
 			//mat.castShadow = true
@@ -410,10 +414,11 @@ const edges = {
 			escultura.scale.multiplyScalar(30)
 
 			escultura.position.set(50,0,100)
+			edges.escultura = escultura
 			edges.scene.add(escultura)
 		})
 	
-	loader2.load(
+	loader.load(
 		'/models/symbol1.glb',
 		function ( gltf ) {
 			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
