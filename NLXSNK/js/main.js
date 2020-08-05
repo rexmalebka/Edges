@@ -85,7 +85,17 @@ const edges = {
             light1.penumbra = 1 
             light1.decay = 2 
 	    */
-	    
+	    this.scene.background = new THREE.CubeTextureLoader()
+		.setPath( '/img/' )
+		.load( [
+			'px.jpg',
+			'nx.jpg',
+			'py.jpg',
+			'ny.jpg',
+			'pz.jpg',
+			'nz.jpg'
+		] );
+
 	    this.scene.add( light1 );
 	    this.scene.add( light2 );
 	    this.scene.add( light3 );
@@ -101,6 +111,7 @@ const edges = {
 	    this.addVideos(); 
 	    
 	    this.addLamparitas()
+	    this.addEsculturas()
 	    this.addLago()
 	    this.animate();
 
@@ -378,6 +389,37 @@ const edges = {
 				edges.roca3 = roca
 			})
 	
+	},
+	addEsculturas: function(){
+	let loader = new GLTFLoader();
+	loader.load(
+		'/models/goodgirl2.glb',
+		function ( gltf ) {
+			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
+			//mat.castShadow = true
+			//gltf.scene.children[0].material = mat
+
+			let escultura = gltf.scene
+			escultura.scale.multiplyScalar(30)
+
+			escultura.position.set(50,0,100)
+			edges.scene.add(escultura)
+		})
+	
+	loader.load(
+		'/models/symbol1.glb',
+		function ( gltf ) {
+			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
+			//mat.castShadow = true
+			//gltf.scene.children[0].material = mat
+
+			let escultura = gltf.scene
+			escultura.scale.multiplyScalar(20)
+
+			escultura.position.set(250,30,200)
+			edges.scene.add(escultura)
+		})
+
 	},
     mkAvatar: function(){
 
