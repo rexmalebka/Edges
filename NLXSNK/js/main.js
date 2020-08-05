@@ -304,7 +304,7 @@ const edges = {
 	},
     addRocas: function(){
 			
-	var texture2 = new THREE.TextureLoader().load( "/img/rockFloor.png" );
+	var texture2 = new THREE.TextureLoader().load( "/img/rockFloor.jpg" );
 	texture2.wrapS = THREE.RepeatWrapping;
 	texture2.wrapT = THREE.RepeatWrapping;
 	texture2.repeat.set( 8, 8 );
