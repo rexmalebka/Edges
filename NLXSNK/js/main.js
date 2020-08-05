@@ -191,7 +191,12 @@ const edges = {
 		this.scene.add(egg)
 	},
 	addEstalac: function(){
-		let loader = new GLTFLoader();
+
+	let loader = new GLTFLoader();
+
+	var dracoLoader = new DRACOLoader();
+	dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
+	loader.setDRACOLoader( dracoLoader );
 		loader.load(
 			// resource URL
 			'/models/stalac1.glb',
