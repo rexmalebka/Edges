@@ -114,7 +114,6 @@ export const Server = {
 			dispatchEvent(Users[uuid].moveUser);
 		});
 	    server.on("rotate", function(data){
-		console.log("rotandoooooo");
 			const uuid = data[0];
 			const rotation = {
 				x: data[1],

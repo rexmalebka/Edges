@@ -33,14 +33,11 @@ const edges = {
 		document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
 				
-		//let light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.05 );
-		//let hemislight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.25 );
-	    // this.scene.add(hemislight)
-	   //  this.hemislight = hemislight
-	    var light1 = new THREE.PointLight( 0x474C51, 0.5, 900 );
-	    var light2 = new THREE.PointLight( 0x386B51, 0.5, 900 );
-	    var light3 = new THREE.PointLight( 0xDEBEAC, 0.5, 900 );
-	    var light4 = new THREE.PointLight( 0xced1d0, 0.5, 900 );
+	    var light1 = new THREE.PointLight( 0x474C51, 0.9, 900 );
+	    var light2 = new THREE.PointLight( 0x386B51, 0.9, 900 );
+	    var light3 = new THREE.PointLight( 0xDEBEAC, 0.9, 900 );
+	    var light4 = new THREE.PointLight( 0xced1d0, 0.9, 900 );
+	    var light5 = new THREE.PointLight( 0xced1d0, 1, 1200 );
 	    
 	    this.light1 = light1
 	    this.light2 = light2	    
@@ -54,6 +51,10 @@ const edges = {
 	    
 	    light3.position.set( 200, 100, -200 );
 	    light4.position.set( 200, 100, 200 );
+		
+	    light5.position.set( -250, 20, 60 );
+//x: -250, y: 30, z: 60}
+	    this.light5 = light5
             let k = 0.25
             function callback(){
                    
@@ -101,6 +102,7 @@ const edges = {
 	    this.scene.add( light2 );
 	    this.scene.add( light3 );
 	    this.scene.add( light4 );
+	    this.scene.add( light5 );
 
 
 	    this.addFloor();
@@ -114,6 +116,7 @@ const edges = {
 	    this.addLamparitas()
 	    this.addEsculturas()
 	    this.addLago()
+		this.addScreen()
 	    this.animate();
 
 	    window.addEventListener('resize', onWindowResize);
@@ -412,6 +415,7 @@ const edges = {
 	dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
 	loader.setDRACOLoader( dracoLoader );
 
+	for(let k=0; k<10;k++){
 	loader.load(
 		'/models/goodgirl4.glb',
 		function ( gltf ) {
@@ -422,11 +426,31 @@ const edges = {
 			let escultura = gltf.scene
 			escultura.scale.multiplyScalar(30)
 
-			escultura.position.set(50,0,100)
-			edges.escultura = escultura
+			escultura.position.set(50+ Math.sin(k)*500, 0, 100+ Math.sin(k)* 500)
+			escultura.children[0].rotation.set(0,0,0)
+			//edges.escultura = escultura
 			edges.scene.add(escultura)
 		})
+	}
 	
+
+	loader.load(
+		'/models/goodgirl4.glb',
+		function ( gltf ) {
+			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
+			//mat.castShadow = true
+			//gltf.scene.children[0].material = mat
+
+			let escultura = gltf.scene
+			escultura.scale.multiplyScalar(30)
+
+			escultura.position.set(58, 0, -326)
+			escultura.children[0].rotation.set(0,0,0)
+			//edges.escultura = escultura
+			edges.scene.add(escultura)
+		}
+	)
+
 	loader.load(
 		'/models/symbol1.glb',
 		function ( gltf ) {
@@ -567,6 +591,8 @@ const edges = {
 			edges.scene.add(fuente)
 			edges.fuente = fuente
 		})
+
+
 },    
     addVideo: function(){
 
@@ -640,10 +666,23 @@ const edges = {
 
 	addScreen: function(){
 
-	    let screensGeometry = new THREE.PlaneGeometry( 100, 50, 8 );
+	    let screensGeometry = new THREE.PlaneGeometry( 50, 25, 8 );
+	    let mat = new THREE.MeshBasicMaterial( { color: 0xffffff, map: this.egg.material.map, side: THREE.DoubleSide } );
+	    let screen = new THREE.Mesh(screensGeometry, mat);
+	    let screen2 = new THREE.Mesh(screensGeometry, mat);
+	    let screen3 = new THREE.Mesh(screensGeometry, mat);
+	    let screen4 = new THREE.Mesh(screensGeometry, mat);
+		
+		screen.position.set(153,15,-380)
+		screen2.position.set(251,15,-87)
+		screen3.position.set(399, 15,12)
+		screen4.position.set(-201,15,-412)
 
-	    let screen;
-	    
+	this.scene.add(screen);
+	this.scene.add(screen2);
+	this.scene.add(screen3);
+	this.scene.add(screen4);
+	    /*
 		for(let i = 0; i < 3; i++){		
 		    screen = new THREE.Mesh(screensGeometry, this.zordonMaterial);
 		    
@@ -668,7 +707,7 @@ const edges = {
 
 		    this.scene.add(screen);
 		}
-
+		*/
 	},
 	animate: function(){
 		requestAnimationFrame( edges.animate );
