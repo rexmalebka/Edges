@@ -8,6 +8,8 @@ export const controls = {
 		let divControls = document.createElement('div');
 		divControls.id = "controls"
 
+		document.querySelector("#chat").style.right = "15%"
+
 		let moveControls = document.createElement('div');
 		let cameraControls = document.createElement('div');
 
@@ -34,11 +36,17 @@ export const controls = {
 		upButton.addEventListener('touchend', function(e){
 			stopp(e)
 		})
+		upButton.addEventListener('touchcancel', function(e){
+			stopp(e)
+		})
 
 		leftButton.addEventListener('touchstart', function(e){
 			move(e)
 		})
 		leftButton.addEventListener('touchend', function(e){
+			stopp(e)
+		})
+		leftButton.addEventListener('touchcancel', function(e){
 			stopp(e)
 		})
 		
@@ -49,11 +57,17 @@ export const controls = {
 		rightButton.addEventListener('touchend', function(e){
 			stopp(e)
 		})
+		rightButton.addEventListener('touchcancel', function(e){
+			stopp(e)
+		})
 		
 		downButton.addEventListener('touchstart', function(e){
 			move(e)
 		})
 		downButton.addEventListener('touchend', function(e){
+			stopp(e)
+		})
+		downButton.addEventListener('touchcancel', function(e){
 			stopp(e)
 		})
 
@@ -73,6 +87,9 @@ export const controls = {
 		cUp.addEventListener('touchend', function(e){
 			stopp(e)
 		})
+		cUp.addEventListener('touchcancel', function(e){
+			stopp(e)
+		})
 		
 		divbutton.appendChild(cUp)
 		moveControls.appendChild(divbutton)
@@ -85,11 +102,17 @@ export const controls = {
 		cLeft.addEventListener('touchend', function(e){
 			stopp(e)
 		})
+		cLeft.addEventListener('touchcancel', function(e){
+			stopp(e)
+		})
 		let cRight = rightButton.cloneNode(true)
 		cRight.addEventListener('touchstart', function(e){
 			move(e)
 		})
 		cRight.addEventListener('touchend', function(e){
+			stopp(e)
+		})
+		cRight.addEventListener('touchcancel', function(e){
 			stopp(e)
 		})
 		divbutton.appendChild(cLeft)
@@ -103,6 +126,9 @@ export const controls = {
 			move(e)
 		})
 		cDown.addEventListener('touchend', function(e){
+			stopp(e)
+		})
+		cDown.addEventListener('touchcancel', function(e){
 			stopp(e)
 		})
 		divbutton.appendChild(cDown)
@@ -133,10 +159,13 @@ export const controls = {
 		
 		let mostrarinstButton = document.createElement('button')
 
-		mostrarinstButton.id = 'mostrarChat';
+		mostrarinstButton.id = 'mostrarinfo';
+		mostrarinstButton.style.border = "2px white solid"
 		mostrarinstButton.textContent = 'ⓘ'
 
-		mostrarinstButton.addEventListener('touchstart', controls.mostrar)
+		mostrarinstButton.addEventListener('click', function(e){
+			controls.mostrar(e)
+		})
 		document.querySelector('#texturasform').insertAdjacentElement('afterend',mostrarinstButton)
 
 		let callback = function(){
@@ -170,6 +199,9 @@ export const controls = {
 			document.querySelector('#moveControls').style.opacity = 1
 			document.querySelector('#cameraControls').style.opacity = 1
 		}
+		document.body.requestFullscreen().catch((error)=>{
+			console.debug(error,"errooooor")
+		})
 	},
 	rotate: function(){
 		controls.controls.getObject().rotation.order = 'YXZ'
@@ -274,7 +306,6 @@ function move(e){
 				break
 		}
 	}else if(e.target.parentNode.parentNode == document.querySelector("#cameraControls")){
-		console.debug("camara krnal")
 		switch(e.target.id){
 			case 'upButton':
 				controls.rotateX = 1

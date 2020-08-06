@@ -824,6 +824,7 @@ function moveUser(event) {
 
 function rotateUser(event) {
 	const uuid = event.detail.uuid
+	if(!Users[uuid]) return
 	const newPos = {
 	    x: Users[uuid].rotation.x,
 	    y: Users[uuid].rotation.y,
@@ -847,7 +848,7 @@ function rotateUser(event) {
 	    personajes[uuid].rotation.x = oldPos.x + (dx * i / mi) 
 	    personajes[uuid].rotation.y = oldPos.y + (dy * i / mi) 
 	    personajes[uuid].rotation.z = oldPos.z + (dz * i / mi) 
-  }
+	  }
   const intfunc = setInterval(function () {
     i++
     interpolate(i)
@@ -862,7 +863,7 @@ function rotateUser(event) {
 
 function removeUser(event) {
     const uuid = event.detail.uuid
-
+    if(!personajes[uuid]) return
     personajes[uuid].remove(personajes[uuid].children[0]);
     personajes[uuid].remove(personajes[uuid].children[1]); 
     personajes[uuid].remove(personajes[uuid].children[2]); 
