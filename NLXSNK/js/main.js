@@ -37,10 +37,10 @@ const edges = {
 		//let hemislight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.25 );
 	    // this.scene.add(hemislight)
 	   //  this.hemislight = hemislight
-	    var light1 = new THREE.PointLight( 0x474C51, 2, 700 );
-	    var light2 = new THREE.PointLight( 0x386B51, 2, 700 );
-	    var light3 = new THREE.PointLight( 0xDEBEAC, 2, 700 );
-	    var light4 = new THREE.PointLight( 0xced1d0, 2, 700 );
+	    var light1 = new THREE.PointLight( 0x474C51, 0.5, 900 );
+	    var light2 = new THREE.PointLight( 0x386B51, 0.5, 900 );
+	    var light3 = new THREE.PointLight( 0xDEBEAC, 0.5, 900 );
+	    var light4 = new THREE.PointLight( 0xced1d0, 0.5, 900 );
 	    
 	    this.light1 = light1
 	    this.light2 = light2	    
@@ -131,17 +131,21 @@ const edges = {
 		console.log(floorGeometry.vertices.length,'aaaa')
 		
 		for (let i = 0; i < floorGeometry.vertices.length; i++) {
-			floorGeometry.vertices[i].y += (Math.random()*2) - 3
+			floorGeometry.vertices[i].y += (Math.random()*3) - 1.5
 		}
 		
-		var texture = new THREE.TextureLoader().load( "/img/rockFloor.png" );
+	    var texture = new THREE.TextureLoader().load( "/img/ger.jpg" );
+	
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set( 32, 32 );
 
 		let floorMaterial = new THREE.MeshStandardMaterial( {
-			map: texture
+		    map: texture,
+		    metalness: 0.99,
+		    roughness: 0.69
                 });
+	    
 		
 		let floor = new THREE.Mesh( floorGeometry, floorMaterial );
 		floor.castShadow = true; //default is false
@@ -219,7 +223,7 @@ const edges = {
 				for(let k=0;k<70;k++){
 
 					let stalactita = gltf.scene.clone()
-					stalactita.scale.y = Math.random() * 7 + 1
+					stalactita.scale.y = Math.random() * 6 + 1
 					stalactita.scale.z = Math.random() * 6 + 1
 					stalactita.scale.x = stalactita.scale.z
 					stalactita.rotation.x += Math.random()/2-0.25
@@ -433,7 +437,16 @@ const edges = {
 			let escultura = gltf.scene
 			escultura.scale.multiplyScalar(20)
 
-			escultura.position.set(250,30,200)
+		    escultura.position.set(-220,40,-10)
+		    escultura.rotation.x = Math.PI / 2
+
+		    let rotation = setInterval(function(){
+			
+			escultura.children[0].rotation.y += 0.025;
+			// sphere.rotation.z += 0.001;
+			
+		    }, 30)
+		    
 			edges.scene.add(escultura)
 		})
 
