@@ -33,11 +33,11 @@ const edges = {
 		document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
 				
-	    var light1 = new THREE.PointLight( 0x474C51, 0.9, 900 );
-	    var light2 = new THREE.PointLight( 0x386B51, 0.9, 900 );
-	    var light3 = new THREE.PointLight( 0xDEBEAC, 0.9, 900 );
-	    var light4 = new THREE.PointLight( 0xced1d0, 0.9, 900 );
-	    var light5 = new THREE.PointLight( 0xced1d0, 1, 1200 );
+	    var light1 = new THREE.PointLight( 0x474C51, 0.65, 900 );
+	    var light2 = new THREE.PointLight( 0x386B51, 0.65, 900 );
+	    var light3 = new THREE.PointLight( 0xDEBEAC, 0.65, 900 );
+	    var light4 = new THREE.PointLight( 0xced1d0, 0.65, 900 );
+	    var light5 = new THREE.PointLight( 0xced1d0, 0.7, 1200 );
 	    
 	    this.light1 = light1
 	    this.light2 = light2	    
