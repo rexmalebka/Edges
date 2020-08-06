@@ -539,7 +539,7 @@ const edges = {
 	let loader = new GLTFLoader();
 	loader.load(
 		// resource URL
-		'/models/fuente.glb',
+		'/models/fuente2.glb',
 		// called when the resource is loadedi
 		function ( gltf ) {
 			//let mat = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide, map: texture2 } );
