@@ -16,37 +16,30 @@ const edges = {
 
 	    this.renderer.setPixelRatio( window.devicePixelRatio );
 	    this.renderer.setSize( window.innerWidth, window.innerHeight );
-	    
+
+	    this.rojo = new THREE.Color( 0xB80118 );
+	    this.verde = new THREE.Color( 0x01B8A0 ); 
+	    this.azul = new THREE.Color( 0x5691cc ); 
+	    this.morado = new THREE.Color( 0xa800ff ); 
+	     
 	    document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
 	    // this.controls = new PointerLockControls(this.camera, document.body)
 	    //this.controls = new PointerLockControls(this.camera, document.body)
 	    this.controls = controls.init(this.camera)		//PointerLockControls(this.camera, document.body)
 
-	    /*
-	    this.scene.background = new THREE.CubeTextureLoader().setPath('/img/').load([
-		    'px.jpg',
-		    'nx.jpg',
-		    'py.jpg',
-		    'ny.jpg',
-		    'pz.jpg',
-		'nz.jpg'
-	    ])
-
-	    ;
-
 	    let light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.05 );
 	    light.position.set( 0, 30, 0 );
 	    this.scene.add( light );
-	    */
 	    
 	    this.addFloor()
-	    this.addMaze()
-	    
+	    this.addPantallas()
+	    this.addSalas()
 	    // this.addLightCiudad()
 	    // this.addLightHuachimontones()
 	    this.mkAvatar()
 	    this.pasillo()
+	    this.vueltas()
 	    this.rotaciones()
 	    //this.addAudio()
 	    
@@ -58,6 +51,11 @@ const edges = {
 	},
     
     addFloor: function(){
+	
+	// INICIALES
+	
+	let fc = 2.75;
+	let w = 96; 
 
 	let floorGeometry = new THREE.PlaneGeometry( 96*2+4, 96*2+4, 40, 40 );
 	
@@ -66,16 +64,11 @@ const edges = {
 	}
 	
 	floorGeometry.rotateX( - Math.PI / 2 );
-	
-	//var texture = new THREE.TextureLoader().load( 'img/texture.jpg' );
-	
-	//texture.wrapS = THREE.RepeatWrapping;
-	//texture.wrapT = THREE.RepeatWrapping;
-	
+		
 	var floorTexture = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture ) {
 	    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 	    floorTexture.offset.set( 0, 0 );
-	    floorTexture.repeat.set( 8, 4 );
+	    floorTexture.repeat.set( 2, 2 );
 	});
 	
 	var groundMaterial = new THREE.MeshStandardMaterial( {
@@ -88,22 +81,12 @@ const edges = {
             //opacity: 0.75,
         });
 	
-	let floor = new THREE.Mesh( floorGeometry, groundMaterial );
-	let floor2 = new THREE.Mesh( floorGeometry, groundMaterial );
-
-	floor.position.y = 1; 
-	floor2.position.y = 96/2-2;
-
-	this.scene.add( floor );	
-	this.scene.add( floor2 );
-
-	
 	var floorTexture2 = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture2 ) {
 	    floorTexture2.wrapS = floorTexture2.wrapT = THREE.RepeatWrapping;
 	    floorTexture2.offset.set( 1, 0 );
 	    floorTexture2.repeat.set( 1, 0.5 );
 	});
-	
+		
 	var groundMaterial2 = new THREE.MeshStandardMaterial( {
 	    color: 0x808080,
 	    metalness: 0.6,
@@ -114,52 +97,56 @@ const edges = {
             //opacity: 0.75,
         });
 
+	
+	let floor = new THREE.Mesh( floorGeometry, groundMaterial );
+	let floor2 = new THREE.Mesh( floorGeometry, groundMaterial );
+
+	floor.position.y = 1; 
+	floor2.position.y = 96-2+4;
+		
+	this.scene.add( floor );	
+	this.scene.add( floor2 );
+
 	let wallGeometry = new THREE.PlaneGeometry( 96*2.5+4, 96/2+4, 40, 40 );
 	
 	for (let i = 0; i < wallGeometry.vertices.length; i++) {
 	    wallGeometry.vertices[i].z += (Math.random()*2)-1;
 	}
+	
 	let wall1 = new THREE.Mesh(wallGeometry, groundMaterial2 );
 	// wall1.rotation.x = Math.PI /2;
 	wall1.position.y = 96/4;
-	wall1.position.z = 96+3;
+	wall1.position.z = 96-2.5;
 	wall1.position.x = -96/4;
 	this.scene.add( wall1);
 
 	let wall2 = new THREE.Mesh(wallGeometry, groundMaterial2 );
 	// wall1.rotation.x = Math.PI /2;
 	wall2.position.y = 96/4;
-	wall2.position.z = -96-3;
+	wall2.position.z = -96+2.5;
 	wall2.position.x = 96/4
 	this.scene.add(wall2); 
 		
 	var sphgeometry = new THREE.SphereGeometry( 2, 32, 32 );
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-
+	
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
-
-	let latlightv = new THREE.PointLight(  0x5691cc, 3, 200);
-
-	fococine.position.y = latlightv.position.y = 96/2-5; 
-
+	let latlightv = new THREE.PointLight( edges.azul, 3, 200);
+	fococine.position.y = latlightv.position.y = 96-5; 
 	this.scene.add( latlightv ); 
-	this.scene.add( fococine); 
+	this.scene.add( fococine); 	
+	
 	
     },
 
-    pasillo: function(){
-
+    vueltas: function(){
+	
 	// INICIALES
 	
 	let fc = 2.75;
-	let w = 96; 
+	let w = 96;
 
-	/////////////
-	/////////////
-	// vueltas // 
-	/////////////
-	/////////////
-	
+		
 	let vueltasGeometry = new THREE.PlaneGeometry( w/2-4, w/2-4, 20, 20 );
 	
 
@@ -204,7 +191,7 @@ const edges = {
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 
 	var foco = new THREE.Mesh( sphgeometry, sphmaterial );
-	let lightv = new THREE.PointLight( 0x01B8A0, 4, 180);
+	let lightv = new THREE.PointLight( edges.verde, 4, 180);
 	// 0x5691cc
 	foco.position.y = lightv.position.y = 96/2 -5;
 	foco.position.x = lightv.position.x = 96/4-5;
@@ -322,7 +309,7 @@ const edges = {
 	this.scene.add( this.vuelta1 );
 	
 	this.vuelta2 = grupov.clone();
-	this.vuelta2.children[4].color.setHex(  0x5691cc ); 
+	this.vuelta2.children[4].color.set( edges.azul ); 
 	this.vuelta2.remove( this.vuelta2.children[3] ); 
 	this.vuelta2.position.x =  w - w*3.75;
 	this.vuelta2.position.z = -w * 2.25;
@@ -331,7 +318,7 @@ const edges = {
 	this.scene.add( this.vuelta2 );
 
 	this.vuelta3 = grupov.clone();	
-	this.vuelta3.children[4].color.setHex( 0xB80118 ); 
+	this.vuelta3.children[4].color.set( edges.rojo ); 
 	//vuelta2.remove(vuelta2.children[3]); 
 	this.vuelta3.position.x =  w - w*5.25;
 	this.vuelta3.position.z = -w * 2.25;
@@ -351,7 +338,7 @@ const edges = {
 	
 // 	vuelta5.children[4].color.setHex( 0xB80118 ); 
 
-	vuelta5.children[4].color.setHex(  0x5691cc ); 
+	vuelta5.children[4].color.set( edges.azul ); 
 	
 	//vuelta2.remove(vuelta2.children[3]); 
 	
@@ -361,14 +348,13 @@ const edges = {
 	
 	this.scene.add( vuelta5 ); 
 
-
 	let vuelta6 = grupov.clone();
 	
 // 	vuelta5.children[4].color.setHex( 0xB80118 ); 
 
 	// vuelta6.children[4].color.setHex(  0x5691cc ); 
 
-	vuelta6.children[4].color.setHex( 0xB80118 );
+	vuelta6.children[4].color.set( edges.rojo );
 			
 	let entGeometry = new THREE.PlaneGeometry( w/2, w/2, 20, 20 );
 	
@@ -389,7 +375,6 @@ const edges = {
 	entMesh.rotation.y = Math.PI / 2; 
 	
 	vuelta6.add(entMesh); 
-
 	
 	//vuelta2.remove(vuelta2.children[3]); 
 	
@@ -411,7 +396,7 @@ const edges = {
 
 	let vuelta8 = grupov.clone();
 	
-	vuelta8.children[4].color.setHex(  0x5691cc ); 
+	vuelta8.children[4].color.set(  edges.azul ); 
 
 	vuelta8.remove(vuelta8.children[3]); 
 
@@ -423,7 +408,7 @@ const edges = {
 
 	let vuelta9 = grupov.clone();
 	
-	vuelta9.children[4].color.setHex( 0xB80118 ); 
+	vuelta9.children[4].color.set( edges.rojo ); 
 
 	//vuelta2.remove(vuelta2.children[3]); 
 
@@ -447,7 +432,7 @@ const edges = {
 
 	let vuelta11 = grupov.clone();
 	
-	vuelta11.children[4].color.setHex(  0x5691cc ); 
+	vuelta11.children[4].color.set( edges.azul ); 
 
 	//vuelta2.remove(vuelta2.children[3]); 
 
@@ -463,7 +448,7 @@ const edges = {
 
 	// vuelta6.children[4].color.setHex(  0x5691cc ); 
 
-	vuelta12.children[4].color.setHex( 0xB80118 );
+	vuelta12.children[4].color.set( edges.rojo );
 	
 	let entGeometry2 = new THREE.PlaneGeometry( w/2, w/2, 20, 20 );
 	
@@ -491,13 +476,117 @@ const edges = {
 	vuelta12.position.z = -w * -5.25;
 	vuelta12.rotation.y = Math.PI; 
 	
-	this.scene.add( vuelta12 ); 
-		
-	///////////////////////
-	///////////////////////
-	// PASILLOS CERRADOS //
-	///////////////////////
-	///////////////////////
+	this.scene.add( vuelta12 );
+
+	
+	this.vuelta13 = grupov.clone();
+	this.vuelta13.children[4].color.set(  edges.morado ); 
+	this.vuelta13.remove( this.vuelta13.children[3] ); 
+	this.vuelta13.position.x =  w - w*3.75;
+	this.vuelta13.position.z = -w * 3.75;
+	this.vuelta13.rotation.y = Math.PI - Math.PI/2; 
+
+	this.scene.add( this.vuelta13 ); 
+
+	this.vuelta14 = grupov.clone();
+	
+	this.vuelta14.position.x =  w - w*2.25;
+	this.vuelta14.position.z = -w * 3.75;
+	this.vuelta14.rotation.y = Math.PI + Math.PI /2;
+	
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta14 );
+
+	this.vuelta15 = grupov.clone();
+	
+	this.vuelta15.children[4].color.set(  edges.azul );
+	this.vuelta15.position.x =  w - w*2.25;
+	this.vuelta15.position.z = -w * 5.25;
+	this.vuelta15.rotation.y = Math.PI / 2;
+	
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta15 );
+	
+	this.vuelta16 = grupov.clone();
+	
+	this.vuelta16.children[4].color.set(  edges.rojo );
+	this.vuelta16.position.x =  w - w*3.75;
+	this.vuelta16.position.z = -w * 5.25;
+	// this.vuelta16.rotation.y = Math.PI / 2;
+	
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta16 );
+
+	
+	this.vuelta17 = grupov.clone();
+	
+	//this.vuelta17.children[4].color.set(  edges.rojo );
+	this.vuelta17.position.x =  w - w*5.25;
+	this.vuelta17.position.z = -w * 5.25;
+	this.vuelta17.rotation.y = Math.PI / 2 + Math.PI / 2;
+	
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta17 );
+
+	// por aquí empieza la segunda vuelta 
+	
+	this.vuelta18 = grupov.clone();
+	this.vuelta18.children[4].color.set(  edges.morado ); 
+	this.vuelta18.remove( this.vuelta18.children[3] ); 
+	this.vuelta18.position.x =  w - w*-1.75;
+	this.vuelta18.position.z = -w * -3.75;
+	this.vuelta18.rotation.y = - Math.PI/2; 
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta18 );
+
+	this.vuelta19 = grupov.clone();
+	this.vuelta19.children[4].color.set(  edges.verde ); 
+	// this.vuelta19.remove( this.vuelta18.children[3] ); 
+	this.vuelta19.position.x =  w - w*-0.25;
+	this.vuelta19.position.z = -w * -3.75;
+	this.vuelta19.rotation.y = Math.PI/2; 
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta19 );
+
+	this.vuelta20 = grupov.clone();
+	this.vuelta20.children[4].color.set(  edges.azul ); 
+	// this.vuelta19.remove( this.vuelta18.children[3] ); 
+	this.vuelta20.position.x =  w - w*-0.25;
+	this.vuelta20.position.z = -w * -5.25;
+	this.vuelta20.rotation.y = -Math.PI/2; 
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta20 );
+	
+	this.vuelta20 = grupov.clone();
+	this.vuelta20.children[4].color.set(  edges.rojo ); 
+	// this.vuelta19.remove( this.vuelta18.children[3] ); 
+	this.vuelta20.position.x =  w - w*-1.75;
+	this.vuelta20.position.z = -w * -5.25;
+	this.vuelta20.rotation.y = Math.PI; 
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta20 );
+
+	this.vuelta21 = grupov.clone();
+	this.vuelta21.children[4].color.set(  edges.verde ); 
+	// this.vuelta19.remove( this.vuelta18.children[3] ); 
+	this.vuelta21.position.x =  w - w*-3.25;
+	this.vuelta21.position.z = -w * -5.25;
+	// this.vuelta21.rotation.y = Math.PI; 
+	// vuelta1.castShadow = true;
+	this.scene.add( this.vuelta21 );
+
+
+	
+
+
+    },
+
+    pasillo: function(){
+
+	// INICIALES
+	
+	let fc = 2.75;
+	let w = 96; 
 	
 	let posGeometry = new THREE.PlaneGeometry( w+5, w/2, 20, 20 );
 
@@ -542,7 +631,6 @@ const edges = {
             //transparent: true,
             //opacity: 0.75,
         });
-
 	
 	var grafMaterial = new THREE.MeshStandardMaterial( {
 	    color: 0xffffff,
@@ -553,7 +641,6 @@ const edges = {
             transparent: true,
             overdraw: true
         });
-
 	
 	var grafMaterial2 = new THREE.MeshStandardMaterial( {
 	    color: 0xffffff,
@@ -616,7 +703,6 @@ const edges = {
 	
 	graf.material.needsUpdate = true;
 
-
 	//let floor2 = new THREE.Mesh( floorGeometry, groundMaterial );
 
 	pos1.position.y = 96/2-2;
@@ -632,7 +718,6 @@ const edges = {
 	graf.rotation.x = Math.PI / 2;
 	graf.position.y = 96/4;
 	graf.position.z = -96/4+2;
-
 
 	//graf.position.y = 96/2-2;
 
@@ -656,13 +741,16 @@ const edges = {
 	pas1.position.z = -w * 2.25;
 
 	pas1.children[4].material = grafMaterial;  
-
+	this.scene.add( pas1); 
+	
 	let pas2 = grupo.clone();
 	
 	pas2.position.x =  w - w*3.75;
 	pas2.position.z = -w * 3;
 	pas2.rotation.y = Math.PI /2;
 
+	this.scene.add( pas2);
+	
 	let pas3 = grupo.clone();
 
 	pas3.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
@@ -674,14 +762,18 @@ const edges = {
 	pas3.position.z = -w * 1.5;
 	pas3.rotation.y = Math.PI /2;
 
+	var sphgeometry = new THREE.SphereGeometry( 2, 32, 32 );
+	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+
 	var latfoco = new THREE.Mesh( sphgeometry, sphmaterial );
-	let latlightv = new THREE.PointLight(0xB80118, 3, 160);
+	let latlightv = new THREE.PointLight( edges.rojo, 3, 160);
 	//0xB80118
 	// 0x01B8A0
 	latfoco.position.y = latlightv.position.y = 96/2 -5;
 	latfoco.position.x = latlightv.position.x = 96/2;
 	latfoco.position.z = latlightv.position.z = -96/4+5;
 
+	this.scene.add( pas3); 
 	// Pasillos lateriales 1111
 	
 	let pas4 = grupo.clone();
@@ -696,134 +788,178 @@ const edges = {
 	pas4.position.x =  w - w*2.25;
 	pas4.position.z = -w * 0.5;
 	pas4.rotation.y = Math.PI /2;
-		
-	let pas5 = grupo.clone();
-
-	pas5.remove(pas5.children[2]); 
-
-	// pas4.children[2].remove();
+	this.scene.add( pas4);
 	
+	let pas5 = grupo.clone();
+	pas5.remove(pas5.children[2]); 
+	// pas4.children[2].remove();
 	//pas5.add( latlightv.clone() ); 
 	//pas5.add( latfoco.clone() );
-
 	pas5.position.x =  w - w*2.25;
 	pas5.position.z = -w * -0.5;
 	pas5.rotation.y = Math.PI /2;
+	this.scene.add( pas5); 
 
 	// Pasillos lateriales 2222
 	
 	let pas6 = grupo.clone();
-
 	pas6.remove(pas6.children[2]); 
-
 	// pas4.children[2].remove();
-	
 	//pas6.add( latlightv.clone() ); 
 	//pas6.add( latfoco.clone() );
-
 	pas6.position.x =  w + w/4;
 	pas6.position.z = -w * 0.5;
 	pas6.rotation.y = Math.PI /2 +Math.PI;
-		
-	let pas7 = grupo.clone();
-
-	pas7.remove(pas7.children[2]); 
-
-	// pas4.children[2].remove();
+	this.scene.add( pas6);
 	
+	let pas7 = grupo.clone();
+	pas7.remove(pas7.children[2]); 
+	// pas4.children[2].remove();
 	pas7.add( latlightv.clone() ); 
 	pas7.add( latfoco.clone() );
-
 	pas7.position.x =  w + w/4;
 	pas7.position.z = -w * -0.5;
 	pas7.rotation.y = Math.PI /2+Math.PI;
+	this.scene.add( pas7); 
 	
 	let pas8 = grupo.clone();
-
 	pas8.position.x =  w - w*4.5;
 	pas8.position.z = -w * 2.25;
 	// pas8.rotation.y = Math.PI /2;
-		
+	this.scene.add( pas8);
+	
 	let pas9 = grupo.clone();
-
 	pas9.position.x =  w - w*5.25;
 	pas9.position.z = -w * 3;
 	pas9.rotation.y = Math.PI /2;
-
+	this.scene.add( pas9);
+	
 	let pas10 = grupo.clone();
-
 	pas10.position.x =  w - w*6;
 	pas10.position.z = -w * 3.75;
 	//pas9.rotation.y = Math.PI /2;
-
+	this.scene.add( pas10);
+	
 	let pas11 = grupo.clone();
-
 	pas11.position.x =  w - w*6.75;
 	pas11.position.z = -w * 4.5;
 	pas11.rotation.y = Math.PI /2;
-
+	this.scene.add( pas11); 
+	
 	let pas12 = grupo.clone();
-
 	pas12.position.x =  w - w*-0.25;
 	pas12.position.z = -w * -1.5;
 	pas12.rotation.y = Math.PI / 2;
+	this.scene.add( pas12);
 	
 	let pas13 = grupo.clone();
-
 	pas13.position.x =  w - w*-1;
 	pas13.position.z = -w * -2.25;
 	// pas13.rotation.y = Math.PI / 2;
+	this.scene.add( pas13); 
 	
 	let pas14 = grupo.clone();
-
 	pas14.position.x =  w - w*-2.5;
 	pas14.position.z = -w * -2.25;
 	// pas13.rotation.y = Math.PI / 2;
-
+	this.scene.add( pas14); 
+	
 	let pas15 = grupo.clone();
-
 	pas15.position.x =  w - w*-1.75;
 	pas15.position.z = -w * -3;
 	pas15.rotation.y = Math.PI / 2;
+	this.scene.add(pas15);
 	
 	let pas16 = grupo.clone();
-
 	pas16.position.x =  w - w*-3.25;
 	pas16.position.z = -w * -3;
 	pas16.rotation.y = Math.PI / 2;
-
+	this.scene.add(pas16);
+	
 	let pas17 = grupo.clone();
-
 	pas17.position.x =  w - w*-4;
 	pas17.position.z = -w * -3.75;
 	//pas17.rotation.y = Math.PI / 2;
-
+	this.scene.add(pas17);
 	
 	let pas18 = grupo.clone();
-
 	pas18.position.x =  w - w*-4.75;
 	pas18.position.z = -w * -4.5;
 	pas18.rotation.y = Math.PI / 2;	
-
+	this.scene.add(pas18);
 	
-	this.scene.add( pas1 );
-	this.scene.add( pas2 );
-	this.scene.add( pas3 );
-	this.scene.add( pas4 );
-	this.scene.add( pas5 ); 
-	this.scene.add( pas6 );
-	this.scene.add( pas7 ); 
-	this.scene.add( pas8 );
-	this.scene.add( pas9 ); 
-	this.scene.add (pas10 ); 
-	this.scene.add( pas11 );
-	this.scene.add( pas12 );
-	this.scene.add( pas13 );
-	this.scene.add( pas14 );
-	this.scene.add( pas15 );
-	this.scene.add( pas16 ); 
-	this.scene.add( pas17 );
-	this.scene.add( pas18 ); 
+	let pas19 = grupo.clone();
+	pas19.position.x =  w - w*3.75;
+	pas19.position.z = -w * 4.5;
+	pas19.rotation.y = Math.PI /2;
+
+	this.scene.add(pas19); 
+	let pas20 = grupo.clone();
+	pas20.position.x =  w - w*3;
+	pas20.position.z = -w * 3.75;
+	// pas20.rotation.y = Math.PI /2;
+	this.scene.add(pas20); 
+	
+	let pas21 = grupo.clone();
+	pas21.position.x =  w - w*2.25;
+	pas21.position.z = -w * 4.5;
+	pas21.rotation.y = Math.PI /2;
+	this.scene.add (pas21); 
+	
+	let pas22 = grupo.clone();
+	pas22.position.x =  w - w*1.5;
+	pas22.position.z = -w * 5.25;
+	// pas22.rotation.y = Math.PI /2;
+	this.scene.add( pas22 );
+	
+	let pas23 = grupo.clone();
+	pas23.position.x =  w - w*4.5;
+	pas23.position.z = -w * 5.25;
+	// pas23.rotation.y = Math.PI /2;
+	this.scene.add( pas23 ); 
+
+	let pas24 = grupo.clone();
+	pas24.position.x =  w - w*5.25;
+	pas24.position.z = -w * 6;
+	pas24.rotation.y = Math.PI /2;
+	this.scene.add( pas24 );
+
+	let pas25 = grupo.clone();	
+	pas25.position.x =  w - w* -1.75;
+	pas25.position.z = -w * -4.5;
+	pas25.rotation.y = Math.PI /2;
+	this.scene.add( pas25 );
+
+	let pas26 = grupo.clone();	
+	pas26.position.x =  w - w* -1;
+	pas26.position.z = -w * -3.75;
+	// pas26.rotation.y = Math.PI /2;
+	this.scene.add( pas26 );
+
+	let pas27 = grupo.clone();	
+	pas27.position.x =  w - w* -0.25;
+	pas27.position.z = -w * -4.5;
+	pas27.rotation.y = Math.PI /2;
+	this.scene.add( pas27 );
+
+	let pas28 = grupo.clone();	
+	pas28.position.x =  w - w* 0.5;
+	pas28.position.z = -w * -5.25;
+	// pas28.rotation.y = Math.PI /2;
+	this.scene.add( pas28 );
+
+	let pas29 = grupo.clone();	
+	pas29.position.x =  w - w* -2.5;
+	pas29.position.z = -w * -5.25;
+	// pas29.rotation.y = Math.PI /2;
+	this.scene.add( pas29 );
+	
+	let pas30 = grupo.clone();	
+	pas30.position.x =  w - w* -3.25;
+	pas30.position.z = -w * -6;
+	pas30.rotation.y = Math.PI /2;
+	this.scene.add( pas30 );
+
 	
     },
 
@@ -855,12 +991,18 @@ const edges = {
 	
     },
 
-    addMaze: function(){
+    addPantallas: function(){
 
 	var width = 96; // esto sería x en dos dimensiones 
 	var height = 54; // esto solo es la altura
+
+	let fc = 2.75;
+	let w = 96; 
+
+	// let wallGeometry = new THREE.PlaneGeometry( 96*2.5+4, 96/2+4, 40, 40 );
 	
-	var geometry = new THREE.PlaneGeometry( width, height, 32 );
+	var geometry = new THREE.PlaneGeometry( width*2-6, 96-6, 32 );
+
 
 	/*
 	for (let i = 0; i < geometry.vertices.length; i++) {
@@ -870,6 +1012,8 @@ const edges = {
 	
 	//var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
 
+	// Pantallas
+	
 	this.screenTexture = new THREE.VideoTexture(  document.getElementById( 'streaming-video' ) );
 		
 	this.screenMaterial = new THREE.MeshBasicMaterial({
@@ -884,17 +1028,484 @@ const edges = {
 
 	var plane = new THREE.Mesh( geometry, this.screenMaterial );
 
-	plane.position.y = height/2;
-	plane.position.z = width; 
+	plane.position.y = height/2+height/2-3;
+	plane.position.z = width-4;
+	
+	plane.rotation.y = Math.PI; 
 	this.scene.add( plane );
 	
 	var plane2 = new THREE.Mesh( geometry, this.screenMaterial );
 
-	plane2.position.y = height/2;
-	plane2.position.z = -width;
-	//plane2.rotation.y = Math.PI /2; 
+	plane2.position.y = height/2+height/2-3;
+	plane2.position.z = -width+4;
 	this.scene.add( plane2 );
+
+	var plane3 = new THREE.Mesh( geometry, this.screenMaterial );
+
+	plane3.position.y = height/2-3;
+
+	plane3.position.x =  w - w* 0;
+	plane3.position.z =  -w * 5.25;
+
+	plane3.rotation.y = -Math.PI/2;
+	plane3.scale.x = 0.5;
+	plane3.scale.y = 0.5;
+	plane3.scale.z = 0.5; 
+	// plane3.position.z = -width;
+	this.scene.add( plane3 );
+
+	var plane4 = new THREE.Mesh( geometry, this.screenMaterial );
 	
+	plane4.position.y = height/2-3;
+
+	plane4.position.x =  w - w* 5.25;
+	plane4.position.z =  -w * 7.5+2;
+
+	// plane4.rotation.y = -Math.PI/2;
+	plane4.scale.x = 0.5;
+	plane4.scale.y = 0.5;
+	plane4.scale.z = 0.5; 
+	// plane3.position.z = -width;
+	this.scene.add( plane4 );
+
+	var plane5 = new THREE.Mesh( geometry, this.screenMaterial );
+	
+	plane5.position.y = height/2-3;
+
+	plane5.position.x =  w - w* -3.25;
+	plane5.position.z =  -w * -7.5-2;
+
+	// plane4.rotation.y = -Math.PI/2;
+	plane5.scale.x = 0.5;
+	plane5.scale.y = 0.5;
+	plane5.scale.z = 0.5; 
+	// plane3.position.z = -width;
+	this.scene.add( plane5 );
+	
+	var plane6 = new THREE.Mesh( geometry, this.screenMaterial );
+	
+	plane6.position.y = height/2-3;
+
+	plane6.position.x =  w - w* 2+3;
+	plane6.position.z =  -w * -5.25;
+
+	plane6.rotation.y = -Math.PI/2;
+	plane6.scale.x = 0.5;
+	plane6.scale.y = 0.5;
+	plane6.scale.z = 0.5; 
+	// plane3.position.z = -width;
+	this.scene.add( plane6 );
+	
+
+
+
+	//floor9.position.x =  w - w* 1.5;
+	//floor9.position.z = -w * -5.25;
+	
+	
+    },
+
+    addSalas: function(){
+
+	
+	let w = 96; 
+
+	let floorGeometry = new THREE.PlaneGeometry( 96*2+4, 96*2+4, 40, 40 );
+
+	for (let i = 0; i < floorGeometry.vertices.length; i++) {
+	    floorGeometry.vertices[i].z += (Math.random()*2)-1;
+	}
+	
+	floorGeometry.rotateX( - Math.PI / 2 );
+
+	var floorTexture3 = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture3 ) {
+	    floorTexture3.wrapS = floorTexture3.wrapT = THREE.RepeatWrapping;
+	    floorTexture3.offset.set( 1, 0 );
+	    floorTexture3.repeat.set( 1, 1 );
+	});
+
+	var groundMaterial3 = new THREE.MeshStandardMaterial( {
+	    color: 0x808080,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: floorTexture3,
+	    side: THREE.DoubleSide
+            //transparent: true,
+            //opacity: 0.75,
+        });
+
+	// salas de un lado
+
+	let floor3 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	let floor4 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+
+	floor3.position.x =  w - w* 0.5+3;
+	floor3.position.z = -w * 5.25;
+	floor3.scale.x = 0.5;
+	floor3.scale.y = 0.5;
+	floor3.scale.z = 0.5; 
+	
+	floor4.position.x =  w - w* 0.5+3;
+	floor4.position.z = -w * 5.25;
+	floor4.position.y = 96/2-2;
+	floor4.scale.x = 0.5;
+	floor4.scale.y = 0.5;
+	floor4.scale.z = 0.5;
+
+	this.scene.add( floor3 ); 
+	this.scene.add( floor4 ); 
+	
+	let floor5 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	let floor6 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	
+	floor5.position.x =  w - w* 5.25;
+	floor5.position.z = -w * 7;
+	floor5.scale.x = 0.5;
+	floor5.scale.y = 0.5;
+	floor5.scale.z = 0.5; 
+
+	floor6.position.x =  w - w* 5.25;
+	floor6.position.z = -w * 7;
+	floor6.position.y = 96/2-2;
+	floor6.scale.x = 0.5;
+	floor6.scale.y = 0.5;
+	floor6.scale.z = 0.5;
+
+	this.scene.add( floor5 ); 
+	this.scene.add( floor6 );
+
+	//Salas de otro lado
+
+	let floor7 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	let floor8 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	
+	floor7.position.x =  w - w* -3.25;
+	floor7.position.z = -w * -7;
+	floor7.scale.x = 0.5;
+	floor7.scale.y = 0.5;
+	floor7.scale.z = 0.5; 
+
+	floor8.position.x =  w - w* -3.25;
+	floor8.position.z = -w * -7;
+	floor8.position.y = 96/2-2;
+	floor8.scale.x = 0.5;
+	floor8.scale.y = 0.5;
+	floor8.scale.z = 0.5;
+
+	this.scene.add( floor7 ); 
+	this.scene.add( floor8 );
+
+	// Segunda sala del otro lado
+
+	let floor9 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	let floor10 = new THREE.Mesh( floorGeometry, groundMaterial3 );
+	
+	floor9.position.x =  w - w* 1.5;
+	floor9.position.z = -w * -5.25;
+	floor9.scale.x = 0.5;
+	floor9.scale.y = 0.5;
+	floor9.scale.z = 0.5; 
+
+	floor10.position.x =  w - w* 1.5;
+	floor10.position.z = -w * -5.25;
+	floor10.position.y = 96/2-2;
+	floor10.scale.x = 0.5;
+	floor10.scale.y = 0.5;
+	floor10.scale.z = 0.5;
+
+	this.scene.add( floor9 ); 
+	this.scene.add( floor10 );
+
+	
+	// luces
+	
+	var sphgeometry = new THREE.SphereGeometry( 2, 32, 32 );
+	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+
+	var fococine2 = new THREE.Mesh( sphgeometry, sphmaterial );
+	let latlightv2 = new THREE.PointLight( edges.rojo, 3, 200);
+	fococine2.position.y = latlightv2.position.y = 96/2-5;
+	fococine2.position.x = latlightv2.position.x =  w - w* 0.5;
+	fococine2.position.z = latlightv2.position.z =  -w * 5.25;
+	this.scene.add( latlightv2 ); 
+	this.scene.add( fococine2 ); 	
+
+	var fococine3 = new THREE.Mesh( sphgeometry, sphmaterial );
+	let latlightv3 = new THREE.PointLight( edges.rojo, 3, 200);
+	fococine3.position.y = latlightv3.position.y = 96/2-5;
+	fococine3.position.x = latlightv3.position.x =  w - w* 1.5;
+	fococine3.position.z = latlightv3.position.z =  -w * -5.25;
+	this.scene.add( latlightv3 ); 
+	this.scene.add( fococine3 );
+
+		
+	//pas30.position.x =  w - w* -3.25;
+	//pas30.position.z = -w * -6;
+
+	// luces otro lado
+	
+	var fococine4 = new THREE.Mesh( sphgeometry, sphmaterial );
+	let latlightv4 = new THREE.PointLight( edges.rojo, 3, 200);
+	fococine4.position.y = latlightv4.position.y = 96/2-5;
+	fococine4.position.x = latlightv4.position.x =  w - w* -3.25;
+	fococine4.position.z = latlightv4.position.z =  -w * -7;
+	this.scene.add( latlightv4 ); 
+	this.scene.add( fococine4 );
+
+	
+	var fococine5 = new THREE.Mesh( sphgeometry, sphmaterial );
+	let latlightv5 = new THREE.PointLight( edges.rojo, 3, 200);
+	fococine5.position.y = latlightv5.position.y = 96/2-5;
+	fococine5.position.x = latlightv5.position.x =  w - w* -3.25;
+	fococine5.position.z = latlightv5.position.z =  -w * -7;
+	this.scene.add( latlightv5 ); 
+	this.scene.add( fococine5 ); 	
+
+
+	
+	var floorTexture2 = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture2 ) {
+	    floorTexture2.wrapS = floorTexture2.wrapT = THREE.RepeatWrapping;
+	    floorTexture2.offset.set( 1, 0 );
+	    floorTexture2.repeat.set( 1, 0.5 );
+	});
+	
+	var groundMaterial2 = new THREE.MeshStandardMaterial( {
+	    color: 0x808080,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: floorTexture2,
+	    side: THREE.DoubleSide
+            //transparent: true,
+            //opacity: 0.75,
+        });
+	
+	var floorTexture3 = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture3 ) {
+	    floorTexture3.wrapS = floorTexture3.wrapT = THREE.RepeatWrapping;
+	    floorTexture3.offset.set( 1, 0 );
+	    floorTexture3.repeat.set( 0.25, 0.5 );
+	});
+	
+	var groundMaterial3 = new THREE.MeshStandardMaterial( {
+	    color: 0x808080,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: floorTexture3,
+	    side: THREE.DoubleSide
+            //transparent: true,
+            //opacity: 0.75,
+        });
+
+	
+	let wallGeometry = new THREE.PlaneGeometry( 96+4, 96/2+4, 40, 40 );
+	let wallGeometry2 = new THREE.PlaneGeometry( 96/4+4, 96/2+4, 40, 40 );
+
+	
+	for (let i = 0; i < wallGeometry.vertices.length; i++) {
+	    wallGeometry.vertices[i].z += (Math.random()*2)-1;
+	}
+
+	// PRIMER CUARTO
+	
+	let wall1 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall1.position.x =  w - w* 0.5+3.5;
+	wall1.position.z = -w * 5.75;
+	wall1.position.y = 96/4;
+
+	this.scene.add( wall1);
+
+	
+	let wall2 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall2.position.x =  w - w* 0.5+3.5;
+	wall2.position.z = -w * 4.75;
+	wall2.position.y = 96/4;
+
+	this.scene.add( wall2 ); 
+
+
+	let wall3 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall3.position.x =  w - w* -5;
+	wall3.position.z = -w * 5.25;
+	wall3.position.y = 96/4;
+	wall3.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall3 );
+
+	
+	let wall4 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall4.position.x =  w - w * 1+3;
+	wall4.position.z = -w * (5.5+(0.25/2));
+	wall4.position.y = 96/4;
+	wall4.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall4 );
+	
+	
+	let wall5 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall5.position.x =  w - w * 1+3;
+	wall5.position.z = -w * (4.75+(0.25/2));
+	wall5.position.y = 96/4;
+	wall5.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall5 ); 
+
+	// segundo cuarto
+	
+	let wall12 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall12.position.x =  w - w* 5.75+3.5;
+	wall12.position.z = -w * 7;
+	wall12.position.y = 96/4;
+	wall12.rotation.y = Math.PI / 2; 
+
+	this.scene.add( wall12 );
+
+	
+	let wall22 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall22.position.x =  w - w* 4.75+3.5;
+	wall22.position.z = -w * 7;
+	wall22.position.y = 96/4;
+	wall22.rotation.y = Math.PI / 2; 
+
+	this.scene.add( wall22 ); 
+
+	let wall32 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	
+	wall32.position.x =  w - w* 5.25;
+	wall32.position.z = -w * 7.5;
+	wall32.position.y = 96/4;
+	// wall3.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall32 );
+
+	
+	let wall42 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall42.position.x =  w - w * (5.5 + (0.25/2));
+	wall42.position.z = -w * 6.5-3;
+	wall42.position.y = 96/4;
+	//wall42.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall42 );
+	
+	
+	let wall52 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall52.position.x =  w - w * (4.75 + (0.25/2));
+	wall52.position.z = -w * 6.5-3;
+	wall52.position.y = 96/4;
+	//wall52.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall52 ); 
+
+	// Tercer cuarto
+
+	let wall13 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall13.position.x =  w - w* -3.25 + (w/2);
+	wall13.position.z = -w * -7;
+	wall13.position.y = 96/4;
+	wall13.rotation.y = Math.PI / 2; 
+	this.scene.add( wall13 );
+	
+	let wall23 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall23.position.x =  w - w* -3.25 - (w/2);
+	wall23.position.z = -w * -7;
+	wall23.position.y = 96/4;
+	wall23.rotation.y = Math.PI / 2; 
+	this.scene.add( wall23 );
+
+	
+	let wall33 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall33.position.x =  w - w* -3.25 - (w/2);
+	wall33.position.z = -w * -7;
+	wall33.position.y = 96/4;
+	wall33.rotation.y = Math.PI / 2; 
+	this.scene.add( wall33 );
+
+
+	let wall43 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall43.position.x =  w - w* -3.25;
+	wall43.position.z = -w * -7.5;
+	wall43.position.y = 96/4;
+	// wall43.rotation.y = Math.PI / 2; 
+	this.scene.add( wall43 );
+
+	
+	let wall53 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall53.position.x =  w - w * (-3.75 + (0.25/2));
+	wall53.position.z = -w * -6.5+3;
+	wall53.position.y = 96/4;
+	//wall42.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall53 );
+		
+	let wall63 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall63.position.x =  w - w * (-3 + (0.25/2));
+	wall63.position.z = -w * -6.5+3;
+	wall63.position.y = 96/4;
+	//wall52.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall63 );
+
+	
+	// Cuarto cuarto
+
+	let wall14 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall14.position.x =  w - w* 1.5 ;
+	wall14.position.z = -w * -5.25 + (w/2);
+	wall14.position.y = 96/4;
+	//wall14.rotation.y = Math.PI / 2; 
+	this.scene.add( wall14 );
+	
+	let wall24 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall24.position.x =  w - w* 1.5;
+	wall24.position.z = -w * -5.25  - (w/2);
+	wall24.position.y = 96/4;
+	//wall24.rotation.y = Math.PI / 2; 
+	this.scene.add( wall24 );
+
+	
+	let wall34 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall34.position.x =  w - w* 1.5 - (w/2);
+	wall34.position.z = -w * -5.25;
+	wall34.position.y = 96/4;
+	wall34.rotation.y = Math.PI / 2; 
+	this.scene.add( wall34 );
+
+/*
+	let wall44 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
+	wall44.position.x =  w - w* 1.5 - (w/2);
+	wall44.position.z = -w * -5.25 - (w/2);
+	wall44.position.y = 96/4;
+	// wall43.rotation.y = Math.PI / 2; 
+	this.scene.add( wall44 );
+*/
+	
+	let wall54 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall54.position.x =  w - w * 1-3;
+	wall54.position.z = -w * (-5.25+0.5/2+0.25/2);
+	wall54.position.y = 96/4;
+	wall54.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall54 );
+		
+	let wall64 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
+	
+	wall64.position.x =  w - w * 1-3;
+	wall64.position.z = -w * (-5.25-0.25-0.25/2);
+	wall64.position.y = 96/4;
+	wall64.rotation.y = Math.PI/2; 
+	
+	this.scene.add( wall64 );
+
     },
     
     addAudio: function(element){
@@ -1212,23 +1823,23 @@ const edges = {
 
 	}, */
 	animate: function(){
-		requestAnimationFrame( edges.animate );
-		edges.renderer.render(edges.scene, edges.camera);
-		if (edges.streamingAudio) edges.moveAudioSphere()
+	    requestAnimationFrame( edges.animate );
+	    edges.renderer.render(edges.scene, edges.camera);
+	    if (edges.streamingAudio) edges.moveAudioSphere()
 	    // edges.moveLight();
-	    //edges.rotaciones(); 
-	//	if(edges.controls.controls.isLocked) edges.controls.move()
+	    edges.rotaciones(); 
+	    //	if(edges.controls.controls.isLocked) edges.controls.move()
 	},
-	velocity: new THREE.Vector3(),
-	direction: new THREE.Vector3(),
-	moveForward: false,
-	moveBackward: false,
-	moveLeft: false,
-	moveRight: false,
-	canJumpt: false,
-	moving: false,
-	stoping: false,
-	streamingAudio: false
+    velocity: new THREE.Vector3(),
+    direction: new THREE.Vector3(),
+    moveForward: false,
+    moveBackward: false,
+    moveLeft: false,
+    moveRight: false,
+    canJumpt: false,
+    moving: false,
+    stoping: false,
+    streamingAudio: false
 };
 
 let ctrl = false
@@ -1327,7 +1938,7 @@ function onLoadMedia(){
 		let flvPlayer = flvjs.createPlayer({
 			type: "flv",
 			isLive: true,
-			url: 'http://edges.piranhalab.cc/live'
+			url: 'http://edges.piranhalab.cc/transfronterizo'
 		});
 		flvPlayer.attachMediaElement(document.querySelector('#streaming-video'))
 		flvPlayer.load();
