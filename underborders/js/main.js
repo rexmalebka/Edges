@@ -41,6 +41,7 @@ const edges = {
 	    this.pasillo()
 	    this.vueltas()
 	    this.rotaciones()
+	    this.escaleras() 
 	    //this.addAudio()
 	    
 	    this.animate();
@@ -131,7 +132,7 @@ const edges = {
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 	
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
-	let latlightv = new THREE.PointLight( edges.azul, 3, 200);
+	let latlightv = new THREE.PointLight( edges.azul, 3, 400);
 	fococine.position.y = latlightv.position.y = 96-5; 
 	this.scene.add( latlightv ); 
 	this.scene.add( fococine); 	
@@ -489,20 +490,31 @@ const edges = {
 	this.scene.add( this.vuelta13 ); 
 
 	this.vuelta14 = grupov.clone();
-	
+
+	this.vuelta14.remove( this.vuelta14.children[3] ); 
+
 	this.vuelta14.position.x =  w - w*2.25;
 	this.vuelta14.position.z = -w * 3.75;
-	this.vuelta14.rotation.y = Math.PI + Math.PI /2;
+	//this.vuelta14.rotation.y = -Math.PI /2;
+
+	let extra = new THREE.Mesh( vueltasGeometry, vueltasMaterial ); 
 	
+	extra.rotation.x = Math.PI / 2;
+	extra.position.y = 96/4;
+	extra.position.z = 96/4-2; 
+
+	this.vuelta14.add( extra); 
+
+	// MODIFICAR
 	// vuelta1.castShadow = true;
 	this.scene.add( this.vuelta14 );
 
 	this.vuelta15 = grupov.clone();
 	
 	this.vuelta15.children[4].color.set(  edges.azul );
-	this.vuelta15.position.x =  w - w*2.25;
-	this.vuelta15.position.z = -w * 5.25;
-	this.vuelta15.rotation.y = Math.PI / 2;
+	this.vuelta15.position.x =  w - w*0.75;
+	this.vuelta15.position.z = -w * 3.75;
+	this.vuelta15.rotation.y = -Math.PI / 2;
 	
 	// vuelta1.castShadow = true;
 	this.scene.add( this.vuelta15 );
@@ -539,21 +551,32 @@ const edges = {
 	// vuelta1.castShadow = true;
 	this.scene.add( this.vuelta18 );
 
+	// brazo modificado 2
+	
 	this.vuelta19 = grupov.clone();
 	this.vuelta19.children[4].color.set(  edges.verde ); 
-	// this.vuelta19.remove( this.vuelta18.children[3] ); 
+	this.vuelta19.remove( this.vuelta19.children[3] ); 
 	this.vuelta19.position.x =  w - w*-0.25;
 	this.vuelta19.position.z = -w * -3.75;
-	this.vuelta19.rotation.y = Math.PI/2; 
+	//this.vuelta19.rotation.y = Math.PI/2; 
 	// vuelta1.castShadow = true;
+
+	let extra2 = new THREE.Mesh( vueltasGeometry, vueltasMaterial ); 
+	
+	extra2.rotation.x = Math.PI / 2;
+	extra2.position.y = 96/4;
+	extra2.position.z = 96/4-2; 
+
+	this.vuelta19.add( extra2 ); 
+
 	this.scene.add( this.vuelta19 );
 
 	this.vuelta20 = grupov.clone();
 	this.vuelta20.children[4].color.set(  edges.azul ); 
 	// this.vuelta19.remove( this.vuelta18.children[3] ); 
-	this.vuelta20.position.x =  w - w*-0.25;
-	this.vuelta20.position.z = -w * -5.25;
-	this.vuelta20.rotation.y = -Math.PI/2; 
+	this.vuelta20.position.x =  w - w*+1.25;
+	this.vuelta20.position.z = -w * -3.75;
+	this.vuelta20.rotation.y = Math.PI/2; 
 	// vuelta1.castShadow = true;
 	this.scene.add( this.vuelta20 );
 	
@@ -901,14 +924,16 @@ const edges = {
 	this.scene.add(pas20); 
 	
 	let pas21 = grupo.clone();
-	pas21.position.x =  w - w*2.25;
+	pas21.position.x =  w - w*0.75;
 	pas21.position.z = -w * 4.5;
 	pas21.rotation.y = Math.PI /2;
 	this.scene.add (pas21); 
+
+	// brazo modificado
 	
 	let pas22 = grupo.clone();
 	pas22.position.x =  w - w*1.5;
-	pas22.position.z = -w * 5.25;
+	pas22.position.z = -w * 3.75;
 	// pas22.rotation.y = Math.PI /2;
 	this.scene.add( pas22 );
 	
@@ -937,14 +962,16 @@ const edges = {
 	this.scene.add( pas26 );
 
 	let pas27 = grupo.clone();	
-	pas27.position.x =  w - w* -0.25;
+	pas27.position.x =  w - w* 1.25;
 	pas27.position.z = -w * -4.5;
 	pas27.rotation.y = Math.PI /2;
 	this.scene.add( pas27 );
 
+	// brazo modificado 
+	
 	let pas28 = grupo.clone();	
 	pas28.position.x =  w - w* 0.5;
-	pas28.position.z = -w * -5.25;
+	pas28.position.z = -w * -3.75;
 	// pas28.rotation.y = Math.PI /2;
 	this.scene.add( pas28 );
 
@@ -1044,10 +1071,10 @@ const edges = {
 
 	plane3.position.y = height/2-3;
 
-	plane3.position.x =  w - w* 0;
-	plane3.position.z =  -w * 5.25;
+	plane3.position.x =  w - w* 0.75;
+	plane3.position.z =  -w * 6+3;
 
-	plane3.rotation.y = -Math.PI/2;
+	//plane3.rotation.y = -Math.PI/2;
 	plane3.scale.x = 0.5;
 	plane3.scale.y = 0.5;
 	plane3.scale.z = 0.5; 
@@ -1086,10 +1113,10 @@ const edges = {
 	
 	plane6.position.y = height/2-3;
 
-	plane6.position.x =  w - w* 2+3;
-	plane6.position.z =  -w * -5.25;
+	plane6.position.x =  w - w* 1.25;
+	plane6.position.z =  -w * -6-3;
 
-	plane6.rotation.y = -Math.PI/2;
+	//plane6.rotation.y = -Math.PI/2;
 	plane6.scale.x = 0.5;
 	plane6.scale.y = 0.5;
 	plane6.scale.z = 0.5; 
@@ -1139,14 +1166,14 @@ const edges = {
 	let floor3 = new THREE.Mesh( floorGeometry, groundMaterial3 );
 	let floor4 = new THREE.Mesh( floorGeometry, groundMaterial3 );
 
-	floor3.position.x =  w - w* 0.5+3;
-	floor3.position.z = -w * 5.25;
+	floor3.position.x =  w - w* 0.75+3;
+	floor3.position.z = -w * 5.5-3;
 	floor3.scale.x = 0.5;
 	floor3.scale.y = 0.5;
 	floor3.scale.z = 0.5; 
 	
-	floor4.position.x =  w - w* 0.5+3;
-	floor4.position.z = -w * 5.25;
+	floor4.position.x =  w - w* 0.75+3;
+	floor4.position.z = -w * 5.5-3;
 	floor4.position.y = 96/2-2;
 	floor4.scale.x = 0.5;
 	floor4.scale.y = 0.5;
@@ -1200,15 +1227,15 @@ const edges = {
 	let floor9 = new THREE.Mesh( floorGeometry, groundMaterial3 );
 	let floor10 = new THREE.Mesh( floorGeometry, groundMaterial3 );
 	
-	floor9.position.x =  w - w* 1.5;
-	floor9.position.z = -w * -5.25;
+	floor9.position.x =  w - w* 1.25;
+	floor9.position.z = -w * -5.5+3;
 	floor9.scale.x = 0.5;
 	floor9.scale.y = 0.5;
 	floor9.scale.z = 0.5; 
 
-	floor10.position.x =  w - w* 1.5;
-	floor10.position.z = -w * -5.25;
-	floor10.position.y = 96/2-2;
+	floor10.position.x =  w - w* 1.25;
+	floor10.position.z = -w * -5.5+3;
+	floor10.position.y = 96/2;
 	floor10.scale.x = 0.5;
 	floor10.scale.y = 0.5;
 	floor10.scale.z = 0.5;
@@ -1225,16 +1252,20 @@ const edges = {
 	var fococine2 = new THREE.Mesh( sphgeometry, sphmaterial );
 	let latlightv2 = new THREE.PointLight( edges.rojo, 3, 200);
 	fococine2.position.y = latlightv2.position.y = 96/2-5;
-	fococine2.position.x = latlightv2.position.x =  w - w* 0.5;
-	fococine2.position.z = latlightv2.position.z =  -w * 5.25;
+	fococine2.position.x = latlightv2.position.x =  w - w* 0.75;
+	fococine2.position.z = latlightv2.position.z =  -w * 5.5;
 	this.scene.add( latlightv2 ); 
 	this.scene.add( fococine2 ); 	
 
+
+	//floor3.position.x =  w - w* 0.75+3;
+	//floor3.position.z = -w * 5.5-3;
+	
 	var fococine3 = new THREE.Mesh( sphgeometry, sphmaterial );
 	let latlightv3 = new THREE.PointLight( edges.rojo, 3, 200);
 	fococine3.position.y = latlightv3.position.y = 96/2-5;
-	fococine3.position.x = latlightv3.position.x =  w - w* 1.5;
-	fococine3.position.z = latlightv3.position.z =  -w * -5.25;
+	fococine3.position.x = latlightv3.position.x =  w - w* 1.25;
+	fococine3.position.z = latlightv3.position.z =  -w * -5.75;
 	this.scene.add( latlightv3 ); 
 	this.scene.add( fococine3 );
 
@@ -1308,19 +1339,21 @@ const edges = {
 	
 	let wall1 = new THREE.Mesh(wallGeometry, groundMaterial2 );
 	
-	wall1.position.x =  w - w* 0.5+3.5;
-	wall1.position.z = -w * 5.75;
+	wall1.position.x =  w - w* 0.25+3.5;
+	wall1.position.z = -w * 5.5;
 	wall1.position.y = 96/4;
-
+	wall1.rotation.y = Math.PI/2; 
+	
 	this.scene.add( wall1);
 
 	
 	let wall2 = new THREE.Mesh(wallGeometry, groundMaterial2 );
 	
-	wall2.position.x =  w - w* 0.5+3.5;
-	wall2.position.z = -w * 4.75;
+	wall2.position.x =  w - w* 1.25+3.5;
+	wall2.position.z = -w * 5.5;
 	wall2.position.y = 96/4;
-
+	wall2.rotation.y = Math.PI/2; 
+	
 	this.scene.add( wall2 ); 
 
 
@@ -1336,20 +1369,20 @@ const edges = {
 	
 	let wall4 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
 	
-	wall4.position.x =  w - w * 1+3;
-	wall4.position.z = -w * (5.5+(0.25/2));
+	wall4.position.x =  w - w * (1 + (0.5/4));
+	wall4.position.z = -w * (5)-3;
 	wall4.position.y = 96/4;
-	wall4.rotation.y = Math.PI/2; 
+	//wall4.rotation.y = Math.PI/2; 
 	
 	this.scene.add( wall4 );
 	
 	
 	let wall5 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
 	
-	wall5.position.x =  w - w * 1+3;
-	wall5.position.z = -w * (4.75+(0.25/2));
+	wall5.position.x =  w - w * (0.5 - (0.5/4));
+	wall5.position.z = -w * (5) - 3;
 	wall5.position.y = 96/4;
-	wall5.rotation.y = Math.PI/2; 
+	//wall5.rotation.y = Math.PI/2; 
 	
 	this.scene.add( wall5 ); 
 
@@ -1458,25 +1491,25 @@ const edges = {
 	// Cuarto cuarto
 
 	let wall14 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
-	wall14.position.x =  w - w* 1.5 ;
-	wall14.position.z = -w * -5.25 + (w/2);
+	wall14.position.x =  w - w* 0.75 ;
+	wall14.position.z = -w * -5 + (w/2);
 	wall14.position.y = 96/4;
-	//wall14.rotation.y = Math.PI / 2; 
+	wall14.rotation.y = Math.PI / 2; 
 	this.scene.add( wall14 );
 	
 	let wall24 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
-	wall24.position.x =  w - w* 1.5;
-	wall24.position.z = -w * -5.25  - (w/2);
+	wall24.position.x =  w - w* 1.75;
+	wall24.position.z = -w * -5  + (w/2);
 	wall24.position.y = 96/4;
-	//wall24.rotation.y = Math.PI / 2; 
+	wall24.rotation.y = Math.PI / 2; 
 	this.scene.add( wall24 );
 
 	
 	let wall34 = new THREE.Mesh(wallGeometry, groundMaterial2 );	
-	wall34.position.x =  w - w* 1.5 - (w/2);
-	wall34.position.z = -w * -5.25;
+	wall34.position.x =  w - w* 0.75 - (w/2);
+	wall34.position.z = -w * -6;
 	wall34.position.y = 96/4;
-	wall34.rotation.y = Math.PI / 2; 
+	// wall34.rotation.y = Math.PI / 2; 
 	this.scene.add( wall34 );
 
 /*
@@ -1490,21 +1523,76 @@ const edges = {
 	
 	let wall54 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
 	
-	wall54.position.x =  w - w * 1-3;
-	wall54.position.z = -w * (-5.25+0.5/2+0.25/2);
+	wall54.position.x =  w - w * (1.5+0.25/2);
+	wall54.position.z = -w * (-5.5+0.5)+3;
 	wall54.position.y = 96/4;
-	wall54.rotation.y = Math.PI/2; 
+	// wall54.rotation.y = Math.PI/2; 
 	
 	this.scene.add( wall54 );
 		
 	let wall64 = new THREE.Mesh(wallGeometry2, groundMaterial3 );
 	
-	wall64.position.x =  w - w * 1-3;
-	wall64.position.z = -w * (-5.25-0.25-0.25/2);
+	wall64.position.x =  w - w * (1-0.25/2);
+	wall64.position.z = -w * (-5.5+0.5)+3;
 	wall64.position.y = 96/4;
-	wall64.rotation.y = Math.PI/2; 
+	// wall64.rotation.y = Math.PI/2; 
 	
 	this.scene.add( wall64 );
+
+    },
+
+    escaleras: function(){
+
+	var geometry = new THREE.BoxGeometry( 96/4, 96+15, 2 );
+	var geometry2 = new THREE.BoxGeometry(96/4, 96/4, 2);
+	
+	for (let i = 0; i < geometry.vertices.length; i++) {
+	    geometry.vertices[i].z += (Math.random()*2)-1;
+	}
+	
+	var escaleraTexture = new THREE.TextureLoader().load( 'img/stone.jpg', function ( escaleraTexture ) {
+	    escaleraTexture.wrapS = escaleraTexture.wrapT = THREE.RepeatWrapping;
+	    escaleraTexture.offset.set( 1, 0 );
+	    escaleraTexture.repeat.set( 0.25, 0.5 );
+	});
+	
+	var escaleraMaterial = new THREE.MeshStandardMaterial( {
+	    color: 0x808080,
+	    metalness: 0.6,
+	    roughness: 0.85,
+	    map: escaleraTexture,
+	    side: THREE.DoubleSide
+            //transparent: true,
+            //opacity: 0.75,
+        });
+
+	var escalera = new THREE.Mesh(geometry, escaleraMaterial);
+	escalera.rotation.x = Math.PI /2 +9;
+	escalera.position.y = 96/4-2;
+
+	var espacio = new THREE.Mesh(geometry2, escaleraMaterial);
+	espacio.position.y = 96/2-3;
+	espacio.position.z = 62; 
+	espacio.rotation.x = Math.PI /2; 
+	
+	let rampas = new THREE.Group();	
+		
+	rampas.add(escalera);
+	rampas.add(espacio); 
+
+	let rampa1 = rampas.clone();
+	rampa1.position.x = 96 - 96/ 8 + 2;
+	rampa1.position.z = -20; 
+	//rampa1.position.x = 96+10;
+	edges.scene.add(rampa1);
+
+	
+	let rampa2 = rampas.clone();
+	rampa2.position.x = -96 + 96/ 8 - 2;
+	rampa2.position.z = 20;
+	rampa2.rotation.y = Math.PI; 
+	//rampa1.position.x = 96+10;
+	edges.scene.add(rampa2); 
 
     },
     
