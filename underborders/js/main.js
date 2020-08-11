@@ -2085,12 +2085,12 @@ function moveUser(event) {
 	const uuid = event.detail.uuid
 	const newPos = {
 		x: Users[uuid].position.x,
-	    y: 0,// Users[uuid].position.y,
+		y: Users[uuid].position.y,
 		z: Users[uuid].position.z
 	}
 	const oldPos = {
 		x: personajes[uuid].position.x,
-	    y: 0,//personajes[uuid].position.y,
+	        y: personajes[uuid].position.y,
 		z: personajes[uuid].position.z
 	}
 
@@ -2186,9 +2186,9 @@ function addUser(event) {
 		uuid = event.detail.uuid
 	}
   
-	console.log("adding user:", uuid)
+	console.info("adding user:", uuid)
         const position = Users[uuid].position
-
+        const rotation = Users[uuid].rotation
     /*
 	const geom = new THREE.SphereBufferGeometry(5, 32, 32)
 	const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
@@ -2241,6 +2241,8 @@ function addUser(event) {
 	text.nick_ = true; 
         monito.add( text );
 
+	    // position correction
+	    monito.children.forEach(x=> x.position.y -=14)
 	edges.scene.add( monito );
 	personajes[uuid] = monito;
 
@@ -2249,9 +2251,14 @@ function addUser(event) {
 
     if(uuid == 'me'){
 	edges.camera.position.x = position.x
-	edges.camera.position.y = 14
+	edges.camera.position.y = position.y +4
 	edges.camera.position.z = position.z
-     edges.camera.rotation.y = Math.PI
+	    
+     edges.camera.rotation.x = rotation.x
+     edges.camera.rotation.y = rotation.y
+     edges.camera.rotation.z = rotation.z
+    }else{
+	    monito.position.y -=14
     }
     
     document.querySelector("#numUsuarios").textContent = Object.keys(Users).length

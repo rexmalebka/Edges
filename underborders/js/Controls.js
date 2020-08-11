@@ -1,14 +1,76 @@
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from '/js/three/build/three.module.js';
+import {Debug, Bounds, stairs, antistairs} from '/js/Bounds.js';
 
-console.debug("hola -----")
+function checkBoundaries(position){
+	let insides = controls.bounds.map((box)=>{
+		box.geometry.computeBoundingBox();
+
+		var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+		var inverseBox = box.clone();
+		var inversePoint = position.clone();
+
+		inverseBox.applyMatrix4(boxMatrixInverse);
+		inversePoint.applyMatrix4(boxMatrixInverse);
+
+		var bb = new THREE.Box3().setFromObject(inverseBox);
+		var isInside = bb.containsPoint(inversePoint);
+		return isInside
+	})
+	return !insides.some(x=>x)
+}
+
+function checkStairs(position){
+	let insides = controls.stairs.map((box)=>{
+		box.geometry.computeBoundingBox();
+
+		var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+		var inverseBox = box.clone();
+		var inversePoint = position.clone();
+
+		inverseBox.applyMatrix4(boxMatrixInverse);
+		inversePoint.applyMatrix4(boxMatrixInverse);
+
+		var bb = new THREE.Box3().setFromObject(inverseBox);
+		var isInside = bb.containsPoint(inversePoint);
+		return isInside
+	})
+	return insides.some(x=>x)
+
+}
+
+function checkAntistairs(position){
+	let insides = controls.antistairs.map((box)=>{
+		box.geometry.computeBoundingBox();
+
+		var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+		var inverseBox = box.clone();
+		var inversePoint = position.clone();
+
+		inverseBox.applyMatrix4(boxMatrixInverse);
+		inversePoint.applyMatrix4(boxMatrixInverse);
+
+		var bb = new THREE.Box3().setFromObject(inverseBox);
+		var isInside = bb.containsPoint(inversePoint);
+		return isInside
+	})
+	return insides.some(x=>x)
+
+}
+
 export const controls = {
 	init: function(camera){
 		this.controls = new PointerLockControls(camera, document.body)
 		this.controls.addEventListener('lock', this.onLock )
                 this.controls.addEventListener('unlock', this.onUnlock )
+		this.raycaster = new THREE.Raycaster();
+		this.initPos = camera.position.clone()
+		this.raycaster.setFromCamera( camera.position.clone(), camera );
 
-
+		this.dist = 14
 		let callback = function(){
 			requestAnimationFrame(callback);
 			if(controls.controls.isLocked) controls.move()
@@ -28,11 +90,31 @@ export const controls = {
 		})
 
 		requestAnimationFrame(callback);
+		setTimeout(this.debug,2000)
 
+		this.bounds = Bounds
+		this.stairs = stairs
+		this.antistairs = antistairs
 		return this
+	},
+	debug: function(){
+		if(Debug){
+			console.debug("debugging boundaries")
+			window.THREE = THREE
+			Bounds.forEach(bound=>{
+				edges.scene.add(bound)
+			})
+			stairs.forEach(bound=>{
+				edges.scene.add(bound)
+			})
+			antistairs.forEach(bound=>{
+				edges.scene.add(bound)
+			})
+		}
 	},
 	move: function(){
                 const delta = 0.015
+
 
                 controls.velocity.x -= controls.velocity.x * 10.0 * delta
                 controls.velocity.z -= controls.velocity.z * 10.0 * delta
@@ -44,9 +126,60 @@ export const controls = {
                 controls.direction.normalize()
 
                 if (controls.moveForward || controls.moveBackward || controls.moveLeft || controls.moveRight) {
+                if (controls.moveForward || controls.moveBackward) {
+                        controls.velocity.z -= controls.direction.z * 400.0 * delta
+                }
+                if (controls.moveLeft || controls.moveRight) {
+                        controls.velocity.x -= controls.direction.x * 400.0 * delta
+                }
+                controls.controls.moveRight(-controls.velocity.x * delta)
+                controls.controls.moveForward(-controls.velocity.z * delta)
+
+			// 0, 14 -200
+			//
+			
+		console.debug(checkStairs(edges.camera.position))
+		if(checkStairs(edges.camera.position)){
+			// trying to go up on stair
+			let dx = 0.1
+			if(controls.moveForward){
+				edges.camera.position.y -= (controls.velocity.z) * dx
+			}
+			if(controls.moveBackward){
+				edges.camera.position.y += (controls.velocity.z) * dx
+			}
+		}
+		
+		if(checkAntistairs(edges.camera.position)){
+			// trying to go up on stair
+			let dx = 0.1
+
+			//edges.camera.position.y += (controls.velocity.z) * dx
+			//edges.camera.position.y = Math.max(edges.camera.position.y,14)
+			
+			if(controls.moveForward){
+				edges.camera.position.y += (controls.velocity.z) * dx
+			}
+			if(controls.moveBackward){
+				edges.camera.position.y -= (controls.velocity.z) * dx
+			}
+		}
+		if(edges.camera.position.y>60){
+			edges.camera.position.y = 60
+		}
+			
+		if(edges.camera.position.y<14){
+			edges.camera.position.y = 14
+		}
+
+		if(!checkBoundaries(edges.camera.position) ){
+			controls.controls.moveRight(controls.velocity.x * delta)
+			controls.controls.moveForward(controls.velocity.z * delta)
+			return 
+		}
                         const camPos = edges.camera.position
                         Users.me.position.x = camPos.x
-                        //Users.me.position.y = camPos.y
+                        Users.me.position.y = camPos.y
                         Users.me.position.z = camPos.z
 
                     const rotPos = edges.camera.rotation
@@ -55,7 +188,7 @@ export const controls = {
                     //Users.me.rotation.z = rotPos.z
 
                         personajes.me.position.x = camPos.x
-                        //personajes.me.position.y = camPos.y 
+                        personajes.me.position.y = camPos.y 
                         personajes.me.position.z = camPos.z
                         if(!controls.moving){
                                 this.stoping = false
@@ -74,15 +207,6 @@ export const controls = {
                         controls.moving = false
 
                 }
-                if (controls.moveForward || controls.moveBackward) {
-                        controls.velocity.z -= controls.direction.z * 400.0 * delta
-                }
-                if (controls.moveLeft || controls.moveRight) {
-                        controls.velocity.x -= controls.direction.x * 400.0 * delta
-                }
-                controls.controls.moveRight(-controls.velocity.x * delta)
-                controls.controls.moveForward(-controls.velocity.z * delta)
-
         },
 	onLock: function(){
 		document.querySelector("#instructions").style.display = "none";
@@ -103,9 +227,10 @@ export const controls = {
         moveBackward: false,
         moveLeft: false,
         moveRight: false,
-        canJumpt: false,
+        canJump: false,
         moving: false,
         stoping: false,
+	bounds: [],
 }
 
 function onKeyDown(event) {
