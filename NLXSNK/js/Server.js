@@ -18,6 +18,26 @@ export const Server = {
 			nickname = localStorage.getItem("nickname")
 		}
 		
+		//http://www.oxxxo.club/caja2?nombre=juan&avatar=woman&lugar=mx
+		//
+
+		// passport stuff
+		let params = new URLSearchParams(window.location.search);
+		let passport = {
+			nombre: params.get('nombre'),
+			avatar: params.get('avatar'),
+			lugar: params.get('lugar')
+		}
+
+		window.history.replaceState({}, document.title, "/" + "");
+
+		if(passport.nombre && passport.avatar && passport.lugar){
+			// save the password on localstorage
+			localStorage.setItem('passport', JSON.stringify(passport))
+			nickname = passport.nombre;
+		}
+
+		//  here we create the user
 		if(!Users.me){
 			Users.me = new User(uuid, nickname, {x:0, y:0, z:-200}, {x:0, y:0, z:0}, texture); 
 		}
