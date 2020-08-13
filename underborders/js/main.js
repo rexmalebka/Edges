@@ -24,6 +24,17 @@ const edges = {
 	     
 	    document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
+	    // cube camera
+	    
+	    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128, {
+		//format: THREE.RGBFormat,
+		//generateMipmaps: true,
+		//minFilter: THREE.LinearMipmapLinearFilter,
+		//encoding: THREE.sRGBEncoding
+	    } );
+	    
+	    this.cubeCamera = new THREE.CubeCamera( 1, 150, edges.cubeRenderTarget );
+	    
 	    // this.controls = new PointerLockControls(this.camera, document.body)
 	    //this.controls = new PointerLockControls(this.camera, document.body)
 	    this.controls = controls.init(this.camera)		//PointerLockControls(this.camera, document.body)
@@ -42,7 +53,7 @@ const edges = {
 	    this.vueltas()
 	    this.rotaciones()
 	    this.escaleras() 
-	    //this.addAudio()
+	    this.addAudio()
 	    
 	    this.animate();
 
@@ -275,7 +286,8 @@ const edges = {
 	for( var i = 0; i < 12; i++){
 	    grupov.add(tabla[i]);
 	}
-	
+
+	/*
 	var torGeometry = new THREE.TorusKnotGeometry( 8, 0.75, 200, 16 );
 	// var torMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
 	// child.geometry.computeVertexNormals();
@@ -298,6 +310,8 @@ const edges = {
 	var torusKnot = new THREE.Mesh( torGeometry, torMaterial );
 	torusKnot.position.y = w/4; 
 	grupov.add( torusKnot );
+	
+	*/
 	
 	this.vuelta1 = grupov.clone();
 
@@ -998,7 +1012,7 @@ const edges = {
 
 	// 17 para los flyers
 	// Cada vuelta tiene un número distinto
-	
+	/*
 	edges.vuelta1.children[18].rotation.x += 0.005;
 	edges.vuelta1.children[18].rotation.y += 0.006;
 	edges.vuelta1.children[18].rotation.z += 0.007;
@@ -1015,7 +1029,7 @@ const edges = {
 	edges.vuelta4.children[18].rotation.y += 0.007;
 	edges.vuelta4.children[18].rotation.z += 0.006;
 
-	
+	*/
     },
 
     addPantallas: function(){
@@ -1597,109 +1611,56 @@ const edges = {
     },
     
     addAudio: function(element){
-	let fftSize = 2048;
-	
+
+
+	let fftSize = 2048;	
 	const listener = new THREE.AudioListener();
-	//camera.add( listener ); // Si es positionalAudio
-	
 	const audio = new THREE.Audio( listener );
-	
-        //var audio = new THREE.PositionalAudio( listener ); // Sustituir por Three.audio
-	
-        // audio.setRefDistance( 2 );
-        // audio.setDirectionalCone( 180, 230, 0.1 );
-	
-        audio.setMediaElementSource(  element );
-	
+        audio.setMediaElementSource(  document.getElementById( 'streaming-video' ) );
 	this.analyser = new THREE.AudioAnalyser( audio, fftSize );
 	
-	/*
-	  let aSourceMaterial = new THREE.MeshBasicMaterial( {
-	  color: 0xffffff,
-	  envMap: this.scene.background,
-	  refractionRatio: 0.75
-	  } );
-	  
-	  let aSourceGeometry = new THREE.BoxGeometry(20, 20, 20);
-	  let aSource = new THREE.Mesh( aSourceGeometry, aSourceMaterial );
-	  
-	*/
+	// this.screenTexture = new THREE.VideoTexture(  document.getElementById( 'streaming-video' ) );                                                                                          	
+	let audioSphere =  new THREE.SphereGeometry(8, 32, 32 );
+	let audioSphereOrg =  new THREE.SphereGeometry(8, 32, 32 );
+
+	//var audioMaterial = new THREE.MeshPhongMaterial( { shininess: 50, color: 0xffffff, specular: 0x999999, envMap: edges.cubeRenderTarget.texture } );
+
+	var audioMaterial = new THREE.MeshStandardMaterial({
+	    color: 0xffffff,
+	    metalness: 0.9,
+	    roughness: 0.1,
+            envMap: edges.cubeRenderTarget.texture,
+            // 
+        })
+
+	// AUDIO SPHERE
 	
-        //aSource.add( positionalAudio ); // asociar el audio a una fuente
+      
+        let sphere = new THREE.Mesh(audioSphere, audioMaterial );
+	sphere.geometry.verticesNeedUpdate = true;
+        //sphere.geometry.normalsNeedUpdate = true;
+        
+        let sphRotation = setInterval(function(){
+	    
+            sphere.rotation.y += 0.01;
+            sphere.rotation.z += 0.01;
+
+	//sphere.rotation.x = Math.PI/2; 
 	
-        // this.scene.add(aSource);
-	/*
-          this.analyser = new THREE.AudioAnalyser( audio, fftSize );
-	  
-	  var today = new Date();
-	  var utcdate = today.getUTCDate();
-	  var utchours = today.getUTCHours();
-	  var utcminutes = today.getUTCHours();
-	  
-	  
-	  var myVar = setInterval(myTimer, 1000);
-	  
-	  
-	  if(utcdate >= 14 || utchours >= 6  || utcminutes >=40 ){
-	  console.log(hours);
-	  
-	  }
-	*/
-	/////////// 
-		
-		let audioSphere =  new THREE.SphereGeometry(60, 32, 32);
-		let audioSphereOrg =  new THREE.SphereGeometry(60, 32, 32);
-		
-		
-		var audioMaterial = new THREE.MeshStandardMaterial({
-			color: 0xffffff,
-			metalness: 0.8,
-			roughness: 0.1,
-                        //envMap: scene.background,
-                        // 
-                });
-            
-                let sphere = new THREE.Mesh(audioSphere, this.zordonMaterial);
-		sphere.geometry.verticesNeedUpdate = true;
-                sphere.geometry.normalsNeedUpdate = true;
-                      
-            let sphRotation = setInterval(function(){
-     
-                sphere.rotation.y += 0.001;
-                sphere.rotation.z += 0.001;
-     
-            }, 30)
+        }, 30)
+	
 
+        //sphere.position.z = 0;
+        sphere.position.y = 20; 
 
-                sphere.position.z = -500;
-                sphere.position.y = 300; 
-                      
-                this.scene.add(sphere);
-		
-		this.sphere = sphere
-		this.audioSphere = audioSphere
-		this.audioSphereOrg = audioSphereOrg
-
-		
-		let cilMaterial = new THREE.MeshBasicMaterial( {
-			color: 0xffffff,
-			envMap: this.scene.background,
-			refractionRatio: 0.95
-		} );
-
-		let geometryCli, cil1;
-
-		for(let i = 1; i < 14; i++){
-			geometryCli = new THREE.CylinderBufferGeometry(200-(i*3), 200-(i*3), 4, 128);
-			geometryCli.computeVertexNormals();
-			cil1 = new THREE.Mesh( geometryCli, cilMaterial );
-			cil1.position.y = i*1.5-6;
-			cil1.position.z = -500;
-			this.scene.add( cil1 );
-		}
-
-
-
+        this.scene.add(sphere);
+	
+	
+	//sphere.add( edges.cubeCamera );
+	
+	this.sphere = sphere
+	this.audioSphere = audioSphere
+	this.audioSphereOrg = audioSphereOrg
 
 	},
 
@@ -1802,20 +1763,22 @@ const edges = {
     },
  
     moveAudioSphere: function(){
+	
 	let data = edges.analyser.getFrequencyData();
 	edges.sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
 	
 	for (let i = 0, len = edges.audioSphere.vertices.length; i < len; i++) {
 	    //audioSphere.vertices[i].y = audioSphereOrg.vertices[i].y;
-            edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i%128] / 128) ;
-            edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 128);
-            edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 128);
+            edges.audioSphere.vertices[i].y = edges.audioSphereOrg.vertices[i].y * (1+data[i%128] / 512) ;
+            edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 512);
+            edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 512);
 	}
 
-	},
+    },
+    
     moveLight: function(){
 	
-	var time = Date.now() * 0.0005;
+	// var time = Date.now() * 0.0005;
 
 	/*
 	edges.light1.position.x = Math.sin( time * 0.7 ) * 20;
@@ -1912,7 +1875,20 @@ const edges = {
 	}, */
 	animate: function(){
 	    requestAnimationFrame( edges.animate );
+
+	    //edges.audioSphere.visible = false;
+	    
+	     edges.moveAudioSphere();
+
+	    edges.cubeCamera.position.copy( edges.camera.position );
+	    //   ges.cubeCamera.position.set( edges.camera );
+	     edges.cubeCamera.update( edges.renderer, edges.scene );
+	    //edges.audioSphere.visible = true;
+
+	    
 	    edges.renderer.render(edges.scene, edges.camera);
+
+
 	    if (edges.streamingAudio) edges.moveAudioSphere()
 	    // edges.moveLight();
 	    edges.rotaciones(); 
@@ -2033,7 +2009,7 @@ function onLoadMedia(){
 		flvPlayer.play();
 		flvPlayer.on('error',function(err){
 			if(err==="NetworkError"){
-				flvPlayer.unload()
+			    flvPlayer.unload()
 				flvPlayer.load()
 				flvPlayer.play();
 			}
