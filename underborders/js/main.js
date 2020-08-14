@@ -1036,7 +1036,7 @@ const edges = {
     },
 
     plantas: function(){
-
+/*
 
 	var geometryL = new THREE.BoxGeometry( 1, 1, 1 );
 	//var materialL = new THREE.MeshBasicMaterial( {color: edges.verde} );
@@ -1094,7 +1094,7 @@ const edges = {
 	edges.scene.add( line );
 
 
-
+*/
 	
     },
 
