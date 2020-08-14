@@ -89,6 +89,7 @@ export const controls = {
 			}
 		})
 
+		controls.prevTime = performance.now()
 		requestAnimationFrame(callback);
 		setTimeout(this.debug,2000)
 
@@ -113,7 +114,9 @@ export const controls = {
 		}
 	},
 	move: function(){
-                const delta = 0.015
+		const delta = 0.0215
+		//const time = performance.now()
+		//const delta = ( time - controls.prevTime ) / 4000;
 
 
                 controls.velocity.x -= controls.velocity.x * 10.0 * delta
@@ -207,6 +210,7 @@ export const controls = {
                         controls.moving = false
 
                 }
+		//controls.prevTime = time
         },
 	onLock: function(){
 		document.querySelector("#instructions").style.display = "none";

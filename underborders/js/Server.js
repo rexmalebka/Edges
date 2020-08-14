@@ -6,7 +6,7 @@ export const Server = {
 		let nickname = "anon-"+Math.random().toString(16).slice(2,6)
 		const texture = "avTex1.jpg"
 		let pos = {x:-550.8884125720521, y: 14, z: -490.75654644504897}
-//		let pos = {x:-17.4, y: 14, z: -63.75654644504897}
+		pos = {x:-68, y: 14, z: 9.8}
 		let rot = {x:0,y:-Math.PI,z:0}
 		//{x: 549.164734959957, y: 13.999999999999964, z: 512.1886469707863}		
 		if(!localStorage.getItem("uuid")){
