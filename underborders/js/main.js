@@ -25,7 +25,8 @@ const edges = {
 	    document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
 	    // cube camera
-	    
+
+	    /*
 	    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128, {
 		//format: THREE.RGBFormat,
 		//generateMipmaps: true,
@@ -34,6 +35,7 @@ const edges = {
 	    } );
 	    
 	    this.cubeCamera = new THREE.CubeCamera( 1, 150, edges.cubeRenderTarget );
+	    */
 	    
 	    // this.controls = new PointerLockControls(this.camera, document.body)
 	    //this.controls = new PointerLockControls(this.camera, document.body)
@@ -53,7 +55,8 @@ const edges = {
 	    this.vueltas()
 	    this.rotaciones()
 	    this.escaleras() 
-	    this.addAudio()
+	    // this.addAudio()
+	    this.plantas() 
 	    
 	    this.animate();
 
@@ -143,7 +146,7 @@ const edges = {
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 	
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
-	let latlightv = new THREE.PointLight( edges.azul, 3, 400);
+	let latlightv = new THREE.PointLight( edges.azul, 1, 400);
 	fococine.position.y = latlightv.position.y = 96-5; 
 	this.scene.add( latlightv ); 
 	this.scene.add( fococine); 	
@@ -1032,6 +1035,69 @@ const edges = {
 	*/
     },
 
+    plantas: function(){
+
+
+	var geometryL = new THREE.BoxGeometry( 1, 1, 1 );
+	//var materialL = new THREE.MeshBasicMaterial( {color: edges.verde} );
+
+	var materialL = new THREE.MeshStandardMaterial({
+	    color: 0xffffff,
+	    metalness: 0.6,
+	    roughness: 0.4, 
+            // map: this.screenTexture,
+            side: THREE.DoubleSide,
+            //castShadow: false,
+            //receiveShadow: false
+	});
+
+	
+	var material = new THREE.LineBasicMaterial({
+	    color: edges.morado,
+	    linewidth: 1,
+
+	});
+
+	var points = [];
+
+	for(var i = 0; i < 40; i = i + 5){
+
+	    var equis = Math.random()*10-5;
+	    var zeta = Math.random()*10-5;
+	    
+	    points.push( new THREE.Vector3( equis, i, zeta ) );
+	    
+	    
+	}
+
+	for(var j = 0; j < 10; j++){
+		
+	    
+	    var sphereL = new THREE.Mesh( geometryL, materialL );
+	    
+	    sphereL.position.y = points[1].y
+	    sphereL.position.x = points[1].x + ((Math.random() * 2) -4);
+	    sphereL.position.z = points[1].z ; 
+	    
+	    edges.scene.add( sphereL )
+	
+	}
+	    
+	//points.push( new THREE.Vector3( 0, 0, 0 ) );
+	//points.push( new THREE.Vector3( Math.random()*10-5, 5, Math.random()*10-5 ) );
+	//points.push( new THREE.Vector3( Math.random()*10-5, 10, Math.random()*10-5 ) );
+	//points.push( new THREE.Vector3( Math.random()*10-5, 15, Math.random()*10-5)) ;
+		     
+	var geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+	var line = new THREE.Line( geometry, material );
+	edges.scene.add( line );
+
+
+
+	
+    },
+
     addPantallas: function(){
 
 	var width = 96; // esto sería x en dos dimensiones 
@@ -1613,6 +1679,7 @@ const edges = {
     addAudio: function(element){
 
 
+	/*
 	let fftSize = 2048;	
 	const listener = new THREE.AudioListener();
 	const audio = new THREE.Audio( listener );
@@ -1661,7 +1728,8 @@ const edges = {
 	this.sphere = sphere
 	this.audioSphere = audioSphere
 	this.audioSphereOrg = audioSphereOrg
-
+	*/
+	
 	},
 
     mkAvatar: function(){
@@ -1763,7 +1831,8 @@ const edges = {
     },
  
     moveAudioSphere: function(){
-	
+
+	/*
 	let data = edges.analyser.getFrequencyData();
 	edges.sphere.geometry.verticesNeedUpdate = true;  // Necessary to update
 	
@@ -1773,6 +1842,7 @@ const edges = {
             edges.audioSphere.vertices[i].x = edges.audioSphereOrg.vertices[i].x * (1+data[i%128] / 512);
             edges.audioSphere.vertices[i].z = edges.audioSphereOrg.vertices[i].z * (1+data[i%128] / 512);
 	}
+	*/
 
     },
     
@@ -1878,11 +1948,10 @@ const edges = {
 
 	    //edges.audioSphere.visible = false;
 	    
-	     edges.moveAudioSphere();
+	   //  edges.moveAudioSphere();
 
-	    edges.cubeCamera.position.copy( edges.camera.position );
-	    //   ges.cubeCamera.position.set( edges.camera );
-	     edges.cubeCamera.update( edges.renderer, edges.scene );
+	    //edges.cubeCamera.position.copy( edges.camera.position );
+	     //edges.cubeCamera.update( edges.renderer, edges.scene );
 	    //edges.audioSphere.visible = true;
 
 	    
