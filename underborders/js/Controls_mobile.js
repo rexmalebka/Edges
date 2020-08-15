@@ -1,5 +1,88 @@
 import {PointerLockControls} from '/js/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from '/js/three/build/three.module.js';
+import {Debug, Bounds, stairs, antistairs} from '/js/Bounds.js';
+import { GLTFLoader } from '/js/three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from '/js/three/examples/jsm/loaders/DRACOLoader.js';
+
+
+function checkBoundaries(position){
+        let insides = controls.bounds.map((box)=>{
+                box.geometry.computeBoundingBox();
+
+                var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+                var inverseBox = box.clone();
+                var inversePoint = position.clone();
+
+                inverseBox.applyMatrix4(boxMatrixInverse);
+                inversePoint.applyMatrix4(boxMatrixInverse);
+
+                var bb = new THREE.Box3().setFromObject(inverseBox);
+                var isInside = bb.containsPoint(inversePoint);
+                return isInside
+        })
+        return !insides.some(x=>x)
+}
+
+function checkStairs(position){
+        let insides = controls.stairs.map((box)=>{
+                box.geometry.computeBoundingBox();
+
+                var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+                var inverseBox = box.clone();
+                var inversePoint = position.clone();
+
+                inverseBox.applyMatrix4(boxMatrixInverse);
+                inversePoint.applyMatrix4(boxMatrixInverse);
+
+                var bb = new THREE.Box3().setFromObject(inverseBox);
+                var isInside = bb.containsPoint(inversePoint);
+                return isInside
+        })
+        return insides.some(x=>x)
+
+}
+
+function checkAntistairs(position){
+        let insides = controls.antistairs.map((box)=>{
+                box.geometry.computeBoundingBox();
+
+                var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+                var inverseBox = box.clone();
+                var inversePoint = position.clone();
+
+                inverseBox.applyMatrix4(boxMatrixInverse);
+                inversePoint.applyMatrix4(boxMatrixInverse);
+
+                var bb = new THREE.Box3().setFromObject(inverseBox);
+                var isInside = bb.containsPoint(inversePoint);
+                return isInside
+        })
+        return insides.some(x=>x)
+
+}
+
+function checkTeleport(position){
+        let insides = controls.teleport.map((box)=>{
+                box.geometry.computeBoundingBox();
+
+                var boxMatrixInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+
+                var inverseBox = box.clone();
+                var inversePoint = position.clone();
+
+                inverseBox.applyMatrix4(boxMatrixInverse);
+                inversePoint.applyMatrix4(boxMatrixInverse);
+
+                var bb = new THREE.Box3().setFromObject(inverseBox);
+                var isInside = bb.containsPoint(inversePoint);
+                return isInside
+        })
+        return insides.some(x=>x)
+
+}
 
 export const controls = {
 	init: function(camera){
@@ -177,10 +260,101 @@ export const controls = {
 			controls.move()
 			controls.rotate()
 		}
-
 		requestAnimationFrame(callback);
+		setTimeout(this.debug,2000)
+                setTimeout(this.addRoot,2000)
+
+
+		this.bounds = Bounds
+                this.stairs = stairs
+                this.antistairs = antistairs
+
 		return this
 	},
+        debug: function(){
+                if(Debug){
+                        console.debug("debugging boundaries")
+                        window.THREE = THREE
+                        Bounds.forEach(bound=>{
+                                edges.scene.add(bound)
+                        })
+                        stairs.forEach(bound=>{
+                                edges.scene.add(bound)
+                        })
+                        antistairs.forEach(bound=>{
+                                edges.scene.add(bound)
+                        })
+                }
+        },
+
+
+	        addRoot: function(){
+                let loader = new GLTFLoader();
+                var dracoLoader = new DRACOLoader();
+                dracoLoader.setDecoderPath( '/js/three/examples/js/libs/draco/' );
+                loader.setDRACOLoader( dracoLoader );
+                loader.load(
+                        '/models/dino.glb',
+                        function(gltf){
+                                let roots = gltf.scene
+                                var mat = new THREE.MeshBasicMaterial( {color: 0xffff00,side:THREE.DoubleSide} );
+                                roots.scale.multiplyScalar(100)
+
+                                //roots.children[0].material = mat
+                                edges.roots = roots
+
+                                console.debug(roots,"roots")
+                                edges.scene.add(roots)
+                        }
+                )
+
+                let rooms = [45,45,40,-595.2,20,-504]
+                var mat = new THREE.MeshBasicMaterial( {color: 0xffffff,side:THREE.DoubleSide} );
+                let geom = new THREE.BoxBufferGeometry(1,1,1)
+                let mesh = new THREE.Mesh(geom, mat)
+
+                edges.teleport = mesh
+                mesh.scale.set(rooms[0], rooms[1], rooms[2] );
+                mesh.position.x=rooms[3]
+                mesh.position.y=rooms[4]
+                mesh.position.z=rooms[5]
+
+                let mesh2 = mesh.clone();
+
+                mesh2.position.set(596, 21, 504)
+
+
+                controls.teleport = [mesh, mesh2]
+                edges.scene.add(mesh)
+                edges.scene.add(mesh2)
+
+                let text = new THREE.TextureLoader().load( "/img/fabrica1.jpg")
+                let text2 = new THREE.TextureLoader().load( "/img/fabrica2.jpg")
+
+                var postermat = new THREE.MeshBasicMaterial( {map:text,side:THREE.DoubleSide} );
+                let postergeom = new THREE.PlaneBufferGeometry(29.375,24.3125,10,10)
+
+                let postermesh = new THREE.Mesh(postergeom, postermat)
+                postermesh.position.set(-572.2,21,-504)
+                postermesh.rotation.set(0, Math.PI/2,0)
+                edges.poster = postermesh
+
+
+
+                var postermat2 = new THREE.MeshBasicMaterial( {map:text2, side:THREE.DoubleSide} );
+                let postergeom2 = new THREE.PlaneBufferGeometry(27.6,39.6,10,10)
+
+                let postermesh2 = new THREE.Mesh(postergeom2, postermat2)
+                postermesh2.position.set(572.22, 22, 504)
+                postermesh2.rotation.set(0, -Math.PI/2,0)
+                edges.poster2 = postermesh2
+
+
+                edges.scene.add(postermesh)
+                edges.scene.add(postermesh2)
+
+        },
+
 	mostrar: function(e){
 		e.preventDefault()
 
@@ -214,7 +388,7 @@ export const controls = {
 		controls.controls.getObject().rotation.z = 0
 	},
 	move: function(){
-                const delta = 0.015
+                const delta = 0.0215
 
                 controls.velocity.x -= controls.velocity.x * 10.0 * delta
                 controls.velocity.z -= controls.velocity.z * 10.0 * delta
@@ -226,6 +400,62 @@ export const controls = {
                 controls.direction.normalize()
 
                 if (controls.moveForward || controls.moveBackward || controls.moveLeft || controls.moveRight) {
+                if (controls.moveForward || controls.moveBackward) {
+                        controls.velocity.z -= controls.direction.z * 400.0 * delta
+                }
+                if (controls.moveLeft || controls.moveRight) {
+                        controls.velocity.x -= controls.direction.x * 400.0 * delta
+                }
+                controls.controls.moveRight(-controls.velocity.x * delta)
+                controls.controls.moveForward(-controls.velocity.z * delta)
+			                console.debug(checkStairs(edges.camera.position))
+                if(checkStairs(edges.camera.position)){
+                        // trying to go up on stair
+                        let dx = 0.1
+                        if(controls.moveForward){
+                                edges.camera.position.y -= (controls.velocity.z) * dx
+                        }
+                        if(controls.moveBackward){
+                                edges.camera.position.y += (controls.velocity.z) * dx
+                        }
+                }
+
+                if(checkAntistairs(edges.camera.position)){
+                        // trying to go up on stair
+                        let dx = 0.1
+
+                        //edges.camera.position.y += (controls.velocity.z) * dx
+                        //edges.camera.position.y = Math.max(edges.camera.position.y,14)
+
+                        if(controls.moveForward){
+                                edges.camera.position.y += (controls.velocity.z) * dx
+                        }
+                        if(controls.moveBackward){
+                                edges.camera.position.y -= (controls.velocity.z) * dx
+                        }
+                }
+                if(checkTeleport(edges.camera.position)){
+                        setTimeout(function(){
+                                let a = document.createElement("a")
+                                a.href = "https://hubs.mozilla.com/ZFT7uMn/maquinaturalis-fabricavr";
+                                a.click()
+                        },1500)
+                }
+                if(edges.camera.position.y>60){
+                        edges.camera.position.y = 60
+                }
+			                if(edges.camera.position.y<22){
+                        edges.camera.position.y = 22
+                }
+
+                if(!checkBoundaries(edges.camera.position) ){
+                        controls.controls.moveRight(controls.velocity.x * delta)
+                        controls.controls.moveForward(controls.velocity.z * delta)
+                        return
+                }
+
+
+
                         const camPos = edges.camera.position
                         Users.me.position.x = camPos.x
                         //Users.me.position.y = camPos.y
@@ -256,14 +486,6 @@ export const controls = {
                         controls.moving = false
 
                 }
-                if (controls.moveForward || controls.moveBackward) {
-                        controls.velocity.z -= controls.direction.z * 400.0 * delta
-                }
-                if (controls.moveLeft || controls.moveRight) {
-                        controls.velocity.x -= controls.direction.x * 400.0 * delta
-                }
-                controls.controls.moveRight(-controls.velocity.x * delta)
-                controls.controls.moveForward(-controls.velocity.z * delta)
 
         },
 	onLock: function(){
