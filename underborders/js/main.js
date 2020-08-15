@@ -1,6 +1,7 @@
 "use strict";
 import * as THREE from '/js/three/build/three.module.js';
 import { controls } from '/js/Controls.js';
+import { controls as controls_mb } from '/js/Controls_mobile.js';
 import * as flvPlayer from '/js/flv.min.js';
 import { Server, Users } from '/js/Server.js';
 import { Chat } from '/js/chat.js';
@@ -21,7 +22,16 @@ const edges = {
 	    this.verde = new THREE.Color( 0x01B8A0 ); 
 	    this.azul = new THREE.Color( 0x5691cc ); 
 	    this.morado = new THREE.Color( 0xa800ff ); 
-	     
+		
+	    if(detectMob()){
+		    document.querySelector('#quality').selectedIndex = "3"; 
+		    edges.renderer.setPixelRatio(0.25)
+
+		    this.controls = controls_mb.init(this.camera)           //PointerLockControls(this.camera, document.body)
+                }else{
+                        this.controls = controls.init(this.camera)              //PointerLockControls(this.camera, document.body)
+                }
+
 	    document.querySelector('#distopia').appendChild(this.renderer.domElement)
 
 	    // cube camera
@@ -2026,7 +2036,7 @@ const edges = {
 	},
 
     mkAvatar: function(){
-
+	    console.log("creando avatar")
 	let group = new THREE.Group();
 	this.avatar = new THREE.Group();	
 	
@@ -2547,9 +2557,9 @@ function addUser(event) {
     //var text; 
     var loader2 = new THREE.FontLoader();
 
-    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-
 	let monito = edges.avatar.clone();
+    loader2.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+	    console.debug("")
 
         var matDark = new THREE.LineBasicMaterial( {
             color: 0xffffff,
@@ -2771,6 +2781,9 @@ inputMensaje.addEventListener('input', function (e) {
     inputMensaje.textContent = inputMensaje.textContent.slice(0, 248)
   }
 })
+edges.init();
+Chat.init()
+Server.init();
 
 //document.addEventListener('keydown', onKeyDown, false)
 //document.addEventListener('keyup', onKeyUp, false)
@@ -2802,12 +2815,25 @@ window.addEventListener('blur', function(e){
 	document.querySelector("#blocker").style.display = "";
 })
 */
-edges.init();
-Chat.init()
-Server.init();
 
 document.querySelector('#usuarix').value = Users.me.nickname
 document.querySelector("#mostrarUsuarix").textContent = document.querySelector("#usuarix").value
+
+function detectMob() {
+        const toMatch = [
+                /Android/i,
+                /webOS/i,
+                /iPhone/i,
+                /iPad/i,
+                /iPod/i,
+                /BlackBerry/i,
+                /Windows Phone/i
+        ];
+        return toMatch.some((toMatchItem) => {
+                return navigator.userAgent.match(toMatchItem);
+    });
+}
+
 /*
 document.addEventListener("click",function(){
 	if(edges.controls.controls.isLocked){
