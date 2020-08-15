@@ -712,22 +712,9 @@ const edges = {
 	    
 	    grafosMaterial[i] = new THREE.MeshBasicMaterial( {
 		color: 0xffffff,
-<<<<<<< HEAD
-		//metalness: 0.6,
-		// roughness: 0.85,
 		map: grafos[i],
 		side: THREE.DoubleSide,
 		transparent: true,
-		// overdraw: true
-=======
-		map: grafos[i],
-		side: THREE.DoubleSide,
-		transparent: true,
-/*		metalness: 0.6,
-		roughness: 0.85,
-		overdraw: true
-		*/
->>>>>>> 3fd8caa05eff089a5418ef992d2d01580b8de019
             });
 	    
 	}
