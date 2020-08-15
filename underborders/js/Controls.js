@@ -156,7 +156,7 @@ export const controls = {
 			}
 		)
 
-		let rooms = [45,45,40,-572.2,21,-504]
+		let rooms = [45,45,40,-595.2,20,-504]
 		var mat = new THREE.MeshBasicMaterial( {color: 0xffffff,side:THREE.DoubleSide} );
 		let geom = new THREE.BoxBufferGeometry(1,1,1)
 		let mesh = new THREE.Mesh(geom, mat)
@@ -183,7 +183,7 @@ export const controls = {
 		let postergeom = new THREE.PlaneBufferGeometry(29.375,24.3125,10,10)
 
 		let postermesh = new THREE.Mesh(postergeom, postermat)
-		postermesh.position.set(-570,21,-504)
+		postermesh.position.set(-572.2,21,-504)
 		postermesh.rotation.set(0, Math.PI/2,0)
 		edges.poster = postermesh
 

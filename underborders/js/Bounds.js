@@ -84,7 +84,7 @@ let bounds = [
 	[1.5, 30, 148, -451.4,14, -662.5], 
         [1.5, 30, 148, -357.4,14, -662.5],
 
-        [1.5, 30, 290, 140, 56, 50], // segundo piso 
+        [1.5, 30, 290, 140, 56, 50], // segundo piso //70
         // [1.5, 30, 290, -140, 56, -50], // este aparece con rotación 
         [1.5, 30, 290, -138, 56, -50],  
         [148/4+2, 30, 1.5, 140-20, 56, 194],
@@ -109,7 +109,7 @@ bounds.push(
 	[27,1,100, -88,25,14],
 )
 
-let mat = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent:true, opacity:0.8} );
+let mat = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent:true, opacity:0} );
 let geom = new THREE.BoxBufferGeometry( 1, 1, 1 );
 
 
@@ -157,10 +157,10 @@ let ass = [
 	[10,200,200, 66.5,45,-31],
 	[10,200,200, 66.5,45,-31],
 	
-	[25,200,30, 82.5, 14, 73],  //7
+	[25,200,50, 83.5, 14, 83],  //7
 	[25,200,30, -82.5, 14, -73],  
+	[25,50,50, -84, 60,70],  
 ]
-
 let as = ass.map(s=>{
 	let mat2 = mat.clone()
 	mat2.color.g =0

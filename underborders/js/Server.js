@@ -5,8 +5,8 @@ export const Server = {
 		let uuid = Math.random().toString(16).substr(2);
 		let nickname = "anon-"+Math.random().toString(16).slice(2,6)
 		const texture = "avTex1.jpg"
-		let pos = {x:-550.8884125720521, y: 14, z: -490.75654644504897}
-		pos = {x:-68, y: 14, z: 9.8}
+		let pos  = Math.random() * 100 >= 50 ? {x:-550.8884125720521, y: 14, z: -490.75654644504897} : {x: 551.9051149614551, y: 17.999999999999964, z: 361.43856634967983};
+
 		let rot = {x:0,y:-Math.PI,z:0}
 		//{x: 549.164734959957, y: 13.999999999999964, z: 512.1886469707863}		
 		if(!localStorage.getItem("uuid")){
@@ -21,32 +21,6 @@ export const Server = {
 			nickname = localStorage.getItem("nickname")
 		}
 		
-		// passport stuff
-                let params = new URLSearchParams(window.location.search);
-                let passport = {
-                        nombre: params.get('nombre'),
-                        avatar: params.get('avatar'),
-                        lugar: params.get('lugar')
-                }
-
-               // window.history.replaceState({}, document.title, "/" + "");
-
-                if(passport.nombre && passport.avatar && passport.lugar){
-                        // save the password on localstorage
-                        localStorage.setItem('passport', JSON.stringify(passport))
-                        nickname = passport.nombre;
-			if(passport.lugar == 'mx'){
-				pos = {x:-550.8884125720521, y: 14, z: -490.75654644504897}
-			}else{
-				pos = {x: 549.164734959957, y: 13.999999999999964, z: 512.1886469707863}		
-				//--
-				pos = {x: -402.80011575306787, y: 14.000000000000052, z: -507.0356680010567}
-				rot = {x:0, y:-Math.PI/2, z:0}
-			}
-                }
-
-//Vector3 {x: -8.90003014486838, y: 14.000000000000579, z: -15.119960136434964}
-		pos.y= 10
 		if(!Users.me){
 			Users.me = new User(uuid, nickname, pos, rot, texture); 
 		}
