@@ -662,9 +662,10 @@ const edges = {
 
 	for(var i = 0; i < 33; i++){
 	        grafos[i] = new THREE.TextureLoader().load('img/'+i+'.png', function ( grafos ){
-		//grafos.wrapS = grafos.wrapT = THREE.RepeatWrapping;
-		//grafos.offset.set( 0, 0 );
-		//grafos.repeat.set( 1, 1 );
+		    //grafos.wrapS = grafos.wrapT = THREE.RepeatWrapping;
+		    grafos.wrapS = grafos.wrapT = THREE.ClampToEdgeWrapping;
+		    grafos.offset.set(-0.5, -0.5 );
+		    grafos.repeat.set( 2, 2 );
 		});
 	};
 	
@@ -710,8 +711,10 @@ const edges = {
 
 	for(var i = 1; i < 33; i++){
 	    
-	    grafosMaterial[i] = new THREE.MeshBasicMaterial( {
+	    grafosMaterial[i] = new THREE.MeshStandardMaterial( {
 		color: 0xffffff,
+		metalness: 0.6,
+		roughness: 0.85,
 		map: grafos[i],
 		side: THREE.DoubleSide,
 		transparent: true,
@@ -788,7 +791,9 @@ const edges = {
 	let pos3 = new THREE.Mesh( posGeometry, posMaterial ); 
 	let pos4 = new THREE.Mesh( posGeometry, posMaterial ); 
 
-	let graf = new THREE.Mesh( posGeometry , grafosMaterial[ 2 ] );
+	let graf = new THREE.Mesh( posGeometry , grafosMaterial[ 2 ] );	
+	let graf2 = new THREE.Mesh( posGeometry , grafosMaterial[ 32 ] );
+
 	
 	// graf.material.needsUpdate = true;
 
@@ -808,6 +813,12 @@ const edges = {
 	graf.position.y = 96/4;
 	graf.position.z = -96/4+4;
 
+	
+	graf2.rotation.x = Math.PI / 2;
+	graf2.position.y = 96/4;
+	graf2.position.z = 96/4-4;
+
+
 	//graf.position.y = 96/2-2;
 
 	// AGREGAR TODO A GRUPOS // 
@@ -819,6 +830,7 @@ const edges = {
 	grupo.add( pos3 );
 	grupo.add( pos4 );
 	grupo.add( graf ); // quinto hijo 
+	grupo.add( graf2 );
 	
 	for( var i = 0; i < 4; i++){
 	    grupo.add(tabla0[i]);
@@ -828,7 +840,8 @@ const edges = {
 	//pas1.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
 	pas1.position.x =  w - w*3;
 	pas1.position.z = -w * 2.25;
-	pas1.children[4].material = grafosMaterial[1];  
+	pas1.children[4].material = grafosMaterial[1];
+	pas1.children[5].material = grafosMaterial[31];
 	this.scene.add( pas1); 
 	
 	let pas2 = grupo.clone();
@@ -836,12 +849,14 @@ const edges = {
 	pas2.position.z = -w * 3;
 	pas2.rotation.y = Math.PI /2;
 	pas2.children[4].material = grafosMaterial[2];
+	pas2.children[5].material = grafosMaterial[30];
 	this.scene.add( pas2);
 	
 	let pas3 = grupo.clone();
 	pas3.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
 	// pas2.children[4].material.map = grafTexture;  
-	pas3.children[4].material = grafosMaterial[3];  
+	pas3.children[4].material = grafosMaterial[3];
+	// pas3.children[5].material = grafosMaterial[30];
 	pas3.position.x =  w - w*2.25;
 	pas3.position.z = -w * 1.5;
 	pas3.rotation.y = Math.PI /2;
@@ -863,8 +878,11 @@ const edges = {
 	let pas4 = grupo.clone();
 
 	pas4.children[4].material = grafosMaterial[4];
+	
+
 	pas4.remove(pas4.children[2]);
 
+	pas4.remove(pas4.children[4]);
 	// pas4.children[2].remove();
 	
 	pas4.add( latlightv.clone() ); 
@@ -877,7 +895,9 @@ const edges = {
 	
 	let pas5 = grupo.clone();
 	pas5.children[4].material = grafosMaterial[5];
+
 	pas5.remove(pas5.children[2]);
+	pas5.remove(pas5.children[4]);
 	// pas4.children[2].remove();
 	//pas5.add( latlightv.clone() ); 
 	//pas5.add( latfoco.clone() );
@@ -892,6 +912,7 @@ const edges = {
 	
 	pas6.children[4].material = grafosMaterial[6];
 	pas6.remove(pas6.children[2]);
+	pas6.remove(pas6.children[4]);
 	// pas4.children[2].remove();
 	//pas6.add( latlightv.clone() ); 
 	//pas6.add( latfoco.clone() );
@@ -903,7 +924,8 @@ const edges = {
 	let pas7 = grupo.clone();
 	
 	pas7.children[4].material = grafosMaterial[7];
-	pas7.remove(pas7.children[2]); 
+	pas7.remove(pas7.children[2]);
+	pas7.remove(pas7.children[4]);
 	// pas4.children[2].remove();
 	pas7.add( latlightv.clone() ); 
 	pas7.add( latfoco.clone() );
@@ -914,6 +936,8 @@ const edges = {
 	
 	let pas8 = grupo.clone();
 	pas8.children[4].material = grafosMaterial[8];
+	pas8.children[5].material = grafosMaterial[29];
+
 	pas8.position.x =  w - w*4.5;
 	pas8.position.z = -w * 2.25;
 	// pas8.rotation.y = Math.PI /2;
@@ -921,6 +945,7 @@ const edges = {
 	
 	let pas9 = grupo.clone();
 	pas9.children[4].material = grafosMaterial[9];
+	pas9.children[5].material = grafosMaterial[28];
 	pas9.position.x =  w - w*5.25;
 	pas9.position.z = -w * 3;
 	pas9.rotation.y = Math.PI /2;
@@ -935,6 +960,7 @@ const edges = {
 	
 	let pas11 = grupo.clone();
 	pas11.children[4].material = grafosMaterial[11];
+	pas9.children[5].material = grafosMaterial[27];
 	pas11.position.x =  w - w*6.75;
 	pas11.position.z = -w * 4.5;
 	pas11.rotation.y = Math.PI /2;
@@ -942,6 +968,7 @@ const edges = {
 	
 	let pas12 = grupo.clone();
 	pas12.children[4].material = grafosMaterial[12];
+	pas12.children[5].material = grafosMaterial[26];
 	pas12.position.x =  w - w*-0.25;
 	pas12.position.z = -w * -1.5;
 	pas12.rotation.y = Math.PI / 2;
@@ -949,6 +976,7 @@ const edges = {
 	
 	let pas13 = grupo.clone();
 	pas13.children[4].material = grafosMaterial[13];
+	pas13.children[5].material = grafosMaterial[25];
 	pas13.position.x =  w - w*-1;
 	pas13.position.z = -w * -2.25;
 	// pas13.rotation.y = Math.PI / 2;
@@ -956,6 +984,7 @@ const edges = {
 	
 	let pas14 = grupo.clone();
 	pas14.children[4].material = grafosMaterial[14];
+	pas14.children[5].material = grafosMaterial[24];
 	pas14.position.x =  w - w*-2.5;
 	pas14.position.z = -w * -2.25;
 	// pas13.rotation.y = Math.PI / 2;
@@ -963,6 +992,7 @@ const edges = {
 	
 	let pas15 = grupo.clone();
 	pas15.children[4].material = grafosMaterial[15];
+	pas15.children[5].material = grafosMaterial[23];
 	pas15.position.x =  w - w*-1.75;
 	pas15.position.z = -w * -3;
 	pas15.rotation.y = Math.PI / 2;
@@ -970,6 +1000,8 @@ const edges = {
 	
 	let pas16 = grupo.clone();
 	pas16.children[4].material = grafosMaterial[16];
+	pas16.children[5].material = grafosMaterial[22];
+
 	pas16.position.x =  w - w*-3.25;
 	pas16.position.z = -w * -3;
 	pas16.rotation.y = Math.PI / 2;
@@ -977,6 +1009,8 @@ const edges = {
 	
 	let pas17 = grupo.clone();
 	pas17.children[4].material = grafosMaterial[17];
+	pas17.children[5].material = grafosMaterial[21];
+
 	pas17.position.x =  w - w*-4;
 	pas17.position.z = -w * -3.75;
 	//pas17.rotation.y = Math.PI / 2;
@@ -984,6 +1018,8 @@ const edges = {
 	
 	let pas18 = grupo.clone();
 	pas18.children[4].material = grafosMaterial[18];
+	pas18.children[5].material = grafosMaterial[20];
+
 	pas18.position.x =  w - w*-4.75;
 	pas18.position.z = -w * -4.5;
 	pas18.rotation.y = Math.PI / 2;	
@@ -991,6 +1027,8 @@ const edges = {
 	
 	let pas19 = grupo.clone();
 	pas19.children[4].material = grafosMaterial[19];
+	pas19.children[5].material = grafosMaterial[19];
+
 	pas19.position.x =  w - w*3.75;
 	pas19.position.z = -w * 4.5;
 	pas19.rotation.y = Math.PI /2;
@@ -999,6 +1037,8 @@ const edges = {
 	let pas20 = grupo.clone();
     
 	pas20.children[4].material = grafosMaterial[20];
+	pas20.children[5].material = grafosMaterial[18];
+
 	pas20.position.x =  w - w*3;
 	pas20.position.z = -w * 3.75;
 	// pas20.rotation.y = Math.PI /2;
@@ -1006,6 +1046,8 @@ const edges = {
 	
 	let pas21 = grupo.clone();
 	pas21.children[4].material = grafosMaterial[21];
+	pas21.children[5].material = grafosMaterial[17];
+
 	pas21.position.x =  w - w*0.75;
 	pas21.position.z = -w * 4.5;
 	pas21.rotation.y = Math.PI /2;
@@ -1015,6 +1057,8 @@ const edges = {
 	
 	let pas22 = grupo.clone();
 	pas22.children[4].material = grafosMaterial[22];
+	pas22.children[5].material = grafosMaterial[16];
+
 	pas22.position.x =  w - w*1.5;
 	pas22.position.z = -w * 3.75;
 	// pas22.rotation.y = Math.PI /2;
@@ -1022,6 +1066,8 @@ const edges = {
 	
 	let pas23 = grupo.clone();
 	pas23.children[4].material = grafosMaterial[23];
+	pas23.children[5].material = grafosMaterial[15];
+
 	pas23.position.x =  w - w*4.5;
 	pas23.position.z = -w * 5.25;
 	// pas23.rotation.y = Math.PI /2;
@@ -1029,6 +1075,8 @@ const edges = {
 
 	let pas24 = grupo.clone();
 	pas24.children[4].material = grafosMaterial[24];
+	pas24.children[5].material = grafosMaterial[14];
+
 	pas24.position.x =  w - w*5.25;
 	pas24.position.z = -w * 6;
 	pas24.rotation.y = Math.PI /2;
@@ -1036,6 +1084,8 @@ const edges = {
 
 	let pas25 = grupo.clone();
 	pas25.children[4].material = grafosMaterial[25];
+	pas25.children[5].material = grafosMaterial[13];
+
 	pas25.position.x =  w - w* -1.75;
 	pas25.position.z = -w * -4.5;
 	pas25.rotation.y = Math.PI /2;
@@ -1043,6 +1093,8 @@ const edges = {
 
 	let pas26 = grupo.clone();
 	pas26.children[4].material = grafosMaterial[26];
+	pas26.children[5].material = grafosMaterial[12];
+
 	pas26.position.x =  w - w* -1;
 	pas26.position.z = -w * -3.75;
 	// pas26.rotation.y = Math.PI /2;
@@ -1050,6 +1102,8 @@ const edges = {
 
 	let pas27 = grupo.clone();
 	pas27.children[4].material = grafosMaterial[27];
+	pas27.children[5].material = grafosMaterial[11];
+
 	pas27.position.x =  w - w* 1.25;
 	pas27.position.z = -w * -4.5;
 	pas27.rotation.y = Math.PI /2;
@@ -1059,6 +1113,8 @@ const edges = {
 	
 	let pas28 = grupo.clone();
 	pas28.children[4].material = grafosMaterial[28];
+	pas8.children[5].material = grafosMaterial[10];
+
 	pas28.position.x =  w - w* 0.5;
 	pas28.position.z = -w * -3.75;
 	// pas28.rotation.y = Math.PI /2;
@@ -1066,6 +1122,8 @@ const edges = {
 
 	let pas29 = grupo.clone();	
 	pas29.children[4].material = grafosMaterial[29];
+	pas29.children[5].material = grafosMaterial[9];
+
 	pas29.position.x =  w - w* -2.5;
 	pas29.position.z = -w * -5.25;
 	// pas29.rotation.y = Math.PI /2;
@@ -1073,6 +1131,8 @@ const edges = {
 	
 	let pas30 = grupo.clone();
 	pas30.children[4].material = grafosMaterial[30];
+	pas30.children[5].material = grafosMaterial[8];
+
 	pas30.position.x =  w - w* -3.25;
 	pas30.position.z = -w * -6;
 	pas30.rotation.y = Math.PI /2;
@@ -1080,7 +1140,10 @@ const edges = {
 
 	let pas31 = grupo.clone();
 	pas31.children[4].material = grafosMaterial[31];
+	pas31.children[5].material = grafosMaterial[7];
+
 	pas31.remove( pas31.children[2] ); 
+	pas31.remove(pas31.children[4]);
 
 	pas31.position.x =  w + w / 4;
 	pas31.position.z =  w / 2;
@@ -1091,7 +1154,10 @@ const edges = {
 	let pas32 = grupo.clone();
 
 	pas32.children[4].material = grafosMaterial[32];
+	pas32.children[5].material = grafosMaterial[6];
+
 	pas32.remove( pas32.children[2] ); 
+	pas32.remove(pas32.children[4]);
 
 	pas32.position.x =  w + w / 4;
 	pas32.position.z =  -w / 2;
@@ -1104,6 +1170,7 @@ const edges = {
 
 	pas33.children[4].material = grafosMaterial[1];
 	pas33.remove( pas33.children[2] ); 
+	pas33.remove(pas33.children[4]);
 
 	pas33.position.x =  -w - w / 4;
 	pas33.position.z =  w / 2;
@@ -1115,6 +1182,7 @@ const edges = {
 
 	pas34.children[4].material = grafosMaterial[2];
 	pas34.remove( pas34.children[2] ); 
+	pas34.remove(pas34.children[4]);
 
 	pas34.position.x =  -w - w / 4;
 	pas34.position.z =  -w / 2;
