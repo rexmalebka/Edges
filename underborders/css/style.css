@@ -53,11 +53,21 @@ body{
 	color: #ffffff;
 	text-align: center;
 	font-family: Arial;
-	font-size: 14px;
+	font-size: 26px;
 	line-height: 24px;
 
 	cursor: pointer;
 	text-shadow:2px 2px 2px black;
+	top:20%;
+}
+
+h1,h2,h3,h4{
+	width:100%;
+	display:inline-block;
+}
+#instructions ul li{
+	color:yellow;
+	padding-top:1em;
 }
 
 #query div{

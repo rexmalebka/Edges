@@ -710,14 +710,15 @@ const edges = {
 
 	for(var i = 0; i < 33; i++){
 	    
-	    grafosMaterial[i] = new THREE.MeshStandardMaterial( {
+	    grafosMaterial[i] = new THREE.MeshBasicMaterial( {
 		color: 0xffffff,
-		metalness: 0.6,
-		roughness: 0.85,
 		map: grafos[i],
 		side: THREE.DoubleSide,
 		transparent: true,
+/*		metalness: 0.6,
+		roughness: 0.85,
 		overdraw: true
+		*/
             });
 	    
 	}

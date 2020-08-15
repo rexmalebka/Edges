@@ -259,7 +259,7 @@ export const controls = {
 		if(checkTeleport(edges.camera.position)){
 			setTimeout(function(){
 				let a = document.createElement("a")
-				a.href = "http://stackoverflow.com";
+				a.href = "https://hubs.mozilla.com/ZFT7uMn/maquinaturalis-fabricavr";
 				a.click()
 			},1500)
 		}
