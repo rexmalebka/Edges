@@ -2575,7 +2575,7 @@ function addUser(event) {
 	
 	
         text.position.x = 0;
-        text.position.y = position.y+20;
+        text.position.y = position.y+5;
         text.position.z = 0;
 
 	text.nick_ = true; 

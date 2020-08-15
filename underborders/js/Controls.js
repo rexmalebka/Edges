@@ -267,8 +267,8 @@ export const controls = {
 			edges.camera.position.y = 60
 		}
 			
-		if(edges.camera.position.y<14){
-			edges.camera.position.y = 14
+		if(edges.camera.position.y<22){
+			edges.camera.position.y = 22
 		}
 
 		if(!checkBoundaries(edges.camera.position) ){

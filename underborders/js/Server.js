@@ -5,7 +5,7 @@ export const Server = {
 		let uuid = Math.random().toString(16).substr(2);
 		let nickname = "anon-"+Math.random().toString(16).slice(2,6)
 		const texture = "avTex1.jpg"
-		let pos  = Math.random() * 100 >= 50 ? {x:-550.80884125720521, y: 14, z: -490.75654644504897} : {x: 551.9051149614551, y: 17.999999999999964, z: 361.43856634967983};
+		let pos  = Math.random() * 100 >= 50 ? {x:-550.80884125720521, y: 18, z: -490.75654644504897} : {x: 551.9051149614551, y: 18, z: 361.43856634967983};
 
 		let rot = {x:0,y:-Math.PI,z:0}
 		//{x: 549.164734959957, y: 13.999999999999964, z: 512.1886469707863}		
