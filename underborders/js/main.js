@@ -651,6 +651,22 @@ const edges = {
 	}
 	
 	posGeometry.rotateX( - Math.PI / 2 );
+
+	let posGeometryGraf = new THREE.BoxGeometry( w+5, w/2, 4 );
+	posGeometryGraf.rotateX( - Math.PI / 2 );
+
+
+	// texturas como arreglos
+
+	var grafos = [];
+
+	for(var i = 0; i < 33; i++){
+	        grafos[i] = new THREE.TextureLoader().load('img/'+i+'.png', function ( grafos ){
+		grafos.wrapS = grafos.wrapT = THREE.RepeatWrapping;
+		grafos.offset.set( 0, 0 );
+		grafos.repeat.set( 1, 1 );
+		});
+	};
 	
 	var floorTexture = new THREE.TextureLoader().load( 'img/stone.jpg', function ( floorTexture ) {
 	    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
@@ -658,6 +674,7 @@ const edges = {
 	    floorTexture.repeat.set( 1, 1 );
 	});
 
+	/*
 	var grafTexture = new THREE.TextureLoader().load( 'img/graf01.png', function ( grafTexture ) {
 	    //grafTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 	    //grafTexture.offset.set( 0, 0 );
@@ -677,6 +694,7 @@ const edges = {
 	    grafTexture3.repeat.set( 1.25, 1.25 );
 	});
 
+	*/
 	
 	var posMaterial = new THREE.MeshStandardMaterial( {
 	    color: 0xffffff,
@@ -687,12 +705,29 @@ const edges = {
             //transparent: true,
             //opacity: 0.75,
         });
-	
+
+	var grafosMaterial = [];
+
+	for(var i = 0; i < 33; i++){
+	    
+	    grafosMaterial[i] = new THREE.MeshStandardMaterial( {
+		color: 0xffffff,
+		metalness: 0.6,
+		roughness: 0.85,
+		map: grafos[i],
+		side: THREE.DoubleSide,
+		transparent: true,
+		overdraw: true
+            });
+	    
+	}
+
+	/*
 	var grafMaterial = new THREE.MeshStandardMaterial( {
 	    color: 0xffffff,
 	    metalness: 0.6,
 	    roughness: 0.85,
-	    map: grafTexture,
+	    map: grafos[0],
 	    side: THREE.DoubleSide,
             transparent: true,
             overdraw: true
@@ -702,7 +737,7 @@ const edges = {
 	    color: 0xffffff,
 	    metalness: 0.6,
 	    roughness: 0.85,
-	    map: grafTexture2,
+	    map: grafos[1],
 	    side: THREE.DoubleSide,
             transparent: true,
             overdraw: true
@@ -712,11 +747,12 @@ const edges = {
 	    color: 0xffffff,
 	    metalness: 0.6,
 	    roughness: 0.85,
-	    map: grafTexture3,
+	    map: grafos[2],
 	    side: THREE.DoubleSide,
             transparent: true,
             overdraw: true
         });
+	*/
 
 	// TABLAS 
 
@@ -755,7 +791,7 @@ const edges = {
 	let pos3 = new THREE.Mesh( posGeometry, posMaterial ); 
 	let pos4 = new THREE.Mesh( posGeometry, posMaterial ); 
 
-	let graf = new THREE.Mesh( posGeometry, grafMaterial2 );
+	let graf = new THREE.Mesh( posGeometryGraf , grafosMaterial[ 7] );
 	
 	graf.material.needsUpdate = true;
 
@@ -773,7 +809,7 @@ const edges = {
 
 	graf.rotation.x = Math.PI / 2;
 	graf.position.y = 96/4;
-	graf.position.z = -96/4+2;
+	graf.position.z = -96/4+4;
 
 	//graf.position.y = 96/2-2;
 
@@ -796,7 +832,7 @@ const edges = {
 	pas1.position.x =  w - w*3;
 	pas1.position.z = -w * 2.25;
 
-	pas1.children[4].material = grafMaterial;  
+	pas1.children[4].material = grafosMaterial[2];  
 	this.scene.add( pas1); 
 	
 	let pas2 = grupo.clone();
@@ -812,7 +848,7 @@ const edges = {
 	pas3.children[4].material.needsUpdate = true; // el material del nuevo clon necesita actualizarse
 
 	// pas2.children[4].material.map = grafTexture;  
-	pas3.children[4].material = grafMaterial3;  
+	pas3.children[4].material = grafosMaterial[1];  
 
 	pas3.position.x =  w - w*2.25;
 	pas3.position.z = -w * 1.5;
@@ -2211,7 +2247,7 @@ function onWindowResize() {
 }
 
 function onLoadMedia(){
-
+    /*
 	let audio = new Audio('edges.piranhalab.cc/audio');
 	audio.crossOrigin = "anonymous";
 
@@ -2230,6 +2266,8 @@ function onLoadMedia(){
 			// // Show paused UI.
 		});
 	}
+
+	*/ 
 
 	if(flvjs.isSupported()){
 		let flvPlayer = flvjs.createPlayer({
