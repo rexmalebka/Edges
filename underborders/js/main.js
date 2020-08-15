@@ -56,7 +56,7 @@ const edges = {
 	    this.rotaciones()
 	    this.escaleras() 
 	    // this.addAudio()
-	    this.plantas() 
+	    this.barandal()
 	    
 	    this.animate();
 
@@ -117,7 +117,7 @@ const edges = {
 	let floor2 = new THREE.Mesh( floorGeometry, groundMaterial );
 
 	floor.position.y = 1; 
-	floor2.position.y = 96-2+4;
+	floor2.position.y = 96-1;
 		
 	this.scene.add( floor );	
 	this.scene.add( floor2 );
@@ -140,14 +140,30 @@ const edges = {
 	wall2.position.y = 96/4;
 	wall2.position.z = -96+2.5;
 	wall2.position.x = 96/4
-	this.scene.add(wall2); 
+	this.scene.add(wall2);
+
+	
+	let wall3 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	// wall1.rotation.x = Math.PI /2;
+	wall3.position.y = 96/2+96/4;
+	wall3.position.z = 96-2.5;
+	wall3.position.x = -96/4;
+	this.scene.add( wall3 );
+
+	let wall4 = new THREE.Mesh(wallGeometry, groundMaterial2 );
+	// wall1.rotation.x = Math.PI /2;
+	wall4.position.y = 96/2 + 96/4;
+	wall4.position.z = -96+2.5;
+	wall4.position.x = 96/4
+	this.scene.add(wall4); 
+
 		
 	var sphgeometry = new THREE.SphereGeometry( 2, 32, 32 );
 	var sphmaterial = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 	
 	var fococine = new THREE.Mesh( sphgeometry, sphmaterial );
-	let latlightv = new THREE.PointLight( edges.azul, 1, 400);
-	fococine.position.y = latlightv.position.y = 96-5; 
+	let latlightv = new THREE.PointLight( edges.azul, 3, 400);
+	fococine.position.y = latlightv.position.y = 96-6;
 	this.scene.add( latlightv ); 
 	this.scene.add( fococine); 	
 	
@@ -1004,6 +1020,60 @@ const edges = {
 	pas30.rotation.y = Math.PI /2;
 	this.scene.add( pas30 );
 
+	let pas31 = grupo.clone();
+
+	pas31.remove( pas31.children[2] ); 
+
+	pas31.position.x =  w + w / 4;
+	pas31.position.z =  w / 2;
+	pas31.rotation.y = -Math.PI /2;
+	pas31.position.y = w /2; 
+	this.scene.add( pas31 );
+
+	let pas32 = grupo.clone();
+	
+	pas32.remove( pas32.children[2] ); 
+
+	pas32.position.x =  w + w / 4;
+	pas32.position.z =  -w / 2;
+	pas32.rotation.y = -Math.PI /2;
+	pas32.position.y = w /2; 
+	this.scene.add( pas32 );
+
+	
+	let pas33 = grupo.clone();
+
+	pas33.remove( pas33.children[2] ); 
+
+	pas33.position.x =  -w - w / 4;
+	pas33.position.z =  w / 2;
+	pas33.rotation.y = Math.PI /2;
+	pas33.position.y = w /2; 
+	this.scene.add( pas33 );
+
+	let pas34 = grupo.clone();
+	
+	pas34.remove( pas34.children[2] ); 
+
+	pas34.position.x =  -w - w / 4;
+	pas34.position.z =  -w / 2;
+	pas34.rotation.y = Math.PI /2;
+	pas34.position.y = w /2; 
+	this.scene.add( pas34 );
+
+	/*
+	let pas35 = grupo.clone();
+	
+	pas35.remove( pas34.children[2] ); 
+
+	pas35.position.x =  -w - w / 4;
+	pas35.position.z =  -w + - w/2;
+	pas35.rotation.y = Math.PI /2;
+	pas35.position.y = w /2; 
+	this.scene.add( pas35 );
+	*/
+
+
 	
     },
 
@@ -1035,68 +1105,162 @@ const edges = {
 	*/
     },
 
-    plantas: function(){
-/*
+    barandal: function(){
 
-	var geometryL = new THREE.BoxGeometry( 1, 1, 1 );
-	//var materialL = new THREE.MeshBasicMaterial( {color: edges.verde} );
+	let gbarandal = new THREE.Group();
+	let gbarandalCorto = new THREE.Group();	
 
-	var materialL = new THREE.MeshStandardMaterial({
-	    color: 0xffffff,
-	    metalness: 0.6,
-	    roughness: 0.4, 
-            // map: this.screenTexture,
-            side: THREE.DoubleSide,
-            //castShadow: false,
-            //receiveShadow: false
-	});
+	// var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+
+	var material = new THREE.MeshStandardMaterial( {
+	    color: 0x808080,
+	    metalness: 0.7,
+	    roughness: 0.55,
+	    // map: floorTexture,
+	    // side: THREE.DoubleSide
+	} );
+	
+	for(var i = 0; i < 96; i = i + 1){
+	
+	    var geometry = new THREE.BoxGeometry( 0.125, 10, 0.125 );
+	    var cube = new THREE.Mesh( geometry, material );
+	    //cube.position.y = 96/2+5;
+	    cube.position.y = 5; 
+	    cube.position.x = i - 96/2; 
+	    gbarandal.add( cube );
+	}
+
+	for(var i = 0; i <= 96; i = i + 4){
+	    
+	    var geometry = new THREE.BoxGeometry( 0.5, 10, 0.5 );
+	    var cube = new THREE.Mesh( geometry, material );
+	    //cube.position.y = 96/2+5;
+	    cube.position.y = 5; 
+	    cube.position.x = i - 96/2; 
+	    gbarandal.add( cube );
+
+	}
 
 	
-	var material = new THREE.LineBasicMaterial({
-	    color: edges.morado,
-	    linewidth: 1,
+	for(var i = 4; i < 96; i = i + 8){
 
-	});
-
-	var points = [];
-
-	for(var i = 0; i < 40; i = i + 5){
-
-	    var equis = Math.random()*10-5;
-	    var zeta = Math.random()*10-5;
-	    
-	    points.push( new THREE.Vector3( equis, i, zeta ) );
-	    
+	    var geometry = new THREE.TorusGeometry( 2, 0.125, 16, 12 );
+	    var torus = new THREE.Mesh( geometry, material );
+	    //torus.rotation.x = Math.PI /2;
+	    torus.position.y = 5;
+	    torus.position.x = i - 96/2;
+	    gbarandal.add( torus );
 	    
 	}
 
-	for(var j = 0; j < 10; j++){
-		
-	    
-	    var sphereL = new THREE.Mesh( geometryL, materialL );
-	    
-	    sphereL.position.y = points[1].y
-	    sphereL.position.x = points[1].x + ((Math.random() * 2) -4);
-	    sphereL.position.z = points[1].z ; 
-	    
-	    edges.scene.add( sphereL )
+	var geometry = new THREE.BoxGeometry( 96, 0.5, 0.5 );
+	var cube = new THREE.Mesh( geometry, material );
+	//cube.position.y = 96/2+5;
+	cube.position.y = 8.5; 
+	cube.position.x = 0; 
+	gbarandal.add( cube );
+
+
+	/// BARANDAL CORTO
+
 	
+	for(var i = 0; i < 96 / 2-8; i = i + 1){
+	
+	    var geometry = new THREE.BoxGeometry( 0.125, 10, 0.125 );
+	    var cube = new THREE.Mesh( geometry, material );
+	    //cube.position.y = 96/2+5;
+	    cube.position.y = 5; 
+	    cube.position.x = i - 96/4; 
+	    gbarandalCorto.add( cube );
 	}
+
+	for(var i = 0; i <= 96 / 2-8; i = i + 4){
 	    
-	//points.push( new THREE.Vector3( 0, 0, 0 ) );
-	//points.push( new THREE.Vector3( Math.random()*10-5, 5, Math.random()*10-5 ) );
-	//points.push( new THREE.Vector3( Math.random()*10-5, 10, Math.random()*10-5 ) );
-	//points.push( new THREE.Vector3( Math.random()*10-5, 15, Math.random()*10-5)) ;
-		     
-	var geometry = new THREE.BufferGeometry().setFromPoints( points );
+	    var geometry = new THREE.BoxGeometry( 0.5, 10, 0.5 );
+	    var cube = new THREE.Mesh( geometry, material );
+	    //cube.position.y = 96/2+5;
+	    cube.position.y = 5; 
+	    cube.position.x = i - 96/4; 
+	    gbarandalCorto.add( cube );
 
-	var line = new THREE.Line( geometry, material );
-	edges.scene.add( line );
+	}
 
-
-*/
 	
-    },
+	for(var i = 4; i < 96 / 2-8; i = i + 8){
+
+	    var geometry = new THREE.TorusGeometry( 2, 0.125, 16, 12 );
+	    var torus = new THREE.Mesh( geometry, material );
+	    //torus.rotation.x = Math.PI /2;
+	    torus.position.y = 5;
+	    torus.position.x = i - 96/4;
+	    gbarandalCorto.add( torus );
+
+	}
+
+	var geometry = new THREE.BoxGeometry( (96 / 2)-8, 0.5, 0.5 );
+	var cube = new THREE.Mesh( geometry, material );
+	//cube.position.y = 96/2+5;
+	cube.position.y = 8.5; 
+	cube.position.x = -4;
+	gbarandalCorto.add( cube );
+	
+	
+	
+	// edges.scene.add( gbarandal );
+
+	let barandal01 = gbarandal.clone();
+
+	barandal01.position.y = 96/2-1;
+	barandal01.position.x = 96+2+1;
+	barandal01.position.z = 96*2-96/2+3;
+	barandal01.rotation.y = Math.PI/2; 
+	
+	edges.scene.add(barandal01);
+	
+	let barandal02 = gbarandal.clone();
+
+	barandal02.position.y = 96/2-1;
+	barandal02.position.x = (96+2 + 96 / 2) - 6;
+	barandal02.position.z = 96*2-96/2+3;
+	barandal02.rotation.y = Math.PI/2; 
+	
+	edges.scene.add(barandal02);
+
+	
+	let barandal03 = gbarandal.clone();
+
+	barandal03.position.y = 96/2-1;
+	barandal03.position.x = -96-2;
+	barandal03.position.z = -(96+96/2)-3;
+	barandal03.rotation.y = Math.PI/2; 
+	
+	edges.scene.add(barandal03);
+	
+	let barandal04 = gbarandal.clone();
+
+	barandal04.position.y = 96/2-1;
+	barandal04.position.x = -(96+96/2)+ 5;
+	barandal04.position.z = -(96+96/2)-3;
+	barandal04.rotation.y = Math.PI/2; 
+	
+	edges.scene.add(barandal04); 
+
+	let barandalC02 = gbarandalCorto.clone();
+	barandalC02.position.y = 96 / 2 -1;
+	barandalC02.position.x = -(96+92/4) + 4.5; 
+	barandalC02.position.z = -(96+96)-4; 
+	edges.scene.add(barandalC02);
+
+	
+	let barandalC01 = gbarandalCorto.clone();
+	barandalC01.position.y = 96 / 2 -1;
+	barandalC01.position.x = (96+92/4) + 4.5; 
+	barandalC01.position.z = (96+96)+4; 
+	edges.scene.add(barandalC01);
+
+
+	
+},
 
     addPantallas: function(){
 
